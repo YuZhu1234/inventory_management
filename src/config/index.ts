@@ -1,0 +1,1 @@
+export { CustomerDataFormat, CustomerFormat } from './config'
