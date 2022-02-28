@@ -15,7 +15,7 @@
       <el-button type="primary"  class="query" >重置</el-button>
     </el-form-item>
   </el-form>
-  <el-button type="primary"  class="add">添加</el-button>
+  <el-button type="primary"  class="add" @click="dialogVisible2 = true">添加</el-button>
    <el-table class="tabel" border :data="MsgCategory" v-loading="loading">
         <el-table-column  label="名称" prop="itemText" width="160px" />
         <el-table-column  label="数据值" prop="itemValue" width="180px" />
@@ -50,18 +50,18 @@
     width="600px"
     destroy-on-close
   >
-    <el-form class="form1" :data="edit_Data" >
+    <el-form class="form1" :data="aditDatas" >
     <el-form-item label="名称：" label-width="120px" required>
-     <el-input placeholder="请输入字典名称" v-model="edit_Data.itemText"></el-input>
+     <el-input placeholder="请输入字典名称" v-model="aditDatas.itemText"></el-input>
     </el-form-item>
     <el-form-item label="数据值：" label-width="120px" required>
-      <el-input placeholder="请输入字典编号" v-model="edit_Data.itemValue"></el-input>
+      <el-input placeholder="请输入字典编号" v-model="aditDatas.itemValue"></el-input>
     </el-form-item>
     <el-form-item label="描述：" label-width="120px">
-      <el-input placeholder="请输入字典描述" v-model="edit_Data.description"></el-input>
+      <el-input placeholder="请输入字典描述" v-model="aditDatas.description"></el-input>
     </el-form-item>
     <el-form-item label="排序值：" label-width="120px" class="input">
-      <el-input class="input1" placeholder="排序值" v-model="edit_Data.sortOrder" type="number"></el-input>
+      <el-input class="input1" placeholder="排序值" v-model="aditDatas.sortOrder" type="number"></el-input>
     </el-form-item>
      <el-form-item label="是否启用：" label-width="120px" class="input">
           <el-switch v-model="status" inline-prompt active-text="启用" inactive-text="禁用"></el-switch>
@@ -95,8 +95,22 @@ export default defineComponent({
   setup (props, context) {
     const MsgCategory = ref([])
     const dialogVisible = ref(false)
-    const aditData = ref({})
-    const edit_Data = ref({})
+    const aditData = reactive({
+      aditDatas:{
+        createBy: '',
+        createTime: '',
+        description: '',
+        dictId: 0,
+        itemText: '',
+        itemValue: '',
+        sortOrder: 0,
+        status: 0,
+        sysDictDetailId: 0,
+        updateBy: '',
+        updateTime: ''
+      }
+    })
+    const edit_Data = ref('')
     const loading = ref(false)
     const dialogVisible2 = ref(false)
     const status = ref(true)
@@ -117,7 +131,7 @@ export default defineComponent({
     }
 
     const handleConfirm1 = (row:any) :void => {
-      edit_Data.value = row
+      aditData.aditDatas = row
       dialogVisible2.value = true
     }
 
@@ -134,10 +148,8 @@ export default defineComponent({
 
     const handleSave = () => {
       loading.value = true
-      const data:any = edit_Data.value
-      data.createTime = undefined
-      data.updateTime = undefined
-      data.status = data.status === true ? 1 : false
+      const data:any = aditData.aditDatas
+      data.status = data.status === true ? 1 : 0
       AxiosApi.put('sysdict/detail/update', JSON.stringify(data))
         .then((res) => {
           console.log(res)
@@ -155,8 +167,7 @@ export default defineComponent({
 
     const handleDetele = () :void => {
       loading.value = true
-      const data:any = aditData.value
-      AxiosApi.delete(`sysdict/detail/delete?detailid=${data.sysDictDetailId}`)
+      AxiosApi.delete(`sysdict/detail/delete?detailid=${edit_Data.value}`)
         .then((res) => {
           loading.value = false
           dialogVisible.value = false
@@ -169,8 +180,12 @@ export default defineComponent({
         })
     }
 
+    const AddData = () :void => {
+      console.log('add')
+    }
+
     const handleConfirm = (row:any) :void => {
-      edit_Data.value = row
+      edit_Data.value = row.sysDictDetailId
       dialogVisible.value = true
     }
 
@@ -187,7 +202,9 @@ export default defineComponent({
       dialogVisible2,
       edit_Data,
       handleSave,
-      status
+      status,
+      ...toRefs(aditData),
+      AddData
     }
   }
 })

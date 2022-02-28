@@ -17,9 +17,9 @@
           <template #title>
           <span class="tittle"><el-icon><list /></el-icon>库存管理</span>
           </template>
-          <el-menu-item index="stock" @click="(e)=>historyPush(e)">入库管理</el-menu-item>
+          <el-menu-item index="2-1" @click="(e)=>historyPush(e)">入库管理</el-menu-item>
           <el-menu-item index="2-2">出库管理</el-menu-item>
-          <el-menu-item index="respository">库存调拨</el-menu-item>
+          <el-menu-item index="2-3">库存调拨</el-menu-item>
           <el-menu-item index="2-4">库存盘点</el-menu-item>
           <el-menu-item index="2-5">实时库存</el-menu-item>
         </el-sub-menu>
@@ -32,8 +32,9 @@
           </template>
           <el-menu-item index="customer" @click="(e)=>historyPush(e)">客户</el-menu-item>
           <el-menu-item index="4-2">供应商</el-menu-item>
-          <el-menu-item index="respository">仓库</el-menu-item>
-          <el-menu-item index="4-4">物料</el-menu-item>
+          <el-menu-item index="respository" @click="(e)=>historyPush(e)">仓库</el-menu-item>
+          <el-menu-item index="materialclassification" @click="(e)=>historyPush(e)">物料分类</el-menu-item>
+          <el-menu-item index="material" @click="(e)=>historyPush(e)">物料</el-menu-item>
           <el-menu-item index="4-5">计量单位</el-menu-item>
         </el-sub-menu>
         <el-menu-item index="5">
@@ -101,6 +102,7 @@ export default defineComponent({
 </script>
 
 <style>
+
 .logo{
   height: 50px;
 }

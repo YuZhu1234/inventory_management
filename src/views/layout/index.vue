@@ -1,8 +1,8 @@
 <template>
   <el-container class="layout-container">
-    <el-aide>
+    <el-aside>
       <AppAside/>
-    </el-aide>
+    </el-aside>
     <el-container>
       <el-header>
         <div >
@@ -69,10 +69,10 @@ export default defineComponent({
   }
 
   .el-aside {
-    background-color: #333;
-    color: #333;
     text-align: center;
     line-height: 200px;
+    width: 200px;
+    border-right: 1px solid rgb(245,244,245);
   }
 
   .el-main {

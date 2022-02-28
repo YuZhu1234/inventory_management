@@ -2,8 +2,10 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Login from '../views/login/index.vue'
 import Layout from '../views/layout/index.vue'
 import Customer from '../views/basicInfo/customer/index.vue'
-import Stock from '../views/basicInfo/stock/index.vue'
+import Respository from '../views/basicInfo/respository/index.vue'
 import DataDictionary from '../views/system_management/data_dictionary/index.vue'
+import Material from '../views/basicInfo/material/index.vue'
+import MaterialClassification from '../views/basicInfo/materialclassification/index.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,8 +19,8 @@ const routes: Array<RouteRecordRaw> = [
     component: Layout,
     children:[
       {
-        path: 'stock',
-        component: Stock
+        path: 'respository',
+        component: Respository
       },
       {
         path: 'customer',
@@ -27,6 +29,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'data_dictionary',
         component: DataDictionary
+      },
+      {
+        path: 'material',
+        component: Material
+      },
+      {
+        path:'materialclassification',
+        component: MaterialClassification
       }
     ]
   }

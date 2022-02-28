@@ -5,15 +5,15 @@
      <el-input placeholder="请输入字典名称"></el-input>
     </el-form-item>
     <el-form-item class="encode" label="字典编号：">
-      <el-input placeholder="请输入字典编号"></el-input>
+      <el-input placeholder="请输入字典编号" v-model="QueryCode"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary"  class="query">查询</el-button>
+      <el-button type="primary"  class="query" @click="onQuery">查询</el-button>
       <el-button type="primary"  class="query" >重置</el-button>
     </el-form-item>
     </el-form>
     <div class="button_group">
-       <el-button type="primary"  class="query">
+       <el-button type="primary"  class="query" @click="handleCheck('add')">
          <el-icon><plus /></el-icon>&nbsp;添加
        </el-button>
        <el-button type="primary"  class="query" >
@@ -85,7 +85,7 @@
   </el-dialog>
    <el-dialog
     v-model="dialogVisible2"
-    title="编辑"
+    :title="tittle"
     width="600px"
     destroy-on-close
   >
@@ -151,6 +151,8 @@ export default defineComponent({
     const drawer = ref(false)
     const loading = ref(false)
     const current_page = ref(1)
+    const QueryCode = ref('')
+    const tittle = ref('编辑')
 
     const loadDictionary = (val: number) :void => {
       loading.value = true
@@ -176,18 +178,31 @@ export default defineComponent({
       const data:any = aditData.value
       data.createTime = undefined
       data.updateTime = undefined
-      AxiosApi.put('sysdict/header/update', JSON.stringify(data))
+      if (tittle.value === '编辑') {
+        AxiosApi.put('sysdict/header/update', JSON.stringify(data))
+          .then((res) => {
+            console.log(res)
+            loadDictionary(current_page.value)
+            loading.value = false
+            dialogVisible2.value = false
+            success('修改成功！')
+          }).catch((err) => {
+            console.log(err)
+            loadDictionary(current_page.value)
+            loading.value = false
+            error('修改失败！')
+          })
+      } else if (tittle.value === '新增') {
+        console.log('xinzeng')
+      }
+    }
+
+    const onQuery = ():void => {
+      AxiosApi.get(`sysdict/list?type=${QueryCode.value}`)
         .then((res) => {
           console.log(res)
-          loadDictionary(current_page.value)
-          loading.value = false
-          dialogVisible2.value = false
-          success('修改成功！')
         }).catch((err) => {
           console.log(err)
-          loadDictionary(current_page.value)
-          loading.value = false
-          error('修改失败！')
         })
     }
 
@@ -200,6 +215,14 @@ export default defineComponent({
 
     const error = (message:string) => {
       ElMessage.error(message)
+    }
+
+    const handleCheck = (type:string) => {
+      if (type === 'add') {
+        tittle.value = '新增'
+        aditData.value = {}
+        dialogVisible2.value = true
+      }
     }
 
     const handleDetele = () :void => {
@@ -235,6 +258,7 @@ export default defineComponent({
 
     const handleConfirm1 = (row:any) :void => {
       aditData.value = row
+      tittle.value = '编辑'
       dialogVisible2.value = true
     }
 
@@ -265,7 +289,11 @@ export default defineComponent({
       drawer,
       loading,
       current_page,
-      handleCurrentChange
+      handleCurrentChange,
+      onQuery,
+      QueryCode,
+      handleCheck,
+      tittle
     }
   }
 })
