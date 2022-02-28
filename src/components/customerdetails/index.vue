@@ -106,31 +106,31 @@
     </el-form-item>
    </el-form>
 
-   <el-form :inline="true" class="demo-form-inline">
+   <el-form :inline="true" >
     <el-form-item label="所属总公司" :label-width=LabeWidth class="full_input">
       <el-input v-model="CustomerDetails.headquarters" placeholder="请输入所属总公司"></el-input>
     </el-form-item>
    </el-form>
 
-    <el-form :inline="true" class="demo-form-inline">
+    <el-form :inline="true" >
     <el-form-item label="开票信息开户行" :label-width=LabeWidth class="full_input">
       <el-input v-model="CustomerDetails.bankInvoice" placeholder="请输入开票信息开户行"></el-input>
     </el-form-item>
    </el-form>
 
-    <el-form :inline="true" class="demo-form-inline">
+    <el-form :inline="true" >
         <el-form-item label="办款资料开户行" :label-width=LabeWidth class="full_input">
       <el-input v-model="CustomerDetails.bankPayment" placeholder="请输入办款资料开户行"></el-input>
     </el-form-item>
    </el-form>
 
-    <el-form :inline="true" class="demo-form-inline">
+    <el-form :inline="true">
     <el-form-item label="开票地址" :label-width=LabeWidth class="full_input">
       <el-input v-model="CustomerDetails.addressInvoice" placeholder="请输入开票地址"></el-input>
     </el-form-item>
    </el-form>
 
-    <el-form :inline="true" class="demo-form-inline">
+    <el-form :inline="true" >
     <el-form-item label="收件信息地址" :label-width=LabeWidth class="full_input">
       <el-input v-model="CustomerDetails.accountReceipt" placeholder="请输入收件信息地址"></el-input>
     </el-form-item>
@@ -186,7 +186,6 @@
   </el-form>
   <el-button type="primary" @Click="dialogVisible2 = true" :disabled="disabled">保存</el-button>
   <el-button type="primary" @Click="handleColse">关闭</el-button>
-  </div>
   <el-dialog
     v-model="dialogVisible2"
     title="提示"
@@ -203,6 +202,7 @@
       </span>
     </template>
   </el-dialog>
+  </div>
 </template>
 
 <script lang="ts">
@@ -340,9 +340,9 @@ export default defineComponent({
   width: 178px
 }
 .option{
-  width: 178px
+  width: 202.5px
 }
 .full_input{
-  width: 764px;
+  width: 810px;
 }
 </style>
