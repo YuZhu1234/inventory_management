@@ -31,11 +31,11 @@
             <span><el-icon><grid /></el-icon>基础数据</span>
           </template>
           <el-menu-item index="customer" @click="(e)=>historyPush(e)">客户</el-menu-item>
-          <el-menu-item index="4-2">供应商</el-menu-item>
+          <el-menu-item index="supplier" @click="(e)=>historyPush(e)">供应商</el-menu-item>
           <el-menu-item index="respository" @click="(e)=>historyPush(e)">仓库</el-menu-item>
           <el-menu-item index="materialclassification" @click="(e)=>historyPush(e)">物料分类</el-menu-item>
           <el-menu-item index="material" @click="(e)=>historyPush(e)">物料</el-menu-item>
-          <el-menu-item index="4-5">计量单位</el-menu-item>
+          <el-menu-item index="unitofmeasurement" @click="(e)=>historyPush(e)">计量单位</el-menu-item>
         </el-sub-menu>
         <el-menu-item index="5">
           <span><el-icon><timer /></el-icon>系统监控</span>

@@ -207,8 +207,9 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
-import { AxiosApi } from '../../utils/api'
-import { CustomerFormat } from '../../utils/type/customer'
+import { AxiosApi } from '../../../utils/api'
+import { CustomerFormat } from '../../../utils/type/customer'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name:'customerdetails',
@@ -276,6 +277,17 @@ export default defineComponent({
       props.handleClose()
     }
 
+    const success = (message:string) => {
+      ElMessage({
+        message: message,
+        type: 'success'
+      })
+    }
+
+    const error = (message:string) => {
+      ElMessage.error(message)
+    }
+
     const handleSave = () => {
       if (props.customerId) {
         AxiosApi.put('customer/update', JSON.stringify(CustomerDetail.CustomerDetails))
@@ -283,31 +295,36 @@ export default defineComponent({
             console.log(res)
             dialogVisible2.value = false
             handleColse()
+            success('修改成功！')
           }).catch((err) => {
             console.log(err)
             dialogVisible2.value = false
             handleColse()
+            error('修改失败')
           })
       } else {
         AxiosApi.post('customer/add', JSON.stringify(CustomerDetail.CustomerDetails))
           .then((res) => {
-            props.loadCustomers()
+            props.loadCustomers(1)
             dialogVisible2.value = false
             handleColse()
+            success('添加成功！')
           }).catch((err) => {
             console.log(err)
             dialogVisible2.value = false
             handleColse()
+            error('修改失败')
           })
       }
     }
     const findCustomerDetails = (customerId:number) => {
-      AxiosApi.get(`customer/find?id=${customerId}`)
+      AxiosApi.get(`customer/find?customerId=${customerId}`)
         .then((res) => {
           CustomerDetail.CustomerDetails = res.data.result
           // console.log(CustomerDetails)
         }).catch((err) => {
           console.log(err)
+          error('获取客户数据失败')
         })
     }
     onMounted(() => {

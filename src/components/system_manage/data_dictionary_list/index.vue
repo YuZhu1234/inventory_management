@@ -15,15 +15,15 @@
       <el-button type="primary"  class="query" >重置</el-button>
     </el-form-item>
   </el-form>
-  <el-button type="primary"  class="add" @click="dialogVisible2 = true">添加</el-button>
+  <el-button type="primary"  class="add" @click="handleConfirm('no','add')">添加</el-button>
    <el-table class="tabel" border :data="MsgCategory" v-loading="loading">
         <el-table-column  label="名称" prop="itemText" width="160px" />
         <el-table-column  label="数据值" prop="itemValue" width="180px" />
         <el-table-column  label="操作" width="175px" type="index">
             <template v-slot="scope">
-              <el-button type="text" size="small" @click="handleConfirm1(scope.row)">编辑</el-button>
+              <el-button type="text" size="small" @click="handleConfirm(scope.row,'edit')">编辑</el-button>
               &nbsp;&nbsp;&nbsp;|
-              <el-button type="text" size="small" @click="handleConfirm(scope.row)">删除</el-button>
+              <el-button type="text" size="small" @click="handleConfirm(scope.row,'delete')">删除</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -114,6 +114,7 @@ export default defineComponent({
     const loading = ref(false)
     const dialogVisible2 = ref(false)
     const status = ref(true)
+    const edit_type = ref('')
 
     const loadDict = () => {
       loading.value = true
@@ -150,19 +151,23 @@ export default defineComponent({
       loading.value = true
       const data:any = aditData.aditDatas
       data.status = data.status === true ? 1 : 0
-      AxiosApi.put('sysdict/detail/update', JSON.stringify(data))
-        .then((res) => {
-          console.log(res)
-          loadDict()
-          loading.value = false
-          dialogVisible2.value = false
-          success('修改成功！')
-        }).catch((err) => {
-          console.log(err)
-          loadDict()
-          loading.value = false
-          error('修改失败！')
-        })
+      if (edit_type.value === 'edit') {
+        AxiosApi.put('sysdict/detail/update', JSON.stringify(data))
+          .then((res) => {
+            console.log(res)
+            loadDict()
+            loading.value = false
+            dialogVisible2.value = false
+            success('修改成功！')
+          }).catch((err) => {
+            console.log(err)
+            loadDict()
+            loading.value = false
+            error('修改失败！')
+          })
+      } else if (edit_type.value === 'add') {
+        console.log('add')
+      }
     }
 
     const handleDetele = () :void => {
@@ -184,9 +189,19 @@ export default defineComponent({
       console.log('add')
     }
 
-    const handleConfirm = (row:any) :void => {
-      edit_Data.value = row.sysDictDetailId
-      dialogVisible.value = true
+    const handleConfirm = (row:any, type:string) :void => {
+      if (type === 'delete') {
+        edit_type.value = 'delete'
+        edit_Data.value = row.sysDictDetailId
+        dialogVisible.value = true
+      } else if (type === 'edit') {
+        edit_type.value = 'edit'
+        aditData.aditDatas = row
+        dialogVisible2.value = true
+      } else if (type === 'add') {
+        edit_type.value = 'add'
+        dialogVisible2.value = true
+      }
     }
 
     onMounted(() => {

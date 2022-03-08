@@ -4,7 +4,7 @@
        <el-form-item label="名称" class="encode">
         <el-select placeholder="请选择查找类型" v-model="findType">
         <el-option label="编码" value="编码"></el-option>
-        <el-option label="ID" value="ID"></el-option>
+        <!-- <el-option label="ID" value="ID"></el-option> -->
         <el-option label="名称" value="名称"></el-option>
         </el-select>
       </el-form-item>
@@ -16,7 +16,7 @@
       <el-button type="primary" @click="onAdd" class="query" >添加</el-button>
     </el-form-item>
   </el-form>
-  <el-table :data="CustomerData" class="tabel" >
+  <el-table :data="CustomerData" class="tabel" header-row-style="color:black" style="border: 1px solid rgb(245,244,245)">
     <el-table-column prop="customerCode" label="编码" :width="columnwidth" fixed />
     <el-table-column prop="name" label="名称" :width="columnwidth" />
     <el-table-column prop="shortName" label="简称" :width="columnwidth" />
@@ -37,7 +37,14 @@
     </el-table-column>
   </el-table>
   <template class="pagination" >
-    <el-pagination background="blue" layout="prev, pager, next" :total="1000">
+    <el-pagination
+      :page-size="10" 
+      background="blue" 
+      layout="prev, pager, next" 
+      :total="1000"
+      v-model:currentPage="current_page"
+      @current-change="handleCurrentChange"
+    >
     </el-pagination>
   </template>
   <el-dialog
@@ -69,10 +76,10 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import CustomerDetails from '../../../components/customerdetails/index.vue'
+import CustomerDetails from '../../../components/basicInfo/customerdetails/index.vue'
 import { AxiosApi } from '../../../utils/api'
 import { AxiosResponse } from 'axios'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name:'asside',
@@ -89,23 +96,40 @@ export default defineComponent({
     const type = ref('add')
     const findType = ref('编码')
     const columnwidth = ref('150px')
+    const current_page = ref(1)
 
     const onAdd = ():void => {
       type.value = 'add'
       dialogVisible.value = true
     }
 
+    const handleCurrentChange = (val: number) :void => {
+      loadCustomers(val)
+    }
+
+    const success = (message:string) => {
+      ElMessage({
+        message: message,
+        type: 'success'
+      })
+    }
+
+    const error = (message:string) => {
+      ElMessage.error(message)
+    }
+
     const onQuery = ():void => {
-      if (findType.value === 'ID') {
-        AxiosApi.get(`customer/find?id=${findValue.value}`)
-          .then((res) => {
-            CustomerData.value = []
-            CustomerData.value = res.data.result
-            // CustomerData.value.push(res.data.result)
-          }).catch((err) => {
-            console.log(err)
-          })
-      } else if (findType.value === '编码') {
+      // if (findType.value === 'ID') {
+      //   AxiosApi.get(`customer/find?customerId=${findValue.value}`)
+      //     .then((res) => {
+      //       CustomerData.value = []
+      //       CustomerData.value = res.data.result
+      //       // CustomerData.value.push(res.data.result)
+      //     }).catch((err) => {
+      //       console.log(err)
+      //     })
+      // } else 
+      if (findType.value === '编码') {
         AxiosApi.get(`customer/list?code=${findValue.value}`).then((res) => {
           CustomerData.value = res.data.result
         }).catch((err) => {
@@ -130,8 +154,8 @@ export default defineComponent({
       dialogVisible.value = true
     }
 
-    const loadCustomers = () :void => {
-      AxiosApi.get('customer/list')
+    const loadCustomers = (current_page:number) :void => {
+      AxiosApi.get(`customer/list?pageNum=${current_page}&pageSize=10`)
         .then((res:AxiosResponse) => {
           CustomerData.value = res.data.result
         }).catch((err) => {
@@ -147,10 +171,12 @@ export default defineComponent({
     const handledetele = () :void => {
       AxiosApi.delete(`customer/delete?id=${deleteID.value}`)
         .then((res) => {
-          loadCustomers()
+          loadCustomers(current_page.value)
           dialogVisible2.value = false
+          success('删除成功！')
         }).catch((err) => {
           console.log(err)
+          error('删除失败！')
         })
     }
 
@@ -160,7 +186,7 @@ export default defineComponent({
       dialogVisible.value = true
     }
     onMounted(() => {
-      loadCustomers()
+      loadCustomers(1)
     })
     return {
       CustomerData,
@@ -178,7 +204,8 @@ export default defineComponent({
       onAdd,
       findType,
       handleDetail,
-      columnwidth
+      columnwidth,
+      handleCurrentChange
     }
   }
 })
