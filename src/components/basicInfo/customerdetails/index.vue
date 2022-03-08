@@ -318,7 +318,7 @@ export default defineComponent({
       }
     }
     const findCustomerDetails = (customerId:number) => {
-      AxiosApi.get(`customer/find?customerId=${customerId}`)
+      AxiosApi.get(`customer/find?id=${customerId}`)
         .then((res) => {
           CustomerDetail.CustomerDetails = res.data.result
           // console.log(CustomerDetails)

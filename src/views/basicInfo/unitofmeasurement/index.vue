@@ -1,7 +1,7 @@
 <template>
     <Card class="customer_card">
       <div class="header">
-        <el-button type="text" class="header_button"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
+        <el-button type="text" class="header_button" @click="handleAdd"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
         <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
         <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
       </div>
@@ -30,42 +30,20 @@
             </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" sortable width="120">
-          <template #default>
-            <el-button type="text" size="small" @click="handleClick">编辑</el-button>
+          <template v-slot="scope">
+            <el-button type="text" size="small" @click="handleClick(scope.row.measureUnitId, 'edit')">编辑</el-button>
             <el-divider direction="vertical"></el-divider>
              <el-dropdown>
               <el-button type="text" size="small">更多<el-icon><arrow-down /></el-icon></el-button>
-              <template #dropdown>
+              <template #dropdown >
                 <el-dropdown-menu>
-                  <el-dropdown-item>删除</el-dropdown-item>
+                  <el-dropdown-item @click="handleClick(scope.row.measureUnitId, 'delete')">删除</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
           </template>
         </el-table-column>
     </el-table>
-      <!-- <el-table :data="tableData" highlight-current-row="true" header-row-style="color:black" style="border: 1px solid rgb(245,244,245)">
-        <el-table-column fixed type="selection" width="55" />
-        <el-table-column fixed prop="date" label="名称" width="150"/>
-        <el-table-column fixed prop="name" label="编码" width="300" />
-        <el-table-column prop="state" label="电话" width="300" />
-        <el-table-column prop="city" label="是否启用" width="120" />
-        <el-table-column prop="address" label="备注" width="600" />
-        <el-table-column fixed="right" label="操作" width="120">
-          <template #default>
-            <el-button type="text" size="small" @click="handleClick">编辑</el-button>
-            <el-divider direction="vertical"></el-divider>
-             <el-dropdown>
-              <el-button type="text" size="small">更多<el-icon><arrow-down /></el-icon></el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item>删除</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </template>
-        </el-table-column>
-      </el-table> -->
       <template class="pagination" >
         <el-pagination background="blue" layout="prev, pager, next" :total="1000">
         </el-pagination>
@@ -78,8 +56,29 @@
           destroy-on-close
         >
         <el-divider class="divider"></el-divider>
-          <unitofmeasurementlist />
+          <unitofmeasurementlist 
+            :measureUnitId="measureUnitId" 
+            :LoadMeasurementUnit="LoadMeasurementUnit" 
+            :handleCloseDrawer="handleCloseDrawer"
+            :save_type="save_type"
+          />
       </el-drawer>
+      <el-dialog
+        v-model="dialogVisible2"
+        title="提示"
+        width="20%"
+        destroy-on-close
+      >
+    <span class="confirm">确定删除此单位？</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible2 = false">取消</el-button>
+        <el-button type="primary" @click="handleDelete"
+          >确定</el-button
+        >
+      </span>
+    </template>
+  </el-dialog>
     </Card>
 </template>
 
@@ -94,6 +93,7 @@ import {
 import unitofmeasurementlist from './unitofmeasurementlist.vue'
 import { AxiosApi } from '../../../utils/api'
 import { AxiosResponse } from 'axios'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name:'unitofmeasurement',
@@ -105,124 +105,32 @@ export default defineComponent({
     unitofmeasurementlist
   },
   setup () {
-    const tableData = [
-      {
-        createBy: 'admin',
-        createTime: '2020-03-24',
-        factor: 1,
-        isBased: 1,
-        isEnabled: 1,
-        measureUnitId: '1242301004380692481',
-        name: '米',
-        pid: '0',
-        symbol: 'm',
-        updateBy: null,
-        updateTime: null,
-        version: null,
-        children:[
-          {
-            createBy: 'admin',
-            createTime: '2020-03-24',
-            factor: 0.01,
-            isBased: 1,
-            isEnabled: 1,
-            measureUnitId: '1242301191434067970',
-            name: '厘米',
-            pid: '1242301004380692481',
-            symbol: 'cm',
-            updateBy: 'admin',
-            updateTime: '2021-11-22',
-            version: null
-          },
-          {             
-            createBy: 'admin',
-            createTime: '2020-03-25',
-            factor: 1000,
-            isBased: 0,
-            isEnabled: 1,
-            measureUnitId: '1242647149539823618',
-            name: '千米',
-            pid: '1242301004380692481',
-            symbol: 'km',
-            updateBy: 'admin',
-            updateTime: '2020-03-25',
-            version: null
-          }
-        ]
-      },
-      {
-        id: 2,
-        date: '2',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Office',
-        children:[
-          {
-            id: 21,
-            date: '2-1',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home',
-            children: [
-              {
-                id: 211,
-                date: '2-1-1',
-                name: 'Tom',
-                state: 'California',
-                city: 'Los Angeles',
-                address: 'No. 189, Grove St, Los Angeles',
-                zip: 'CA 90036',
-                tag: 'Home'
-              },
-              {
-                id: 212,
-                date: '2-1-2',
-                name: 'Tom',
-                state: 'California',
-                city: 'Los Angeles',
-                address: 'No. 189, Grove St, Los Angeles',
-                zip: 'CA 90036',
-                tag: 'Home'
-              }
-            ]
-          },
-          {
-            id: 22,
-            date: '2-2',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office',
-            children:[
-              {
-                id: 221,
-                date: '2-2-1',
-                name: 'Tom',
-                state: 'California',
-                city: 'Los Angeles',
-                address: 'No. 189, Grove St, Los Angeles',
-                zip: 'CA 90036',
-                tag: 'Home'
-              }
-            ]
-          }
-        ]
-      }   
-    ]
     const drawer = ref(false)
     const MeasurementUnitData = ref([{}])
+    const measureUnitId = ref('')
+    const save_type = ref('')
+    const dialogVisible2 = ref(false)
 
-    const handleClick = () :void => {
-      drawer.value = true
-      console.log(drawer.value)
+    const handleClick = (id:string, type:string) :void => {
+      if (type === 'edit') {
+        save_type.value = 'edit'
+        drawer.value = true
+        measureUnitId.value = id 
+      } else if (type === 'delete') {
+        dialogVisible2.value = true
+        measureUnitId.value = id
+      }
+    }
+
+    const success = (message:string) => {
+      ElMessage({
+        message: message,
+        type: 'success'
+      })
+    }
+
+    const error = (message:string) => {
+      ElMessage.error(message)
     }
 
     const handleMeasurementUnit = (Measurement:any) => {
@@ -231,14 +139,20 @@ export default defineComponent({
         return item.pid === '0'
       })
       datalist = a
-      for (let i = 0; i < a.length; i++) {
-        const b = datalist.map((d:any, id:number) => {
-          const c = Measurement?.filter((item:any) => {
-            return item.pid === d.measureUnitId
+      const findChildren = (list:any) => {
+        for (let i = 0; i < list.length; i++) {
+          const b = list.map((d:any, id:number) => {
+            const c = Measurement?.filter((item:any) => {
+              return item.pid === d.measureUnitId
+            })
+            if (c.length > 0) {
+              findChildren(c) // 采用递归算法进行树的查找
+            }
+            list[id].children = c
           })
-          datalist[id].children = c
-        })
+        }
       }
+      findChildren(datalist)
       MeasurementUnitData.value = datalist
     }
 
@@ -251,14 +165,44 @@ export default defineComponent({
         })
     }
 
+    const handleAdd = () => {
+      measureUnitId.value = ''
+      save_type.value = 'add'
+      drawer.value = true
+    }
+
+    const handleCloseDrawer = () => {
+      drawer.value = false
+    }
+
+    const handleDelete = () => {
+      AxiosApi.delete(`measureUnit/delete?id=${measureUnitId.value}`)
+        .then((res) => {
+          dialogVisible2.value = false
+          success('删除成功！')
+          LoadMeasurementUnit()
+        })
+        .catch((err) => {
+          console.log(err)
+          dialogVisible2.value = false
+          error('删除失败！')
+        })
+    }
+
     onMounted(() => {
       LoadMeasurementUnit()
     })
     return {
-      tableData,
       drawer,
       handleClick,
-      MeasurementUnitData
+      MeasurementUnitData,
+      measureUnitId,
+      LoadMeasurementUnit,
+      handleCloseDrawer,
+      handleAdd,
+      save_type,
+      handleDelete,
+      dialogVisible2
     }
   }
 })

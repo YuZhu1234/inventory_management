@@ -41,8 +41,8 @@
       :page-size="10" 
       background="blue" 
       layout="prev, pager, next" 
-      :total="1000"
-      v-model:currentPage="current_page"
+      :total="total"
+      :currentPage="current_page"
       @current-change="handleCurrentChange"
     >
     </el-pagination>
@@ -97,6 +97,7 @@ export default defineComponent({
     const findType = ref('编码')
     const columnwidth = ref('150px')
     const current_page = ref(1)
+    const total = ref(0)
 
     const onAdd = ():void => {
       type.value = 'add'
@@ -158,6 +159,7 @@ export default defineComponent({
       AxiosApi.get(`customer/list?pageNum=${current_page}&pageSize=10`)
         .then((res:AxiosResponse) => {
           CustomerData.value = res.data.result
+          total.value = res.data.totalNum
         }).catch((err) => {
           console.log(err)
         })
@@ -185,6 +187,7 @@ export default defineComponent({
       customerId.value = customer.customerId
       dialogVisible.value = true
     }
+
     onMounted(() => {
       loadCustomers(1)
     })
@@ -205,7 +208,8 @@ export default defineComponent({
       findType,
       handleDetail,
       columnwidth,
-      handleCurrentChange
+      handleCurrentChange,
+      total
     }
   }
 })
