@@ -6,17 +6,23 @@
             :model="formLabelAligns"
             style="max-width: 460px"
         >
-            <el-form-item label="父级">
-               <el-input v-model="formLabelAligns.pid"></el-input>
-            </el-form-item>
             <el-form-item label="编码">
-                <el-input v-model="formLabelAligns.code"></el-input>
+               <el-input v-model="formLabelAligns.code"></el-input>
             </el-form-item>
             <el-form-item label="名称">
                 <el-input v-model="formLabelAligns.name"></el-input>
             </el-form-item>
-            <el-form-item label="电话">
-               <el-input v-model="formLabelAligns.phone"></el-input>
+            <el-form-item label="分类">
+                <el-input v-model="formLabelAligns.categoryId"></el-input>
+            </el-form-item>
+            <el-form-item label="计量单位">
+               <el-input v-model="formLabelAligns.model"></el-input>
+            </el-form-item>
+            <el-form-item label="销售价格">
+                <el-input v-model="formLabelAligns.model"></el-input>
+            </el-form-item>
+            <el-form-item label="税控编码">
+                <el-input v-model="formLabelAligns.model"></el-input>
             </el-form-item>
             <el-form-item label="是否启用">
                 <el-select v-model="formLabelAligns.isEnabled" class="select">
@@ -70,9 +76,9 @@ import { AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
 
 export default defineComponent({
-  name:'Responsitorylist',
+  name:'Materiallist',
   props: {
-    WarehouseId:{
+    MateriaId:{
       type:String,
       required:true
     },
@@ -84,7 +90,7 @@ export default defineComponent({
       type:Function,
       required:true
     },
-    loadMarehousedata:{
+    loadMateriaData:{
       type:Function,
       required:true  
     }
@@ -94,15 +100,15 @@ export default defineComponent({
       formLabelAligns:{
         createBy: '',
         createTime: null,
-        isBased: null,
         isEnabled: null,
-        warehouseId: '',
+        materialId: '',
         name: '',
         remark:'',
-        pid: '',
         updateBy: '',
         updateTime: null,
-        version: null
+        version: null,
+        categoryId:'',
+        unitId:''
       }
     })
     const dialogVisible = ref(false)
@@ -118,8 +124,8 @@ export default defineComponent({
       ElMessage.error(message)
     }
 
-    const loadMarehouse = () => {
-      AxiosApi.get(`warehouse/find?id=${props.WarehouseId}`)
+    const loadMaterialist = () => {
+      AxiosApi.get(`material/find?id=${props.MateriaId}`)
         .then((res) => {
           formLabelAlign.formLabelAligns = res.data.result
         })
@@ -131,11 +137,11 @@ export default defineComponent({
 
     const handleSave = () => {
       if (props.edit_type === 'edit') {
-        AxiosApi.put('warehouse/update', JSON.stringify(formLabelAlign.formLabelAligns))
+        AxiosApi.put('material/update', JSON.stringify(formLabelAlign.formLabelAligns))
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
-            props.loadMarehousedata()
+            props.loadMateriaData()
             success('修改成功！')
           })
           .catch((err) => {
@@ -145,11 +151,11 @@ export default defineComponent({
             error('修改失败！')
           })
       } else if (props.edit_type === 'add') {
-        AxiosApi.post('warehouse/add', JSON.stringify(formLabelAlign.formLabelAligns))
+        AxiosApi.post('material/add', JSON.stringify(formLabelAlign.formLabelAligns))
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
-            props.loadMarehousedata()
+            props.loadMateriaData()
             success('添加成功！') 
           })
           .catch((err) => {
@@ -163,7 +169,7 @@ export default defineComponent({
 
     onMounted(() => {
       if (props.edit_type === 'edit') {
-        loadMarehouse()
+        loadMaterialist()
       }
     })
     return {

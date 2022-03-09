@@ -16,32 +16,31 @@
             </el-form-item>
        </el-form>
        <div class="header">
-            <el-button type="text" class="header_button"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
+            <el-button type="text" class="header_button" @click="handleAdd"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
             <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
             <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
        </div>
-       <el-table :data="tableData" highlight-current-row="true" border header-row-style="color:black" style="border: 1px solid rgb(245,244,245)">
+       <el-table :data="MateriaData" highlight-current-row="true" border header-row-style="color:black" style="border: 1px solid rgb(245,244,245)">
         <el-table-column fixed type="index" label="#" width="55" />
-        <el-table-column fixed prop="name" label="编码" width="200" />
-        <el-table-column fixed prop="date" label="名称" width="200"/>
-        <el-table-column prop="state" label="分类" width="200" />
-        <el-table-column prop="city" label="规格型号" width="200" />
-        <el-table-column prop="address" label="计量单位" width="200" />
-         <el-table-column prop="city" label="销售价格" width="200" />
-        <el-table-column prop="address" label="税控编码" width="200" />
-        <el-table-column prop="city" label="是否启用" width="200" />
-        <el-table-column prop="address" label="备注" width="200" />
+        <el-table-column fixed prop="code" label="编码" width="200" />
+        <el-table-column fixed prop="name" label="名称" width="200"/>
+        <el-table-column prop="categoryId" label="分类" width="200" />
+        <el-table-column prop="model" label="规格型号" width="200" />
+        <el-table-column prop="model" label="计量单位" width="200" />
+         <el-table-column prop="model" label="销售价格" width="200" />
+        <el-table-column prop="model" label="税控编码" width="200" />
+        <el-table-column prop="isEnabled" label="是否启用" width="200" />
+        <el-table-column prop="remark" label="备注" width="200" />
         <el-table-column fixed="right" label="操作" width="120">
-          <template #default>
-            <el-button type="text" size="small" @click="handleClick"
-              >编辑</el-button
+          <template v-slot="scope">
+            <el-button type="text" size="small" @click="handleClick(scope.row.materialId, 'edit')">编辑</el-button
             >
             <el-divider direction="vertical"></el-divider>
             <el-dropdown>
               <el-button type="text" size="small">更多<el-icon><arrow-down /></el-icon></el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>删除</el-dropdown-item>
+                  <el-dropdown-item @click="handleClick(scope.row.materialId, 'delete')">删除</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -52,6 +51,35 @@
         <el-pagination background="blue" layout="prev, pager, next" :total="1000">
         </el-pagination>
       </template>
+      <el-drawer
+          v-model="drawer"
+          title="编辑"
+          :direction="direction"
+          size="511px"
+          destroy-on-close
+        >
+        <el-divider class="divider"></el-divider>
+          <Materiallist 
+            :MateriaId="MateriaId"
+            :edit_type="edit_type"
+            :handleCloseDrawer="handleCloseDrawer"
+            :loadMateriaData="loadMateriaData"
+          />
+      </el-drawer>
+       <el-dialog
+        v-model="dialogVisible2"
+        title="提示"
+        width="20%"
+        destroy-on-close
+      >
+    <span class="confirm">确定删除此物料数据？</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible2 = false">取消</el-button>
+        <el-button type="primary" @click="handleDelete">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
     </Card>
 </template>
 
@@ -62,22 +90,28 @@ import {
   Search,
   Plus,
   Download,
-  Upload
+  Upload,
+  ArrowDown
 } from '@element-plus/icons-vue'
+import Materiallist from './materiallist.vue'
+import { AxiosApi } from '../../../utils/api'
+import { AxiosResponse } from 'axios'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
-  name:'Material',
+  name:'Materia',
   components:{
-    Refresh,
-    Search,
     Plus,
     Download,
-    Upload
+    Upload,
+    ArrowDown,
+    Materiallist
   },
   setup () {
     const tableData = [
       {
-        date: '2016-05-03',
+        id: 1,
+        date: '1',
         name: 'Tom',
         state: 'California',
         city: 'Los Angeles',
@@ -86,35 +120,114 @@ export default defineComponent({
         tag: 'Home'
       },
       {
-        date: '2016-05-02',
+        id: 2,
+        date: '2',
         name: 'Tom',
         state: 'California',
         city: 'Los Angeles',
         address: 'No. 189, Grove St, Los Angeles',
         zip: 'CA 90036',
-        tag: 'Office'
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Home'
-      },
-      {
-        date: '2016-05-01',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Office'
-      }
+        tag: 'Office',
+        children:[
+          {
+            id: 21,
+            date: '2-1',
+            name: 'Tom',
+            state: 'California',
+            city: 'Los Angeles',
+            address: 'No. 189, Grove St, Los Angeles',
+            zip: 'CA 90036',
+            tag: 'Home'
+          },
+          {
+            id: 22,
+            date: '2-2',
+            name: 'Tom',
+            state: 'California',
+            city: 'Los Angeles',
+            address: 'No. 189, Grove St, Los Angeles',
+            zip: 'CA 90036',
+            tag: 'Office'
+          }
+        ]
+      }   
     ]
+    const MateriaData = ref([{}])
+    const drawer = ref(false)
+    const MateriaId = ref('')
+    const edit_type = ref('')
+    const dialogVisible2 = ref(false)
+
+    const handleClick = (materiaId:string, type:string) :void => {
+      if (type === 'edit') {
+        drawer.value = true
+        MateriaId.value = materiaId
+        edit_type.value = 'edit'
+      } else if (type === 'delete') {
+        dialogVisible2.value = true
+        MateriaId.value = materiaId
+      }
+    }
+
+    const handleCloseDrawer = () => {
+      drawer.value = false
+    }
+
+    const handleAdd = () => {
+      edit_type.value = 'add'
+      drawer.value = true
+    }
+
+    const success = (message:string) => {
+      ElMessage({
+        message: message,
+        type: 'success'
+      })
+    }
+
+    const error = (message:string) => {
+      ElMessage.error(message)
+    }
+
+    const handleDelete = () => {
+      AxiosApi.delete(`material/delete?id=${MateriaId.value}`)
+        .then((res) => {
+          success('删除成功！')
+          dialogVisible2.value = false
+          loadMateriaData()
+        })
+        .catch((err) => {
+          error('删除失败！')
+          dialogVisible2.value = false
+          console.log(err)
+        })
+    }
+
+    const loadMateriaData = () => {
+      AxiosApi.get('material/list')
+        .then((res:AxiosResponse) => {
+          MateriaData.value = res.data.result
+          console.log(res)
+        }).catch((err:any) => {
+          console.log(err)
+          error('获取物料信息失败!')
+        })
+    }
+
+    onMounted(() => {
+      loadMateriaData()
+    })
     return {
-      tableData
+      drawer,
+      handleClick,
+      MateriaData,
+      MateriaId,
+      handleAdd,
+      edit_type,
+      handleCloseDrawer,
+      dialogVisible2,
+      handleDelete,
+      loadMateriaData
     }
   }
 })
@@ -155,6 +268,12 @@ export default defineComponent({
   margin-top: 40px;
   display: flex;
   justify-content: right;
+}
+
+.divider {
+  position: absolute;
+  top: 30px;
+  left: 0px;
 }
 
 </style>
