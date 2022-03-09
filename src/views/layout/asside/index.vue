@@ -36,6 +36,8 @@
           <el-menu-item index="materialclassification" @click="(e)=>historyPush(e)">物料分类</el-menu-item>
           <el-menu-item index="material" @click="(e)=>historyPush(e)">物料</el-menu-item>
           <el-menu-item index="unitofmeasurement" @click="(e)=>historyPush(e)">计量单位</el-menu-item>
+          <el-menu-item index="currency" @click="(e)=>historyPush(e)">币种</el-menu-item>
+          <el-menu-item index="bankaccount" @click="(e)=>historyPush(e)">银行账户</el-menu-item>
         </el-sub-menu>
         <el-menu-item index="5">
           <span><el-icon><timer /></el-icon>系统监控</span>

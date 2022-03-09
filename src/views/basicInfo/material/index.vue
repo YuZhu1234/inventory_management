@@ -10,9 +10,9 @@
             <el-form-item  class="encode" label="物料分类">
                <el-select placeholder="请选择物料分类"></el-select>
             </el-form-item>
-            <el-form-item>
-            <el-button type="primary" class="query"><el-icon><search /></el-icon>&nbsp;查询</el-button>
-            <el-button type="primary" class="query" ><el-icon><refresh /></el-icon>&nbsp;重置</el-button>
+            <el-form-item class="buttongroup">
+              <el-button type="primary" class="button"><el-icon><search /></el-icon>&nbsp;查询</el-button>
+              <el-button type="primary" class="button"><el-icon><refresh /></el-icon>&nbsp;重置</el-button>
             </el-form-item>
        </el-form>
        <div class="header">
@@ -29,7 +29,19 @@
         <el-table-column prop="model" label="计量单位" width="200" />
          <el-table-column prop="model" label="销售价格" width="200" />
         <el-table-column prop="model" label="税控编码" width="200" />
-        <el-table-column prop="isEnabled" label="是否启用" width="200" />
+        <el-table-column prop="isEnabled" label="是否启用" width="200" >
+         <template v-slot="scope">
+            <el-switch
+                v-model="scope.row.isEnabled"
+                class="ml-2"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                :active-value="1"
+                :inactive-value="0"
+                disabled
+            />
+            </template>
+        </el-table-column>
         <el-table-column prop="remark" label="备注" width="200" />
         <el-table-column fixed="right" label="操作" width="120">
           <template v-slot="scope">
@@ -57,14 +69,17 @@
           :direction="direction"
           size="511px"
           destroy-on-close
+          class="el-drawer"
         >
         <el-divider class="divider"></el-divider>
+        <div class="overflowAuto">
           <Materiallist 
             :MateriaId="MateriaId"
             :edit_type="edit_type"
             :handleCloseDrawer="handleCloseDrawer"
             :loadMateriaData="loadMateriaData"
           />
+        </div>
       </el-drawer>
        <el-dialog
         v-model="dialogVisible2"
@@ -105,7 +120,9 @@ export default defineComponent({
     Download,
     Upload,
     ArrowDown,
-    Materiallist
+    Materiallist,
+    Refresh,
+    Search
   },
   setup () {
     const tableData = [
@@ -235,21 +252,18 @@ export default defineComponent({
 
 <style scoped>
 .customer_card {
- position: absolute;
- box-sizing: border-box;
- width: 100%;
- left: 0;
- right: 0;
- padding: 8px 24px;
-}
-
-.encode {
-    margin-right: 100px!important;
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  left: 0;
+  right: 0;
+  padding: 8px 24px;
+  min-width: 1090px;
 }
 
 .demo-form-inline {
-    display: flex;
-    justify-content: left;
+  display: flex;
+  justify-content: space-between;
 }
 
 .header {
@@ -274,6 +288,24 @@ export default defineComponent({
   position: absolute;
   top: 30px;
   left: 0px;
+}
+
+.el-drawer {
+  background: rebeccapurple!important;
+}
+
+.overflowAuto {
+    overflow: scroll;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 100px);
+}
+.overflowAuto::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+.overflowAuto::-webkit-scrollbar-thumb {
+    background: rgb(224, 214, 235);
 }
 
 </style>

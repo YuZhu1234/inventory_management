@@ -183,18 +183,19 @@ export default defineComponent({
 
 <style scoped>
 .root {
-    height: 100%;
-    overflow: scroll;
+  height: 100%;
+  overflow: scroll;
 }
 
 .select {
-    width: 360px;
+  width: 360px;
 }
 
 .footer {
-    margin-top: 60px;
-    padding-right: 95px;
-    display: flex;
-    justify-content: right;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
+
 </style>

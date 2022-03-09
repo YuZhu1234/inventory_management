@@ -220,9 +220,9 @@ export default defineComponent({
 }
 
 .footer {
-    margin-top: 60px;
-    padding-right: 95px;
+    margin-top: 30px;
     display: flex;
-    justify-content: right;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 </style>

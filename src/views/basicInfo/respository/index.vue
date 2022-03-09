@@ -56,12 +56,14 @@
           destroy-on-close
         >
         <el-divider class="divider"></el-divider>
+        <div class="overflowAuto">
           <Responsitorylist 
             :WarehouseId="WarehouseId"
             :edit_type="edit_type"
             :handleCloseDrawer="handleCloseDrawer"
             :loadMarehousedata="loadMarehousedata"
           />
+        </div>
       </el-drawer>
        <el-dialog
         v-model="dialogVisible2"
@@ -205,7 +207,6 @@ export default defineComponent({
       }
       findChildren(datalist)
       Warehousedata.value = datalist
-      console.log(datalist)
     }
 
     const handleDelete = () => {
@@ -282,6 +283,20 @@ export default defineComponent({
   position: absolute;
   top: 30px;
   left: 0px;
+}
+
+.overflowAuto {
+    overflow: scroll;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 100px);
+}
+.overflowAuto::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+.overflowAuto::-webkit-scrollbar-thumb {
+    background: rgb(224, 214, 235);
 }
 
 </style>

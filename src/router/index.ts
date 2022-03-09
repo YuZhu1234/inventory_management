@@ -8,6 +8,8 @@ import Material from '../views/basicInfo/material/index.vue'
 import MaterialClassification from '../views/basicInfo/materialclassification/index.vue'
 import Supplier from '../views/basicInfo/supplier/index.vue'
 import Unitofmeasurement from '../views/basicInfo/unitofmeasurement/index.vue'
+import Currency from '../views/basicInfo/currency/index.vue'
+import BankAccount from '../views/basicInfo/bankaccount/index.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -47,6 +49,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'unitofmeasurement',
         component: Unitofmeasurement
+      },
+      {
+        path: 'currency',
+        component: Currency
+      },
+      {
+        path: 'bankaccount',
+        component: BankAccount
       }
     ]
   }

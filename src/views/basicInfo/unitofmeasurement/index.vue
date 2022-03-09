@@ -52,16 +52,18 @@
           v-model="drawer"
           title="编辑"
           :direction="direction"
-          size="511px"
           destroy-on-close
+          size="511px"
         >
         <el-divider class="divider"></el-divider>
+        <div class="overflowAuto">
           <unitofmeasurementlist 
             :measureUnitId="measureUnitId" 
             :LoadMeasurementUnit="LoadMeasurementUnit" 
             :handleCloseDrawer="handleCloseDrawer"
             :save_type="save_type"
           />
+        </div>
       </el-drawer>
       <el-dialog
         v-model="dialogVisible2"
@@ -136,7 +138,7 @@ export default defineComponent({
     const handleMeasurementUnit = (Measurement:any) => {
       let datalist:any[] = []
       const a = Measurement?.filter((item:any) => {
-        return item.pid === '0'
+        return item.pid === 0
       })
       datalist = a
       const findChildren = (list:any) => {
@@ -222,6 +224,20 @@ export default defineComponent({
   display: flex;
   justify-content: left;
   margin-bottom: 20px;
+}
+
+.overflowAuto {
+    overflow: scroll;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 100px);
+}
+.overflowAuto::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+.overflowAuto::-webkit-scrollbar-thumb {
+    background: rgb(224, 214, 235);
 }
 
 .header_button {
