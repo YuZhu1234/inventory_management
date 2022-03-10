@@ -24,11 +24,9 @@
         <el-table-column fixed type="index" label="#" width="55" />
         <el-table-column fixed prop="code" label="编码" width="200" />
         <el-table-column fixed prop="name" label="名称" width="200"/>
-        <el-table-column prop="categoryId" label="分类" width="200" />
+        <el-table-column prop="categoryName" label="分类" width="200" />
         <el-table-column prop="model" label="规格型号" width="200" />
-        <el-table-column prop="model" label="计量单位" width="200" />
-         <el-table-column prop="model" label="销售价格" width="200" />
-        <el-table-column prop="model" label="税控编码" width="200" />
+        <el-table-column prop="unitName" label="计量单位" width="200" />
         <el-table-column prop="isEnabled" label="是否启用" width="200" >
          <template v-slot="scope">
             <el-switch

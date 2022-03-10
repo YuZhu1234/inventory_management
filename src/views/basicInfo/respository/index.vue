@@ -12,7 +12,7 @@
       row-key="warehouseId"
     >
        <el-table-column fixed type="selection" sortable width="55" />
-        <el-table-column fixed prop="name" sortable label="名称" width="150"/>
+        <el-table-column fixed prop="name" sortable label="名称" width="300"/>
         <el-table-column fixed prop="code" sortable label="编码" width="300" />
         <el-table-column prop="phone" label="电话" sortable width="300" />
         <el-table-column prop="isEnabled" label="是否启用" sortable width="120" >
@@ -189,7 +189,7 @@ export default defineComponent({
     const handleWarehouse = (Warehouse:any) => {
       let datalist:any[] = []
       const a = Warehouse?.filter((item:any) => {
-        return item.pid === '0'
+        return item.pid === 0
       })
       datalist = a
       const findChildren = (list:any) => {

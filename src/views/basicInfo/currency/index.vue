@@ -11,10 +11,10 @@
       highlight-current-row="true"
       border
     >
-       <el-table-column fixed type="index" label="#" width="55" />
-        <el-table-column fixed prop="code"  label="代码" width="150"/>
-        <el-table-column prop="name"  label="名称" width="150" />
-        <el-table-column prop="isFunctional" label="是否本币"  width="150" >
+       <el-table-column fixed type="index" label="#" />
+        <el-table-column fixed prop="code"  label="代码" />
+        <el-table-column prop="name"  label="名称"  />
+        <el-table-column prop="isFunctional" label="是否本币"  >
          <template v-slot="scope">
             <el-switch
                 v-model="scope.row.isFunctional"
@@ -27,7 +27,7 @@
             />
             </template>
         </el-table-column>
-        <el-table-column prop="isEnabled" label="是否启用"  width="120" >
+        <el-table-column prop="isEnabled" label="是否启用"  >
             <template v-slot="scope">
             <el-switch
                 v-model="scope.row.isEnabled"
@@ -40,7 +40,7 @@
             />
             </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" sortable width="120">
+        <el-table-column fixed="right" label="操作" sortable >
           <template v-slot="scope">
             <el-button type="text" size="small" @click="handleClick(scope.row.currencyId,'edit')">编辑</el-button>
             <el-divider direction="vertical"></el-divider>
@@ -286,7 +286,9 @@ export default defineComponent({
 
 .table {
     border: 1px solid rgb(245,244,245);
-    width: 850px;
+    /* width: 850px;
+    left: 50%;
+    margin-left: -425px; */
 }
 
 </style>

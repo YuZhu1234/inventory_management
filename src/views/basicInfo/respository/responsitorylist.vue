@@ -7,9 +7,14 @@
             style="max-width: 460px"
         >
             <el-form-item label="父级">
-               <el-input v-model="formLabelAligns.pid"></el-input>
+               <el-select v-model="formLabelAligns.pid" class="select" placeholder="请选择">
+                    <el-option label="请选择" :value="0"></el-option>
+                    <div v-for="item in Warehousedata" :key="item.warehouseId">
+                        <el-option :label="item.name" :value="item.warehouseId"></el-option>
+                    </div>
+                </el-select>
             </el-form-item>
-            <el-form-item label="编码">
+            <el-form-item label="编码" required>
                 <el-input v-model="formLabelAligns.code"></el-input>
             </el-form-item>
             <el-form-item label="名称">
@@ -18,7 +23,7 @@
             <el-form-item label="电话">
                <el-input v-model="formLabelAligns.phone"></el-input>
             </el-form-item>
-            <el-form-item label="是否启用">
+            <el-form-item label="是否启用" required>
                 <el-select v-model="formLabelAligns.isEnabled" class="select">
                    <el-option label="启用" :value='1' ></el-option>
                    <el-option label="禁用" :value='0' ></el-option>
@@ -106,6 +111,7 @@ export default defineComponent({
       }
     })
     const dialogVisible = ref(false)
+    const Warehousedata = ref([{}])
 
     const success = (message:string) => {
       ElMessage({
@@ -161,15 +167,27 @@ export default defineComponent({
       }
     }
 
+    const loadMarehousedata = () => {
+      AxiosApi.get('warehouse/list')
+        .then((res:AxiosResponse) => {
+          Warehousedata.value = res.data.result
+        }).catch((err) => {
+          console.log(err)
+          error('获取仓库信息失败!')
+        })
+    }
+
     onMounted(() => {
       if (props.edit_type === 'edit') {
         loadMarehouse()
       }
+      loadMarehousedata()
     })
     return {
       ...toRefs(formLabelAlign),
       handleSave,
-      dialogVisible
+      dialogVisible,
+      Warehousedata
     }
   }
 })

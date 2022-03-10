@@ -6,7 +6,7 @@
             <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
        </div>
        <el-table 
-         :data="materialClassificationData" 
+         :data="materialClassificationData"
          highlight-current-row="true" 
          header-row-style="color:black" 
          style="border: 1px solid rgb(245,244,245); max-width:1690px"
@@ -37,7 +37,7 @@
               <el-button type="text" size="small">更多<el-icon><arrow-down /></el-icon></el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>添加下级</el-dropdown-item>
+                  <el-dropdown-item @click="handleClick(scope.row.materialCategoryId, 'subordinate')">添加下级</el-dropdown-item>
                   <el-dropdown-item @click="handleClick(scope.row.materialCategoryId, 'delete')">删除</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -108,14 +108,6 @@ export default defineComponent({
     MateriaClassificationlist
   },
   setup () {
-    const tableData = [
-      {
-        name: '甲醇',
-        code: 'TomUs',
-        fullname: '',
-        state: '是'
-      }
-    ]
     const materialClassificationData = ref([{}])
     const MaterialCategoryId = ref('')
     const drawer = ref(false)
@@ -144,6 +136,10 @@ export default defineComponent({
       } else if (type === 'add') {
         MaterialCategoryId.value = ''
         edit_type.value = 'add'
+        drawer.value = true
+      } else if (type === 'subordinate') {
+        MaterialCategoryId.value = materialCategoryId
+        edit_type.value = 'subordinate'
         drawer.value = true
       }
     }
@@ -187,7 +183,6 @@ export default defineComponent({
       }
       findChildren(datalist)
       materialClassificationData.value = datalist
-      console.log(datalist)
     }
 
     const loadMarehousedata = () => {
@@ -211,7 +206,8 @@ export default defineComponent({
       handleDelete,
       edit_type,
       handleCloseDrawer,
-      MaterialCategoryId
+      MaterialCategoryId,
+      loadMarehousedata
     }
   }
 })

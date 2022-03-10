@@ -66,7 +66,7 @@
   </template>
   <el-dialog
     v-model="dialogVisible"
-    title="客户-详情"
+    title="供应商-详情"
     width="1000px"
     destroy-on-close
   >

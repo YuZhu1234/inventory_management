@@ -10,9 +10,9 @@
       style="border: 1px solid rgb(245,244,245)"
       highlight-current-row="true"
     >
-       <el-table-column fixed type="selection" width="55" />
-        <el-table-column fixed prop="bankAccountId"  label="账号" width="150"/>
-        <el-table-column prop="name"  label="账户名称" width="300" />
+       <el-table-column fixed type="index" label="#" width="55" />
+        <el-table-column fixed prop="accountNo"  label="账号" width="300"/>
+        <el-table-column fixed prop="name"  label="账户名称" width="300" />
         <el-table-column prop="currency" label="币种"  width="300" />
         <el-table-column prop="initBal"  label="初始余额" width="150"/>
         <el-table-column prop="bankNo"  label="行号" width="300" />
@@ -31,7 +31,7 @@
             />
             </template>
         </el-table-column>
-        <el-table-column prop="note" label="备注" width="600" />
+        <el-table-column prop="note" label="备注" width="300" />
         <el-table-column fixed="right" label="操作" sortable width="120">
           <template v-slot="scope">
             <el-button type="text" size="small" @click="handleClick(scope.row.bankAccountId,'edit')">编辑</el-button>

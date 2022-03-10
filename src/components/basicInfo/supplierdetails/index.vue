@@ -29,7 +29,7 @@
       </el-select>
     </el-form-item>
     <el-form-item label="供应商地址" :label-width=LabeWidth>
-      <el-input v-model="SupplierDetails.address" placeholder="请输入法人电话"></el-input>
+      <el-input v-model="SupplierDetails.address" placeholder="请输入供应商地址"></el-input>
     </el-form-item>
    </el-form>
 
@@ -53,7 +53,7 @@
 
    <el-form :inline="true" class="demo-form-inline">
     <el-form-item label="网站" :label-width=LabeWidth>
-      <el-input v-model="SupplierDetails.website" placeholder="请输入客户网站"></el-input>
+      <el-input v-model="SupplierDetails.website" placeholder="请输入供应商网站"></el-input>
     </el-form-item>
     <el-form-item label="法人代表" :label-width=LabeWidth>
       <el-input v-model="SupplierDetails.corporate" placeholder="请输入法人代表"></el-input>

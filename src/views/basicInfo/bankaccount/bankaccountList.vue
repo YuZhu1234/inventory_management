@@ -6,16 +6,21 @@
             :model="formLabelAligns"
             style="max-width: 460px"
         >
-            <el-form-item label="账号">
+            <el-form-item label="账号" required>
                <el-input v-model="formLabelAligns.accountNo"></el-input>
             </el-form-item>
             <el-form-item label="账户名称">
                 <el-input v-model="formLabelAligns.name"></el-input>
             </el-form-item>
-            <el-form-item label="币种">
-                <el-input v-model="formLabelAligns.currency"></el-input>
+            <el-form-item label="币种" required>
+                 <el-select v-model="formLabelAligns.currency" class="select" placeholder="请选择">
+                    <el-option label="请选择" :value="0"></el-option>
+                    <div v-for="(item, index) in CurrencyData" :key="index">
+                        <el-option :label="item.name" :value="item.code"></el-option>
+                    </div>
+                </el-select>
             </el-form-item>
-            <el-form-item label="初始余额">
+            <el-form-item label="初始余额" required>
                <el-input v-model="formLabelAligns.initBal"></el-input>
             </el-form-item>
             <el-form-item label="行号">
@@ -33,7 +38,7 @@
             <el-form-item label="附件">
                 <el-input v-model="formLabelAligns.attachment"></el-input>
             </el-form-item>
-            <el-form-item label="是否启用">
+            <el-form-item label="是否启用" required>
                 <el-select v-model="formLabelAligns.isEnabled" class="select">
                    <el-option label="启用" :value='1' ></el-option>
                    <el-option label="禁用" :value='0' ></el-option>
@@ -101,20 +106,26 @@ export default defineComponent({
   setup (props, context) {
     const formLabelAlign = reactive({
       formLabelAligns:{
+        accountNo: '',
+        attachment: null,
+        bankAccountId: null,
+        bankAddress: null,
+        bankNo: '',
         createBy: '',
-        createTime: null,
-        isBased: null,
-        isEnabled: null,
-        warehouseId: '',
+        createTime: '',
+        currency: '',
+        initBal: 0,
+        isEnabled: 1,
+        manager: '',
         name: '',
-        remark:'',
-        pid: '',
-        updateBy: '',
-        updateTime: null,
+        note: null,
+        updateBy: 'test',
+        updateTime: '',
         version: null
       }
     })
     const dialogVisible = ref(false)
+    const CurrencyData = ref([{}])
 
     const success = (message:string) => {
       ElMessage({
@@ -135,6 +146,16 @@ export default defineComponent({
         .catch((err) => {
           console.log(err)
           error('获取仓库信息失败！')
+        })
+    }
+
+    const LoadCurrrencyData = () => {
+      AxiosApi.get('currency/list')
+        .then((res:AxiosResponse) => {
+          CurrencyData.value = res.data.result
+        }).catch((err) => {
+          console.log(err)
+          error('获取币种信息失败!')
         })
     }
 
@@ -174,11 +195,13 @@ export default defineComponent({
       if (props.edit_type === 'edit') {
         loadMarehouse()
       }
+      LoadCurrrencyData()
     })
     return {
       ...toRefs(formLabelAlign),
       handleSave,
-      dialogVisible
+      dialogVisible,
+      CurrencyData
     }
   }
 })

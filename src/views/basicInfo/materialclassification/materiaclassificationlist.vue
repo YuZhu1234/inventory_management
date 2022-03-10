@@ -7,23 +7,23 @@
             style="max-width: 460px"
         >
             <el-form-item label="父节点">
-                <el-select v-model="formLabelAligns.pid" class="select" placeholder="请选择">
+                <el-select v-model="formLabelAligns.pid" class="select" placeholder="请选择" :disabled="disabled">
                     <el-option label="请选择" :value="0"></el-option>
                     <div v-for="item in ClassificationList" :key="item.materialCategoryId">
                         <el-option :label="item.name" :value="item.materialCategoryId"></el-option>
                     </div>
                 </el-select>
             </el-form-item>
-            <el-form-item label="名称">
+            <el-form-item label="名称" required>
                 <el-input v-model="formLabelAligns.name"></el-input>
             </el-form-item>
-            <el-form-item label="编码">
+            <el-form-item label="编码" re >
                 <el-input v-model="formLabelAligns.code"></el-input>
             </el-form-item>
             <el-form-item label="全名">
                <el-input v-model="formLabelAligns.fullname"></el-input>
             </el-form-item>
-            <el-form-item label="是否启用">
+            <el-form-item label="是否启用" required>
                 <el-select v-model="formLabelAligns.isEnabled" class="select">
                    <el-option label="启用" :value='1' ></el-option>
                    <el-option label="禁用" :value='0' ></el-option>
@@ -78,7 +78,7 @@ export default defineComponent({
   name:'MateriaClassificationlist',
   props: {
     MaterialCategoryId:{
-      type:String,
+      type:Number,
       required:true
     },
     edit_type:{
@@ -100,7 +100,7 @@ export default defineComponent({
         createBy: '',
         createTime: null,
         isEnabled: null,
-        materialCategoryId: '',
+        materialCategoryId: null,
         name: '',
         updateBy: '',
         updateTime: null,
@@ -113,6 +113,7 @@ export default defineComponent({
     })
     const dialogVisible = ref(false)
     const ClassificationList = ref([{}])
+    const disabled = ref(false)
 
     const success = (message:string) => {
       ElMessage({
@@ -140,19 +141,8 @@ export default defineComponent({
             props.handleCloseDrawer()
             error('修改失败！')
           })
-      } else if (props.edit_type === 'add') {
-        const data = {
-          code: formLabelAlign.formLabelAligns.code,
-          createBy: 'test',
-          fullname: formLabelAlign.formLabelAligns.fullname,
-          isEnabled: formLabelAlign.formLabelAligns.isEnabled,
-          materialCategoryId: formLabelAlign.formLabelAligns.materialCategoryId,
-          name: formLabelAlign.formLabelAligns.name,
-          pid: formLabelAlign.formLabelAligns.pid,
-          updateBy: formLabelAlign.formLabelAligns.updateBy,
-          version: formLabelAlign.formLabelAligns.version
-        }
-        AxiosApi.put('materialCategory/add', JSON.stringify(data))
+      } else if (props.edit_type === 'add' || props.edit_type === 'subordinate') {
+        AxiosApi.post('materialCategory/add', JSON.stringify(formLabelAlign.formLabelAligns))
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
@@ -192,6 +182,9 @@ export default defineComponent({
     onMounted(() => {
       if (props.edit_type === 'edit') {
         loadMaterialist()
+      } else if (props.edit_type === 'subordinate') {
+        formLabelAlign.formLabelAligns.pid = props.MaterialCategoryId
+        disabled.value = true
       }
       LoadMaterialClassificationlist()
     })
@@ -199,7 +192,8 @@ export default defineComponent({
       ...toRefs(formLabelAlign),
       handleSave,
       dialogVisible,
-      ClassificationList
+      ClassificationList,
+      disabled
     }
   }
 })

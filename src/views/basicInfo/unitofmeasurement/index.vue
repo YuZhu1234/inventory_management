@@ -12,11 +12,11 @@
       highlight-current-row="true"
       row-key="measureUnitId"
     >
-       <el-table-column type="selection" sortable width="55" />
-        <el-table-column fixed prop="name" sortable label="名称" width="600"/>
-        <el-table-column  prop="symbol" sortable label="符号" width="200" />
-        <el-table-column prop="factor" label="换算系数" sortable width="200" />
-        <el-table-column prop="isEnabled" label="是否启用" sortable width="200" >
+       <el-table-column type="selection" sortable  />
+        <el-table-column prop="name" sortable label="名称"/>
+        <el-table-column  prop="symbol" sortable label="符号" />
+        <el-table-column prop="factor" label="换算系数" sortable />
+        <el-table-column prop="isEnabled" label="是否启用" sortable >
            <template v-slot="scope">
             <el-switch
                 v-model="scope.row.isEnabled"

@@ -6,26 +6,33 @@
             :model="formLabelAligns"
             style="max-width: 460px"
         >
-            <el-form-item label="编码">
+            <el-form-item label="编码" required>
                <el-input v-model="formLabelAligns.code"></el-input>
             </el-form-item>
-            <el-form-item label="名称">
+            <el-form-item label="名称" required>
                 <el-input v-model="formLabelAligns.name"></el-input>
             </el-form-item>
-            <el-form-item label="分类">
-                <el-input v-model="formLabelAligns.categoryId"></el-input>
+            <el-form-item label="分类" required>
+                <el-select v-model="formLabelAligns.categoryId" class="select" placeholder="请选择">
+                    <el-option label="请选择" :value="0"></el-option>
+                    <div v-for="(item, index) in materialClassificationData" :key="index">
+                        <el-option :label="item.name" :value="item.materialCategoryId"></el-option>
+                    </div>
+                </el-select>
             </el-form-item>
-            <el-form-item label="计量单位">
-               <el-input v-model="formLabelAligns.model"></el-input>
-            </el-form-item>
-            <el-form-item label="销售价格">
+             <el-form-item label="规格型号">
                 <el-input v-model="formLabelAligns.model"></el-input>
             </el-form-item>
-            <el-form-item label="税控编码">
-                <el-input v-model="formLabelAligns.model"></el-input>
+            <el-form-item label="计量单位" required>
+               <el-select v-model="formLabelAligns.unitId" class="select" placeholder="请选择">
+                    <el-option label="请选择" :value="0"></el-option>
+                    <div v-for="(item, index) in MeasurementUnitData" :key="index">
+                        <el-option :label="item.name" :value="item.measureUnitId"></el-option>
+                    </div>
+                </el-select>
             </el-form-item>
-            <el-form-item label="是否启用">
-                <el-select v-model="formLabelAligns.isEnabled" class="select">
+            <el-form-item label="是否启用" required>
+                <el-select v-model="formLabelAligns.isEnabled" class="select" placeholder="请选择">
                    <el-option label="启用" :value='1' ></el-option>
                    <el-option label="禁用" :value='0' ></el-option>
                 </el-select>
@@ -107,11 +114,17 @@ export default defineComponent({
         updateBy: '',
         updateTime: null,
         version: null,
-        categoryId:'',
-        unitId:''
+        categoryId: 0,
+        categoryName:'',
+        unitId:0,
+        unitName:'',
+        code:'',
+        model:''
       }
     })
     const dialogVisible = ref(false)
+    const MeasurementUnitData = ref([{}])
+    const materialClassificationData = ref([{}])
 
     const success = (message:string) => {
       ElMessage({
@@ -151,7 +164,22 @@ export default defineComponent({
             error('修改失败！')
           })
       } else if (props.edit_type === 'add') {
-        AxiosApi.post('material/add', JSON.stringify(formLabelAlign.formLabelAligns))
+        const data = {
+          code: formLabelAlign.formLabelAligns.code,
+          createBy: 'test',
+          categoryId:formLabelAlign.formLabelAligns.categoryId,
+          categoryName: '',
+          isEnabled: formLabelAlign.formLabelAligns.isEnabled,
+          materialId: 0,
+          model:formLabelAlign.formLabelAligns.model,
+          name: formLabelAlign.formLabelAligns.name,
+          remark: formLabelAlign.formLabelAligns.remark,
+          unitId:formLabelAlign.formLabelAligns.unitId,
+          unitName:'s',
+          updateBy: formLabelAlign.formLabelAligns.updateBy,
+          version: 0
+        }
+        AxiosApi.post('material/add', JSON.stringify(data))
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
@@ -167,15 +195,38 @@ export default defineComponent({
       }
     }
 
+    const LoadMeasurementUnitlist = () => {
+      AxiosApi.get('measureUnit/list')
+        .then((res:AxiosResponse) => {
+          MeasurementUnitData.value = res.data.result
+        }).catch((err) => {
+          console.log(err)
+        })
+    }
+
+    const loadMarehousedata = () => {
+      AxiosApi.get('materialCategory/list')
+        .then((res:AxiosResponse) => {
+          materialClassificationData.value = res.data.result
+        }).catch((err) => {
+          console.log(err)
+          error('获取物料分类信息失败!')
+        })
+    }
+
     onMounted(() => {
       if (props.edit_type === 'edit') {
         loadMaterialist()
       }
+      LoadMeasurementUnitlist()
+      loadMarehousedata()
     })
     return {
       ...toRefs(formLabelAlign),
       handleSave,
-      dialogVisible
+      dialogVisible,
+      MeasurementUnitData,
+      materialClassificationData
     }
   }
 })

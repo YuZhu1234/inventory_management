@@ -14,7 +14,7 @@
             </el-form-item>
             <el-form-item label="基准单位">
                 <el-select v-model="formLabelAligns.pid" class="select" placeholder="请选择">
-                    <el-option label="请选择" value="0"></el-option>
+                    <el-option label="无" :value="0"></el-option>
                     <div v-for="item in MeasurementUnitData" :key="item.measureUnitId">
                         <el-option :label="item.name" :value="item.measureUnitId"></el-option>
                     </div>
@@ -101,7 +101,7 @@ export default defineComponent({
         isEnabled: null,
         measureUnitId: '',
         name: '',
-        pid: '',
+        pid: null,
         symbol: '',
         updateBy: '',
         updateTime: null,
@@ -150,19 +150,19 @@ export default defineComponent({
             error('修改失败！')
           })
       } else if (props.save_type === 'add') {
-        // const data = {
-        //   'createBy': 'test',
-        //   'factor': 0,
-        //   'isBased': 0,
-        //   'isEnabled': 0,
-        //   'measureUnitId': formLabelAlign.formLabelAligns.ersion,
-        //   'name': formLabelAlign.formLabelAligns.name,
-        //   'pid': 'string',
-        //   'symbol': formLabelAlign.formLabelAligns.symbol,
-        //   'updateBy': 'test',
-        //   'version': formLabelAlign.formLabelAligns.version
-        // }      
-        AxiosApi.put('measureUnit/add', JSON.stringify(formLabelAlign.formLabelAligns))
+        const data = {
+          createBy: 'test',
+          factor: formLabelAlign.formLabelAligns.factor,
+          isBased: 0,
+          isEnabled: formLabelAlign.formLabelAligns.isEnabled,
+          measureUnitId: 0,
+          name: formLabelAlign.formLabelAligns.name,
+          pid: formLabelAlign.formLabelAligns.pid,
+          symbol: formLabelAlign.formLabelAligns.symbol,
+          updateBy: 'test',
+          version: 0
+        }      
+        AxiosApi.post('measureUnit/add', JSON.stringify(data))
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false

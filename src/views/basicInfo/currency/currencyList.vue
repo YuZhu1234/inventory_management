@@ -6,19 +6,19 @@
             :model="formLabelAligns"
             style="max-width: 460px"
         >
-            <el-form-item label="代码">
+            <el-form-item label="代码" required>
                <el-input v-model="formLabelAligns.code"></el-input>
             </el-form-item>
-            <el-form-item label="名称">
+            <el-form-item label="名称" required>
                 <el-input v-model="formLabelAligns.name"></el-input>
             </el-form-item>
-            <el-form-item label="是否本币">
+            <el-form-item label="是否本币" required>
                 <el-select v-model="formLabelAligns.isFunctional" class="select">
                    <el-option label="是" :value='1' ></el-option>
                    <el-option label="否" :value='0' ></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="是否启用">
+            <el-form-item label="是否启用" required>
                 <el-select v-model="formLabelAligns.isEnabled" class="select">
                    <el-option label="启用" :value='1' ></el-option>
                    <el-option label="禁用" :value='0' ></el-option>
@@ -98,7 +98,8 @@ export default defineComponent({
         exchangeRate: '',
         updateBy: '',
         updateTime: null,
-        version: null
+        version: null,
+        code:''
       }
     })
     const dialogVisible = ref(false)
@@ -141,7 +142,18 @@ export default defineComponent({
             error('修改失败！')
           })
       } else if (props.edit_type === 'add') {
-        AxiosApi.post('currency/add', JSON.stringify(formLabelAlign.formLabelAligns))
+        const data = {
+          code: formLabelAlign.formLabelAligns.code,
+          createBy: 'test',
+          currencyId: 0,
+          exchangeRate: formLabelAlign.formLabelAligns.exchangeRate,
+          isEnabled: formLabelAlign.formLabelAligns.isEnabled,
+          isFunctional: formLabelAlign.formLabelAligns.isFunctional,
+          name: formLabelAlign.formLabelAligns.name,
+          updateBy: 'test',
+          version: 0
+        }
+        AxiosApi.post('currency/add', JSON.stringify(data))
           .then((res:AxiosResponse) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
