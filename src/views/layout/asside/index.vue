@@ -17,8 +17,21 @@
           <template #title>
           <span class="tittle"><el-icon><list /></el-icon>库存管理</span>
           </template>
-          <el-menu-item index="2-1" @click="(e)=>historyPush(e)">入库管理</el-menu-item>
-          <el-menu-item index="2-2">出库管理</el-menu-item>
+          <el-sub-menu index="2-1">
+            <template #title>入库管理</template>
+            <el-menu-item index="purchasewarehousing" @click="(e)=>historyPush(e)">采购入库</el-menu-item>
+            <el-menu-item index="purchasereturnissue" @click="(e)=>historyPush(e)">采购退货出库</el-menu-item>
+            <el-menu-item index="inventorygainwarehousing" @click="(e)=>historyPush(e)">盘盈入库</el-menu-item>
+            <el-menu-item index="saturationofstackroom" @click="(e)=>historyPush(e)">涨库入库</el-menu-item>
+            <el-menu-item index="otherwarehousing" @click="(e)=>historyPush(e)">其他入库</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="2-2">
+            <template #title>出库管理</template>
+            <el-menu-item index="salesdelivery" @click="(e)=>historyPush(e)">销售出库</el-menu-item>
+            <el-menu-item index="salesreturnreceipt" @click="(e)=>historyPush(e)">销售退货入库</el-menu-item>
+            <el-menu-item index="inventorylossdelivery" @click="(e)=>historyPush(e)">盘亏入库</el-menu-item>
+            <el-menu-item index="otherdelivery" @click="(e)=>historyPush(e)">其他出库</el-menu-item>
+          </el-sub-menu>
           <el-menu-item index="2-3">库存调拨</el-menu-item>
           <el-menu-item index="2-4">库存盘点</el-menu-item>
           <el-menu-item index="2-5">实时库存</el-menu-item>

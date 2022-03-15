@@ -1,5 +1,5 @@
 <template>
-    <Card class="customer_card">
+    <Card class="customer_card" v-loading="loading">
       <el-form :inline="true" class="demo-form-inline">
        <el-form-item label="名称" class="encode">
         <el-select placeholder="请选择查找类型" v-model="findType">
@@ -98,6 +98,7 @@ export default defineComponent({
     const columnwidth = ref('150px')
     const current_page = ref(1)
     const total = ref(0)
+    const loading = ref(false)
 
     const onAdd = ():void => {
       type.value = 'add'
@@ -156,12 +157,15 @@ export default defineComponent({
     }
 
     const loadCustomers = (current_page:number) :void => {
+      loading.value = true
       AxiosApi.get(`customer/list?pageNum=${current_page}&pageSize=10`)
         .then((res:AxiosResponse) => {
           CustomerData.value = res.data.result
           total.value = res.data.totalNum
+          loading.value = false
         }).catch((err) => {
           console.log(err)
+          loading.value = false
         })
     }
 
@@ -171,14 +175,17 @@ export default defineComponent({
     }
 
     const handledetele = () :void => {
+      loading.value = true
       AxiosApi.delete(`customer/delete?id=${deleteID.value}`)
         .then((res) => {
           loadCustomers(current_page.value)
           dialogVisible2.value = false
           success('删除成功！')
-        }).catch((err) => {
+          loading.value = false
+        }).catch((err:any) => {
           console.log(err)
           error('删除失败！')
+          loading.value = false
         })
     }
 
@@ -209,7 +216,8 @@ export default defineComponent({
       handleDetail,
       columnwidth,
       handleCurrentChange,
-      total
+      total,
+      loading
     }
   }
 })
