@@ -19,67 +19,103 @@
       </el-form-item>
     </el-form>
     <div class="header">
-        <el-button type="text" class="header_button" @click="handleAdd"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
+        <el-button type="text" class="header_button" @click="handleClick('','add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
         <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
         <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
-        <span class="text">已选择<span style="color:rgb(53,137,255);margin-left:10px;margin-right:10px;font-weight:bold;">0</span>项 </span>
+        <span class="text">已选择<span style="color:rgb(53,137,255);margin-left:10px;margin-right:10px;font-weight:bold;">{{selectNum}}</span>项 </span>
         <el-button type="text" class="header_button">清空</el-button>
     </div>
-    <el-table :data="MateriaData" highlight-current-row="true" border header-row-style="color:black" style="border: 1px solid rgb(245,244,245)">
-        <el-table-column fixed type="selection" sortable width="55" />
-        <el-table-column fixed type="index" label="#" width="55" />
-        <el-table-column fixed prop="code" label="单据编号" width="200" />
-        <el-table-column prop="name" label="单据日期" width="200"/>
-        <el-table-column prop="categoryName" label="源单号" width="200" />
-        <el-table-column prop="model" label="制单人" width="200" />
-        <el-table-column prop="unitName" label="业务员" width="200" />
-        <el-table-column prop="isEnabled" label="供应商" width="200" >
-         <template v-slot="scope">
+    <el-table 
+      :data="PurchaseWarehousinglist" 
+      highlight-current-row="true" 
+      border 
+      header-row-style="color:black" 
+      style="border: 1px solid rgb(245,244,245)"
+      @selection-change="handleSelectionChange"
+      >
+        <el-table-column align='center' fixed type="selection" sortable width="55" />
+        <el-table-column align='center' fixed type="index" label="#" width="55" />
+        <el-table-column align='center' fixed prop="billNo" label="单据编号" width="200" />
+        <el-table-column align='center' prop="billDate" label="单据日期" width="200"/>
+        <el-table-column align='center' prop="sourceNo" label="源单号" width="200" />
+        <el-table-column align='center' prop="createBy" label="制单人" width="200" />
+        <el-table-column align='center' prop="clerkId" label="业务员" width="200" />
+        <el-table-column align='center' prop="supplierName" label="供应商" width="200" />
+        <el-table-column align='center' prop="isApproved" label="是否通过" width="200" >
+          <template v-slot="scope">
             <el-switch
-                v-model="scope.row.isEnabled"
+                v-model="scope.row.isApproved"
                 class="ml-2"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
-                :active-value="1"
-                :inactive-value="0"
+                active-value="1"
+                inactive-value="0"
                 disabled
             />
             </template>
         </el-table-column>
-        <el-table-column prop="code" label="是否通过" width="200" />
-        <el-table-column prop="name" label="是否关闭" width="200"/>
-        <el-table-column prop="categoryName" label="是否作废" width="200" />
-        <el-table-column prop="model" label="备注" width="200" />
-        <el-table-column prop="unitName" label="生效时间" width="200" />
-        <el-table-column prop="remark" label="审核人" width="200" />
-        <el-table-column prop="code" label="是否通过" width="200" />
-        <el-table-column prop="name" label="是否关闭" width="200"/>
-        <el-table-column prop="categoryName" label="是否作废" width="200" />
-        <el-table-column prop="model" label="流程" width="200" />
-        <el-table-column prop="unitName" label="创建时间" width="200" />
-        <el-table-column prop="remark" label="创建部门" width="200" />
-        <el-table-column prop="unitName" label="修改时间" width="200" />
-        <el-table-column prop="remark" label="修改人" width="200" />
-        <el-table-column fixed="right" label="操作" width="120">
+        <el-table-column align='center' prop="isClosed" label="是否关闭" width="200">
+           <template v-slot="scope">
+            <el-switch
+                v-model="scope.row.isClosed"
+                class="ml-2"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                active-value="1"
+                inactive-value="0"
+                disabled
+            />
+            </template>
+        </el-table-column>
+        <el-table-column align='center' prop="isVoided" label="是否作废" width="200" >
+           <template v-slot="scope">
+            <el-switch
+                v-model="scope.row.isVoided"
+                class="ml-2"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                active-value="1"
+                inactive-value="0"
+                disabled
+            />
+            </template>
+        </el-table-column>
+        <el-table-column align='center' prop="remark" label="备注" width="200" />
+        <el-table-column align='center' prop="effectiveTime" label="生效时间" width="200" />
+        <el-table-column align='center' prop="approverId" label="审核人" width="200" />
+        <el-table-column align='center' prop="flowId" label="流程" width="200" />
+        <el-table-column align='center' prop="createTime" label="创建时间" width="200" />
+        <el-table-column align='center' prop="sysOrgCode" label="创建部门" width="200" />
+        <el-table-column align='center' prop="updateTime" label="修改时间" width="200" />
+        <el-table-column align='center' prop="updateBy" label="修改人" width="200" />
+        <el-table-column align='center' fixed="right" label="操作" width="120">
           <template v-slot="scope">
-            <el-button type="text" size="small" @click="handleClick(scope.row.materialId, 'edit')">编辑</el-button
+            <el-button type="text" size="small" @click="handleClick(scope.row.billNo, 'edit')">编辑</el-button
             >
             <el-divider direction="vertical"></el-divider>
             <el-dropdown>
               <el-button type="text" size="small">更多<el-icon><arrow-down /></el-icon></el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="handleClick(scope.row.materialId, 'delete')">删除</el-dropdown-item>
+                  <el-dropdown-item @click="handleClick(scope.row.billNo, 'delete')">删除</el-dropdown-item>
+                  <el-dropdown-item @click="handleClick(scope.row.billNo, 'delete')">审核</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
-      <template class="pagination" >
-        <el-pagination background="blue" layout="prev, pager, next" :total="1000">
-        </el-pagination>
-      </template>
+     <template class="pagination" >
+    <el-pagination
+      :page-size="10" 
+      background="blue" 
+      layout="prev, pager, next" 
+      :total="total"
+      :currentPage="current_page"
+      @current-change="handleCurrentChange"
+    >
+    </el-pagination>
+  </template>
     <el-dialog
     v-model="dialogVisible"
     title="采购入库-编辑"
@@ -89,7 +125,10 @@
   >
     <div style="position:relative">
     <el-divider class="divider"></el-divider>
-    <PurchaseWarehousingDetail :customerId="customerId" :handleClose="handleClose" :loadCustomers="loadCustomers" :type="type"/>
+    <PurchaseWarehousingDetail 
+    :billNo="billNo" 
+    :handleClose="handleClose" :loadPurchaseWarehousinglist="loadPurchaseWarehousinglist" 
+    :edit_type="edit_type"/>
     </div>
   </el-dialog>
   </Card>
@@ -106,6 +145,9 @@ import {
   ArrowDown
 } from '@element-plus/icons-vue'
 import PurchaseWarehousingDetail from './PurchaseWarehousingDetail.vue'
+import { AxiosApi } from '../../../../utils/api'
+import { AxiosResponse } from 'axios'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name:'PurchaseWarehousing',
@@ -119,19 +161,80 @@ export default defineComponent({
     PurchaseWarehousingDetail
   },
   setup () {
-    const value1 = ref('')
     const dialogVisible = ref(false)
     const fullscreen = ref(false)
+    const PurchaseWarehousinglist = ref([{}])
+    const total = ref(0)
+    const current_page = ref(1)
+    const edit_type = ref('')
+    const billNo = ref('')
+    const selectNum = ref(0)
 
-    const handleAdd = () => {
-      dialogVisible.value = true
+    const success = (message:string) => {
+      ElMessage({
+        message: message,
+        type: 'success'
+      })
     }
 
+    const error = (message:string) => {
+      ElMessage.error(message)
+    }
+
+    const handleSelectionChange = (val: any[]) => {
+      console.log(val)
+      selectNum.value = val?.length || 0
+    }
+
+    const handleCurrentChange = (val: number) :void => {
+      loadPurchaseWarehousinglist(val)
+    }
+
+    const handleClick = (id:string, type:string) => {
+      if (type === 'edit') {
+        dialogVisible.value = true
+        edit_type.value = 'edit'
+        billNo.value = id
+      } else if (type === 'add') {
+        dialogVisible.value = true
+        edit_type.value = 'add'
+        billNo.value = ''
+      }
+    }
+
+    const handleClose = () => {
+      dialogVisible.value = false
+    }
+
+    const loadPurchaseWarehousinglist = (current_page:number) :void => {
+      AxiosApi.get(`billHeader/list?pageNum=${current_page}&pageSize=10&stockIoName=采购入库`)
+        .then((res:AxiosResponse) => {
+          PurchaseWarehousinglist.value = res.data.result
+          total.value = res.data.totalNum
+        })
+        .catch((err) => {
+          console.log(err)
+        }) 
+    }
+
+    onMounted(() => {
+      loadPurchaseWarehousinglist(1)
+    })
+
     return {
-      value1,
       dialogVisible,
       fullscreen,
-      handleAdd
+      PurchaseWarehousinglist,
+      total,
+      current_page,
+      handleCurrentChange,
+      handleClick,
+      edit_type,
+      billNo,
+      loadPurchaseWarehousinglist,
+      handleClose,
+      handleSelectionChange,
+      selectNum
     }
   }
 })
@@ -180,5 +283,11 @@ export default defineComponent({
 
 .datepick {
   width: 435px;
+}
+
+.pagination{
+  margin-top: 40px;
+  display: flex;
+  justify-content: right;
 }
 </style>

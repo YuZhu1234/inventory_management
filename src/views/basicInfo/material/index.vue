@@ -8,7 +8,12 @@
               <el-input placeholder="请输入编码"></el-input>
             </el-form-item>
             <el-form-item  class="encode" label="物料分类">
-               <el-select placeholder="请选择物料分类"></el-select>
+               <el-select v-model="classificationSelect" class="select" placeholder="请选择">
+                  <el-option label="请选择" :value="0"></el-option>
+                  <div v-for="(item, index) in materialClassificationData" :key="index">
+                      <el-option :label="item.name" :value="item.materialCategoryId"></el-option>
+                  </div>
+                </el-select>
             </el-form-item>
             <el-form-item class="buttongroup">
               <el-button type="primary" class="button"><el-icon><search /></el-icon>&nbsp;查询</el-button>
@@ -123,55 +128,13 @@ export default defineComponent({
     Search
   },
   setup () {
-    const tableData = [
-      {
-        id: 1,
-        date: '1',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Home'
-      },
-      {
-        id: 2,
-        date: '2',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Office',
-        children:[
-          {
-            id: 21,
-            date: '2-1',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home'
-          },
-          {
-            id: 22,
-            date: '2-2',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office'
-          }
-        ]
-      }   
-    ]
     const MateriaData = ref([{}])
     const drawer = ref(false)
     const MateriaId = ref('')
     const edit_type = ref('')
     const dialogVisible2 = ref(false)
+    const materialClassificationData = ref([{}])
+    const classificationSelect = ref(0)
 
     const handleClick = (materiaId:string, type:string) :void => {
       if (type === 'edit') {
@@ -218,6 +181,15 @@ export default defineComponent({
         })
     }
 
+    const LoadMeasurementUnitlist = () => {
+      AxiosApi.get('materialCategory/list')
+        .then((res:AxiosResponse) => {
+          materialClassificationData.value = res.data.result
+        }).catch((err) => {
+          console.log(err)
+        })
+    }
+
     const loadMateriaData = () => {
       AxiosApi.get('material/list')
         .then((res:AxiosResponse) => {
@@ -231,6 +203,7 @@ export default defineComponent({
 
     onMounted(() => {
       loadMateriaData()
+      LoadMeasurementUnitlist()
     })
     return {
       drawer,
@@ -242,7 +215,9 @@ export default defineComponent({
       handleCloseDrawer,
       dialogVisible2,
       handleDelete,
-      loadMateriaData
+      loadMateriaData,
+      materialClassificationData,
+      classificationSelect
     }
   }
 })
