@@ -98,6 +98,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         path:'otherdelivery',
         component: OtherDelivery
+      },
+      {
+        path:'saturationofstackroom',
+        component: SaturationOfStackRoom
       }
     ]
   }

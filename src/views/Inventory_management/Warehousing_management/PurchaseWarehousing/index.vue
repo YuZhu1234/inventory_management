@@ -2,20 +2,21 @@
   <Card>
    <el-form :inline="true" class="demo-form">
       <el-form-item label="单据编号：" class="encode">
-        <el-input placeholder="请输入单据编号"></el-input>
+        <el-input placeholder="请输入单据编号" v-model="searchId"></el-input>
       </el-form-item>
       <el-form-item label="单据日期：" class="datepick">
         <el-date-picker
-          v-model="value1"
+          v-model="dateValue"
           type="daterange"
           range-separator="至"
           start-placeholder="请选择开始"
           end-placeholder="请选择结束"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
       <el-form-item class="buttongroup">
-        <el-button type="primary" class="button"><el-icon><search /></el-icon>&nbsp;查询</el-button>
-        <el-button type="primary" class="button"><el-icon><refresh /></el-icon>&nbsp;重置</el-button>
+        <el-button type="primary" class="button" @click="handleSearch"><el-icon><search /></el-icon>&nbsp;查询</el-button>
+        <el-button type="primary" class="button" @click="handleReset"><el-icon><refresh /></el-icon>&nbsp;重置</el-button>
       </el-form-item>
     </el-form>
     <div class="header">
@@ -173,6 +174,8 @@ export default defineComponent({
     const billNo = ref('')
     const selectNum = ref(0)
     const ioBillHeaderId = ref(0)
+    const dateValue = ref([])
+    const searchId = ref('')
 
     const success = (message:string) => {
       ElMessage({
@@ -186,7 +189,6 @@ export default defineComponent({
     }
 
     const handleSelectionChange = (val: any[]) => {
-      console.log(val)
       selectNum.value = val?.length || 0
     }
 
@@ -194,8 +196,17 @@ export default defineComponent({
       loadPurchaseWarehousinglist(val)
     }
 
+    const handleReset = () => {
+      dateValue.value = []
+      searchId.value = ''
+      loadPurchaseWarehousinglist(1)
+    }
+
+    const handleSearch = () => {
+      loadPurchaseWarehousinglist(1, dateValue.value[1], dateValue.value[0], searchId.value)
+    }
+
     const handleClick = (id:string, IoBillHeaderId:number, type:string) => {
-      console.log(IoBillHeaderId)
       if (type === 'edit') {
         dialogVisible.value = true
         edit_type.value = 'edit'
@@ -212,8 +223,8 @@ export default defineComponent({
       dialogVisible.value = false
     }
 
-    const loadPurchaseWarehousinglist = (current_page:number) :void => {
-      AxiosApi.get(`billHeader/list?pageNum=${current_page}&pageSize=10&stockIoName=采购入库`)
+    const loadPurchaseWarehousinglist = (current_page:number, updateEndTime?:string, updateStartTime?:string, searchId?:string) :void => {
+      AxiosApi.get(`billHeader/list?pageNum=${current_page}&stockIoName=采购入库${updateEndTime ? `&updateEndTime=${updateEndTime}&updateStartTime=${updateStartTime}` : '&spageSize=10'}${searchId ? `&billNo=${searchId}` : ''}`)
         .then((res:AxiosResponse) => {
           PurchaseWarehousinglist.value = res.data.result
           total.value = res.data.totalNum
@@ -241,7 +252,11 @@ export default defineComponent({
       handleClose,
       handleSelectionChange,
       selectNum,
-      ioBillHeaderId
+      ioBillHeaderId,
+      dateValue,
+      handleSearch,
+      handleReset,
+      searchId
     }
   }
 })

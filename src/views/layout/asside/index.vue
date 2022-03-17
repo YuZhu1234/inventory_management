@@ -29,7 +29,7 @@
             <template #title>出库管理</template>
             <el-menu-item index="salesdelivery" @click="(e)=>historyPush(e)">销售出库</el-menu-item>
             <el-menu-item index="salesreturnreceipt" @click="(e)=>historyPush(e)">销售退货入库</el-menu-item>
-            <el-menu-item index="inventorylossdelivery" @click="(e)=>historyPush(e)">盘亏入库</el-menu-item>
+            <el-menu-item index="inventorylossdelivery" @click="(e)=>historyPush(e)">盘亏出库</el-menu-item>
             <el-menu-item index="otherdelivery" @click="(e)=>historyPush(e)">其他出库</el-menu-item>
           </el-sub-menu>
           <el-menu-item index="2-3">库存调拨</el-menu-item>
