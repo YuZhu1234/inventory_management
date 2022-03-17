@@ -1,26 +1,37 @@
 <template>
-  <div class="top">
-  <el-form :model="PurchaseWarehousingDetail" :label-width=LabeWidth label-position="right">
+  <div class="top" >
+  <el-form :model="PurchaseWarehousingDetail" :label-width=LabeWidth label-position="right" v-loading="loading">
    <el-form :inline="true" class="demo-form-inline" style="margin-left:20px">
     <el-form-item  class="billProcStatus" label="处理状态:" :label-width=LabeWidth>
-      <el-input v-model="PurchaseWarehousingDetail.billProcStatus" placeholder="处理状态"></el-input>
+      <el-select v-model="PurchaseWarehousingDetail.billProcStatus" placeholder="是否通过" style="width:120px">
+         <el-option label="编制" :value=1 ></el-option>
+         <el-option label="审核完成" value=23 ></el-option>
+         <el-option label="编制完成" :value=13 ></el-option>
+         <el-option label="审核" :value=2></el-option>
+         <el-option label="执行" :value=3 ></el-option>
+         <el-option label="执行完成" :value=33 ></el-option>
+         <el-option label="编制中" :value=12 ></el-option>
+         <el-option label="审核中" :value=22 ></el-option>
+         <el-option label="执行中" :value=32 ></el-option>
+         <el-option label="执行完成" :value=33 ></el-option>
+      </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否通过:" :label-width=LabeWidth>
-      <el-select v-model="PurchaseWarehousingDetail.isApproved" placeholder="是否通过" class="option">
-         <el-option label="是" value=1 ></el-option>
-         <el-option label="否" value=0 ></el-option>
+       <el-select v-model="PurchaseWarehousingDetail.isApproved" placeholder="是否通过" class="option">
+         <el-option label="是" :value=1 ></el-option>
+         <el-option label="否" :value=0 ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否关闭:" :label-width=LabeWidth>
       <el-select v-model="PurchaseWarehousingDetail.isClosed" placeholder="是否关闭" class="option">
-         <el-option label="是" value=1 ></el-option>
-         <el-option label="否" value=0 ></el-option>
+         <el-option label="是" :value=1 ></el-option>
+         <el-option label="否" :value=0 ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否作废:" :label-width=LabeWidth>
       <el-select v-model="PurchaseWarehousingDetail.isVoided" placeholder="是否作废" class="option">
-         <el-option label="是" value=1 ></el-option>
-         <el-option label="否" value=0 ></el-option>
+         <el-option label="是" :value=1 ></el-option>
+         <el-option label="否" :value=0 ></el-option>
       </el-select>
     </el-form-item>
    </el-form>
@@ -71,11 +82,12 @@
    </el-collapse>
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
-     <el-form-item class="purchaseearehouse1" label="单据编号:" :label-width=LabeWidth>
+     <el-form-item class="purchaseearehouse1" label="单据编号:" :label-width=LabeWidth required>
       <el-input v-model="PurchaseWarehousingDetail.billNo" placeholder="单据编号"></el-input>
     </el-form-item>
-    <el-form-item class="purchaseearehouse1" label="单据日期:" :label-width=LabeWidth>
-      <el-input v-model="PurchaseWarehousingDetail.billDate" placeholder="单据日期" ></el-input>
+    <el-form-item class="purchaseearehouse1" label="单据日期:" :label-width=LabeWidth required>
+      <!-- <el-input v-model="PurchaseWarehousingDetail.billDate" placeholder="单据日期" ></el-input> -->
+      <el-date-picker v-model="PurchaseWarehousingDetail.billDate" type="date" value-format="YYYY-MM-DD" placeholder="单据日期" style="width:186px!important"/>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="制单人:" :label-width=LabeWidth>
      <el-input v-model="PurchaseWarehousingDetail.createBy" placeholder="制单人" ></el-input>
@@ -88,8 +100,9 @@
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="供应商:" :label-width=LabeWidth>
       <el-select v-model="PurchaseWarehousingDetail.supplierId" placeholder="供应商" class="option2">
-         <el-option label="供应商1" value=3 ></el-option>
-         <el-option label="否" value=1 ></el-option>
+         <div v-for="item in supplierList" :key="item.supplierId">
+              <el-option :label="item.name" :value="item.supplierId"></el-option>
+          </div>
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="入库经办:" :label-width=LabeWidth>
@@ -98,16 +111,16 @@
    </el-form>
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
-     <el-form-item class="purchaseearehouse1" label="源单类型:" :label-width=LabeWidth>
-      <el-input  v-model="PurchaseWarehousingDetail.sourceType" placeholder="源单类型"></el-input>
+     <el-form-item class="purchaseearehouse1" label="源单类型:" :label-width=LabeWidth required>
+      <el-input  v-model="PurchaseWarehousingDetail.stockIoName" placeholder="源单类型" disabled></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="源单号:" :label-width=LabeWidth>
       <el-input  v-model="PurchaseWarehousingDetail.sourceNo" placeholder="源单号"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="结算数量和金额是否等于入库:" label-width='230px'>
       <el-select v-model="PurchaseWarehousingDetail.isSameSettle" placeholder="否" style="width:60px">
-         <el-option label="是" value=1 ></el-option>
-         <el-option label="否" value=0 ></el-option>
+         <el-option label="是" :value=1 ></el-option>
+         <el-option label="否" :value=0 ></el-option>
       </el-select>
     </el-form-item>
    </el-form>
@@ -121,51 +134,60 @@
     </el-form-item>
    </el-form>
 
+   <div style="display:flex;justify-content:right">
+       <el-button @click="handleClose">取消 </el-button>
+       <el-button type="primary" @click="handleSave('header')">保存 </el-button>
+    </div>
+
    </el-form>
 
+<!-- 从表部分 -->
+
    <div style="margin:30px">
-      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick" v-loading="loading">
         <el-tab-pane label="明细" name="明细">
           <div style="display:flex;margin-bottom:20px">
-          <el-button type="primary"><el-icon><plus /></el-icon>&nbsp;新增 </el-button>
+          <el-button type="primary" @click="handleAddSubtable"><el-icon><plus /></el-icon>&nbsp;新增 </el-button>
           <el-button type="primary"><el-icon><minus /></el-icon>&nbsp;删除 </el-button>
           </div>
-        <el-table :data="MateriaData" highlight-current-row="true" border header-row-style="color:black" style="border: 1px solid rgb(245,244,245)">
+        <el-table :data="PurchaseWarehousingSubTableDetail" highlight-current-row="true" border header-row-style="color:black" style="border: 1px solid rgb(245,244,245)">
         <el-table-column fixed type="selection" sortable width="55" />
-        <el-table-column prop="number" label="分录号" width="80" align="center">
+        <el-table-column prop="detailNo" label="分录号" width="80" align="center">
           <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false"> </el-input-number>
+           <el-input-number v-model="scope.row.detailNo" :controls="false"> </el-input-number>
           </template>
         </el-table-column>
-         <el-table-column prop="number" label="源单分录号" width="120" align="center">
+         <el-table-column prop="sourceDetailNo" label="源单分录号" width="120" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.number" :controls="false"> </el-input>
+           <el-input v-model="scope.row.sourceDetailNo" :controls="false"> </el-input>
           </template>
         </el-table-column>
-         <el-table-column prop="number" label="物料" width="200" align="center">
+         <el-table-column prop="materialId" label="物料" width="200" align="center">
           <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.number" style="width:170px">
-             <el-option label="是" value=1 ></el-option>
-             <el-option label="否" value=2 ></el-option>
+           <el-select placeholder="否" v-model="scope.row.materialId" style="width:170px">
+             <div v-for="item in materialList" :key="item.materialId">
+              <el-option :label="item.name" :value="item.materialId"></el-option>
+             </div>
            </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="计量单位" width="130" align="center">
+        <el-table-column prop="unitId" label="计量单位" width="130" align="center">
           <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.number" style="width:100px">
-             <el-option label="是" value=1 ></el-option>
-             <el-option label="否" value=2 ></el-option>
+           <el-select placeholder="否" v-model="scope.row.unitId" style="width:100px">
+             <div v-for="item in unitList" :key="item.measureUnitId">
+                <el-option :label="item.name" :value="item.measureUnitId"></el-option>
+             </div>
            </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="入库数量" width="130" align="center">
+        <el-table-column prop="qty" label="入库数量" width="130" align="center">
           <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
+           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2"> </el-input-number>
           </template>
         </el-table-column>
-         <el-table-column prop="number" label="入库成本" width="130" align="center">
+         <!-- <el-table-column prop="qty" label="入库成本" width="130" align="center">
           <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
+           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2"> </el-input-number>
           </template>
         </el-table-column>
         <el-table-column prop="number" label="成本含税" width="100" align="center">
@@ -175,23 +197,24 @@
              <el-option label="否" value=2 ></el-option>
            </el-select>
           </template>
-        </el-table-column>
-        <el-table-column prop="number" label="仓库" width="200" align="center">
+        </el-table-column> -->
+        <el-table-column prop="warehouseId" label="仓库" width="200" align="center">
           <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.number" style="width:170px">
-             <el-option label="是" value=1 ></el-option>
-             <el-option label="否" value=2 ></el-option>
+           <el-select placeholder="否" v-model="scope.row.warehouseId" style="width:170px">
+             <div v-for="item in warehouseList" :key="item.warehouseId">
+                <el-option :label="item.name" :value="item.warehouseId"></el-option>
+             </div>>
            </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="批次号" width="230" align="center">
+        <el-table-column prop="batchNo" label="批次号" width="230" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.number" :controls="false"> </el-input>
+           <el-input v-model="scope.row.batchNo" :controls="false"> </el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="结算数量" width="130" align="center">
+        <!-- <el-table-column prop="qty" label="结算数量" width="130" align="center">
           <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
+           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2"> </el-input-number>
           </template>
         </el-table-column>
         <el-table-column prop="number" label="含税单价" width="130" align="center">
@@ -233,15 +256,20 @@
           <template v-slot="scope">
            <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number3"> </el-input-number>
           </template>
-        </el-table-column>
-        <el-table-column prop="number" label="备注" width="230" align="center">
+        </el-table-column> -->
+        <el-table-column prop="remark" label="备注" width="230" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.number"> </el-input>
+           <el-input v-model="scope.row.remark"> </el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="备注2" width="230" align="center">
+        <el-table-column prop="remark2" label="备注2" width="230" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.number" > </el-input>
+           <el-input v-model="scope.row.remark2" > </el-input>
+          </template>
+        </el-table-column>
+        <el-table-column prop="remark3" label="备注2" width="230" align="center">
+          <template v-slot="scope">
+           <el-input v-model="scope.row.remark3" > </el-input>
           </template>
         </el-table-column>
         
@@ -251,7 +279,7 @@
    </div>
     <div style="display:flex;justify-content:right">
        <el-button @click="handleClose">取消 </el-button>
-       <el-button type="primary" @click="handleSave">保存 </el-button>
+       <el-button type="primary" @click="handleSave('sub')">保存 </el-button>
        <el-button type="primary">提交 </el-button>
     </div>
   </div>
@@ -294,45 +322,56 @@ export default defineComponent({
     loadPurchaseWarehousinglist:{
       type:Function,
       required:true  
+    },
+    ioBillHeaderId: {
+      type:Number,
+      required:true
     }
   },
   setup (props, context) {
     const LabeWidth = ref('100px')
     const activeName = ref('明细')
     const PurchaseWarehousingDetail = ref({
-      approverId: 'admin',
-      attachment: null,
+      approverId: '',
+      attachment: '',
       billDate: '',
       billNo: '',
-      billProcStatus: '23',
+      billProcStatus: '',
       clerkId: '',
       createBy: '',
-      createTime: '',
+      createTime: undefined,
       customerId: null,
       customerName: null,
-      effectiveTime: '',
+      effectiveTime: null,
       flowId: null,
       handlerId: '',
       hasRp: '',
       ioBillHeaderId: null,
-      isApproved: '',
+      isApproved: 0,
       isAuto: 0,
-      isClosed: '',
+      isClosed: 0,
       isRubric: 0,
-      isSameSettle: '',
-      isVoided: '',
+      isSameSettle: 0,
+      isVoided: 0,
       remark: '',
       sourceId: null,
       sourceNo: null,
-      sourceType: null,
-      stockIoName: '',
-      stockIoType: '',
-      supplierId: '',
+      sourceType: '',
+      stockIoName: '采购入库',
+      stockIoType: '101',
+      supplierId: null,
       supplierName: '',
       sysOrgCode: '',
       updateBy: '',
-      updateTime: ''
+      updateTime: undefined
     })
+    const PurchaseWarehousingSubTableDetail = ref([{}])
+    const materialList = ref([{}])
+    const supplierList = ref([{}])
+    const unitList = ref([{}])
+    const warehouseList = ref([{}])
+    const loading = ref(false)
+    const AddSubTable = ref(false)
 
     const success = (message:string) => {
       ElMessage({
@@ -345,32 +384,144 @@ export default defineComponent({
       ElMessage.error(message)
     }
 
-    const handleSave = () => {
+    const handleSave = (type:string) => {
+      loading.value = true
       if (props.edit_type === 'edit') {
-        AxiosApi.put('billHeader/update', JSON.stringify(PurchaseWarehousingDetail.value))
-          .then((res:AxiosResponse) => {
-            console.log(res)
-            success('保存成功！')
-            props.handleClose()
-            props.loadPurchaseWarehousinglist()
-          })
-          .catch((err) => {
-            error('保存失败！')
-            console.log(err)
-          })
+        if (type === 'header') {
+          const data = PurchaseWarehousingDetail.value
+          data.updateTime = undefined
+          data.createTime = undefined
+          AxiosApi.put('billHeader/update', JSON.stringify(data))
+            .then((res:AxiosResponse) => {
+              console.log(res)
+              success('保存成功！')
+              props.handleClose()
+              props.loadPurchaseWarehousinglist(1)
+              loading.value = false
+            })
+            .catch((err) => {
+              error('保存失败！')
+              console.log(err)
+              loading.value = false
+            })
+        } else if (type === 'sub' && AddSubTable.value === false) {
+          // const data = PurchaseWarehousingSubTableDetail.value
+          // data.updateTime = undefined
+          // data.createTime = undefined
+          AxiosApi.put('billDetail/update', JSON.stringify(PurchaseWarehousingSubTableDetail.value))
+            .then((res:AxiosResponse) => {
+              console.log(res)
+              success('保存成功！')
+              props.handleClose()
+              props.loadPurchaseWarehousinglist(1)
+              loading.value = false
+            })
+            .catch((err) => {
+              error('保存失败！')
+              console.log(err)
+              loading.value = false
+            })
+        } else if (type === 'sub' && AddSubTable.value === true) {
+          AxiosApi.post('billDetail/add', JSON.stringify(PurchaseWarehousingSubTableDetail.value[PurchaseWarehousingSubTableDetail.value.length - 1]))
+            .then((res) => {
+              console.log(res)
+              success('保存成功')
+              props.loadPurchaseWarehousinglist(1)
+              loading.value = false
+            })
+            .catch((err) => {
+              console.log(err)
+              error('保存失败')
+              loading.value = false
+            })
+        }
+      } else if (props.edit_type === 'add') {
+        if (type === 'header') {
+          AxiosApi.post('billHeader/add', JSON.stringify(PurchaseWarehousingDetail.value))
+            .then((res) => {
+              console.log(res)
+              success('保存成功')
+              props.loadPurchaseWarehousinglist(1)
+              loading.value = false
+            })
+            .catch((err) => {
+              console.log(err)
+              error('保存失败')
+              loading.value = false
+            })
+        } else if (type === 'sub') {
+          AxiosApi.post('billDetail/add', JSON.stringify(PurchaseWarehousingSubTableDetail.value))
+            .then((res) => {
+              console.log(res)
+              success('保存成功')
+              props.loadPurchaseWarehousinglist(1)
+              loading.value = false
+            })
+            .catch((err) => {
+              console.log(err)
+              error('保存失败')
+              loading.value = false
+            })
+        }      
       }
     }
 
-    const loadPurchaseWarehousingDetail = () => {
+    const handleAddSubtable = () => {
+      PurchaseWarehousingSubTableDetail.value.push({
+        batchNo: '',
+        detailNo: null,
+        ioBillDetailId: null,
+        ioBillHeaderId: props.ioBillHeaderId,
+        materialId: null,
+        materialName: '',
+        modifiedDate: null,
+        qty: null,
+        remark: '',
+        remark2: '',
+        remark3: '',
+        sourceDetailId: null,
+        sourceDetailNo: '101',
+        sourceType: null,
+        supplierId: null,
+        supplierName: '',
+        unitId: null,
+        unitName: '',
+        warehouseId: null,
+        warehouseName: ''
+      })
+      AddSubTable.value = true
+    }
+
+    const loadPurchaseWarehousingSubtableDetail = (IoBillHeaderId:number) => {
+      loading.value = true
+      AxiosApi.get(`billDetail/list?ioBillHeaderId=${IoBillHeaderId}`)
+        .then((res:AxiosResponse) => {
+          if (props.edit_type === 'edit') {
+            PurchaseWarehousingSubTableDetail.value = res.data.result
+          }
+          materialList.value = res.data.materialList
+          supplierList.value = res.data.supplierList
+          unitList.value = res.data.unitList
+          warehouseList.value = res.data.warehouseList
+          loading.value = false
+        })
+    }
+
+    const loadPurchaseWarehousingHeaderDetail = () => {
+      loading.value = true
       AxiosApi.get(`billHeader/find?billNo=${props.billNo}&stockIoName=采购入库`)
         .then((res:AxiosResponse) => {
           PurchaseWarehousingDetail.value = res.data.result
+          loadPurchaseWarehousingSubtableDetail(res?.data?.result?.ioBillHeaderId)
+          loading.value = false
         })
     }
 
     onMounted(() => {
       if (props.edit_type === 'edit' && props.billNo !== '') {
-        loadPurchaseWarehousingDetail()
+        loadPurchaseWarehousingHeaderDetail()
+      } else if (props.edit_type === 'add') {
+        loadPurchaseWarehousingSubtableDetail(1)
       }
     })
 
@@ -378,7 +529,14 @@ export default defineComponent({
       LabeWidth,
       activeName,
       PurchaseWarehousingDetail,
-      handleSave
+      handleSave,
+      PurchaseWarehousingSubTableDetail,
+      handleAddSubtable,
+      materialList,
+      supplierList,
+      unitList,
+      warehouseList,
+      loading
     }
   }
 })

@@ -19,7 +19,7 @@
       </el-form-item>
     </el-form>
     <div class="header">
-        <el-button type="text" class="header_button" @click="handleClick('','add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
+        <el-button type="text" class="header_button" @click="handleClick('',0,'add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
         <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
         <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
         <span class="text">已选择<span style="color:rgb(53,137,255);margin-left:10px;margin-right:10px;font-weight:bold;">{{selectNum}}</span>项 </span>
@@ -48,8 +48,8 @@
                 class="ml-2"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
-                active-value="1"
-                inactive-value="0"
+                :active-value="1"
+                :inactive-value="0"
                 disabled
             />
             </template>
@@ -61,8 +61,8 @@
                 class="ml-2"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
-                active-value="1"
-                inactive-value="0"
+                :active-value="1"
+                :inactive-value="0"
                 disabled
             />
             </template>
@@ -74,8 +74,8 @@
                 class="ml-2"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
-                active-value="1"
-                inactive-value="0"
+                :active-value="1"
+                :inactive-value="0"
                 disabled
             />
             </template>
@@ -90,15 +90,15 @@
         <el-table-column align='center' prop="updateBy" label="修改人" width="200" />
         <el-table-column align='center' fixed="right" label="操作" width="120">
           <template v-slot="scope">
-            <el-button type="text" size="small" @click="handleClick(scope.row.billNo, 'edit')">编辑</el-button
+            <el-button type="text" size="small" @click="handleClick(scope.row.billNo, scope.row.ioBillHeaderId, 'edit')">编辑</el-button
             >
             <el-divider direction="vertical"></el-divider>
             <el-dropdown>
               <el-button type="text" size="small">更多<el-icon><arrow-down /></el-icon></el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="handleClick(scope.row.billNo, 'delete')">删除</el-dropdown-item>
-                  <el-dropdown-item @click="handleClick(scope.row.billNo, 'delete')">审核</el-dropdown-item>
+                  <el-dropdown-item disabled @click="handleClick(scope.row.billNo, scope.row.ioBillHeaderId, 'delete')">删除</el-dropdown-item>
+                  <el-dropdown-item @click="handleClick(scope.row.billNo, scope.row.ioBillHeaderId,'delete')">审核</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -127,8 +127,11 @@
     <el-divider class="divider"></el-divider>
     <PurchaseWarehousingDetail 
     :billNo="billNo" 
-    :handleClose="handleClose" :loadPurchaseWarehousinglist="loadPurchaseWarehousinglist" 
-    :edit_type="edit_type"/>
+    :handleClose="handleClose" 
+    :loadPurchaseWarehousinglist="loadPurchaseWarehousinglist" 
+    :ioBillHeaderId="ioBillHeaderId"
+    :edit_type="edit_type"
+    />
     </div>
   </el-dialog>
   </Card>
@@ -169,6 +172,7 @@ export default defineComponent({
     const edit_type = ref('')
     const billNo = ref('')
     const selectNum = ref(0)
+    const ioBillHeaderId = ref(0)
 
     const success = (message:string) => {
       ElMessage({
@@ -190,10 +194,12 @@ export default defineComponent({
       loadPurchaseWarehousinglist(val)
     }
 
-    const handleClick = (id:string, type:string) => {
+    const handleClick = (id:string, IoBillHeaderId:number, type:string) => {
+      console.log(IoBillHeaderId)
       if (type === 'edit') {
         dialogVisible.value = true
         edit_type.value = 'edit'
+        ioBillHeaderId.value = IoBillHeaderId
         billNo.value = id
       } else if (type === 'add') {
         dialogVisible.value = true
@@ -234,7 +240,8 @@ export default defineComponent({
       loadPurchaseWarehousinglist,
       handleClose,
       handleSelectionChange,
-      selectNum
+      selectNum,
+      ioBillHeaderId
     }
   }
 })
