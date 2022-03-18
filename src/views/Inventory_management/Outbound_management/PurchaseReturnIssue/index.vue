@@ -27,7 +27,7 @@
         <el-button type="text" class="header_button">清空</el-button>
     </div>
     <el-table 
-      :data="PurchaseWarehousinglist" 
+      :data="PurchaseReturnIssuelist" 
       highlight-current-row="true" 
       border 
       header-row-style="color:black" 
@@ -126,10 +126,10 @@
   >
     <div style="position:relative">
     <el-divider class="divider"></el-divider>
-    <PurchaseWarehousingDetail 
+    <PurchaseReturnIssueDetail 
     :billNo="billNo" 
     :handleClose="handleClose" 
-    :loadPurchaseWarehousinglist="loadPurchaseWarehousinglist" 
+    :loadPurchaseReturnIssuelist="loadPurchaseReturnIssuelist" 
     :ioBillHeaderId="ioBillHeaderId"
     :edit_type="edit_type"
     />
@@ -148,13 +148,13 @@ import {
   Upload,
   ArrowDown
 } from '@element-plus/icons-vue'
-import PurchaseWarehousingDetail from './PurchaseWarehousingDetail.vue'
+import PurchaseReturnIssueDetail from './PurchaseReturnIssue.vue'
 import { AxiosApi } from '../../../../utils/api'
 import { AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
 
 export default defineComponent({
-  name:'PurchaseWarehousing',
+  name:'PurchaseReturnIssue',
   components:{
     Refresh,
     Search,
@@ -162,12 +162,12 @@ export default defineComponent({
     Download,
     Upload,
     ArrowDown,
-    PurchaseWarehousingDetail
+    PurchaseReturnIssueDetail
   },
   setup () {
     const dialogVisible = ref(false)
     const fullscreen = ref(false)
-    const PurchaseWarehousinglist = ref([{}])
+    const PurchaseReturnIssuelist = ref([{}])
     const total = ref(0)
     const current_page = ref(1)
     const edit_type = ref('')
@@ -193,17 +193,17 @@ export default defineComponent({
     }
 
     const handleCurrentChange = (val: number) :void => {
-      loadPurchaseWarehousinglist(val)
+      loadPurchaseReturnIssuelist(val)
     }
 
     const handleReset = () => {
       dateValue.value = []
       searchId.value = ''
-      loadPurchaseWarehousinglist(1)
+      loadPurchaseReturnIssuelist(1)
     }
 
     const handleSearch = () => {
-      loadPurchaseWarehousinglist(1, dateValue.value[1], dateValue.value[0], searchId.value)
+      loadPurchaseReturnIssuelist(1, dateValue.value[1], dateValue.value[0], searchId.value)
     }
 
     const handleClick = (id:string, IoBillHeaderId:number, type:string) => {
@@ -223,10 +223,10 @@ export default defineComponent({
       dialogVisible.value = false
     }
 
-    const loadPurchaseWarehousinglist = (current_page:number, updateEndTime?:string, updateStartTime?:string, searchId?:string) :void => {
-      AxiosApi.get(`billHeader/list?pageNum=${current_page}&stockIoName=采购入库${updateEndTime ? `&updateEndTime=${updateEndTime}&updateStartTime=${updateStartTime}` : '&spageSize=10'}${searchId ? `&billNo=${searchId}` : ''}`)
+    const loadPurchaseReturnIssuelist = (current_page:number, updateEndTime?:string, updateStartTime?:string, searchId?:string) :void => {
+      AxiosApi.get(`billHeader/list?pageNum=${current_page}&stockIoName=采购入库-红字${updateEndTime ? `&updateEndTime=${updateEndTime}&updateStartTime=${updateStartTime}` : '&spageSize=10'}${searchId ? `&billNo=${searchId}` : ''}`)
         .then((res:AxiosResponse) => {
-          PurchaseWarehousinglist.value = res.data.result
+          PurchaseReturnIssuelist.value = res.data.result
           total.value = res.data.totalNum
         })
         .catch((err) => {
@@ -235,20 +235,20 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      loadPurchaseWarehousinglist(1)
+      loadPurchaseReturnIssuelist(1)
     })
 
     return {
       dialogVisible,
       fullscreen,
-      PurchaseWarehousinglist,
+      PurchaseReturnIssuelist,
       total,
       current_page,
       handleCurrentChange,
       handleClick,
       edit_type,
       billNo,
-      loadPurchaseWarehousinglist,
+      loadPurchaseReturnIssuelist,
       handleClose,
       handleSelectionChange,
       selectNum,

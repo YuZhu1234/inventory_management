@@ -12,13 +12,17 @@ import Currency from '../views/basicInfo/currency/index.vue'
 import BankAccount from '../views/basicInfo/bankaccount/index.vue'
 import InventoryGainWarehousing from '../views/Inventory_management/Warehousing_management/InventoryGainWarehousing/index.vue'
 import OtherWarehousing from '../views/Inventory_management/Warehousing_management/OtherWarehousing/index.vue'
-import PurchaseReturnIssue from '../views/Inventory_management/Warehousing_management/PurchaseReturnIssue/index.vue'
+import PurchaseReturnIssue from '../views/Inventory_management/Outbound_management/PurchaseReturnIssue/index.vue'
 import PurchaseWarehousing from '../views/Inventory_management/Warehousing_management/PurchaseWarehousing/index.vue'
 import SaturationOfStackRoom from '../views/Inventory_management/Warehousing_management/SaturationOfStackRoom/index.vue'
 import SalesDelivery from '../views/Inventory_management/Outbound_management/SalesDelivery/index.vue'
-import SalesReturnReceipt from '../views/Inventory_management/Outbound_management/SalesReturnReceipt/index.vue'
+import SalesReturnReceipt from '../views/Inventory_management/Warehousing_management/SalesReturnReceipt/index.vue'
 import Inventorylossdelivery from '../views/Inventory_management/Outbound_management/Inventorylossdelivery/index.vue'
 import OtherDelivery from '../views/Inventory_management/Outbound_management/OtherDelivery/index.vue'
+import InventoryTransfer from '../views/Inventory_management/Inventory_transfer/index.vue'
+import InventoryCheck from '../views/Inventory_management/Inventory_check/index.vue'
+import RealtimeInventory from '../views/Inventory_management/Realtime_inventory/index.vue'
+import InventoryAdjustment from '../views/Inventory_management/Inventory_adjustment/index.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -102,6 +106,22 @@ const routes: Array<RouteRecordRaw> = [
       {
         path:'saturationofstackroom',
         component: SaturationOfStackRoom
+      },
+      {
+        path:'inventorytransfer',
+        component: InventoryTransfer
+      },
+      {
+        path:'inventorycheck',
+        component: InventoryCheck
+      },
+      {
+        path:'realtimeinventory',
+        component: RealtimeInventory
+      },
+      {
+        path:'inventoryadjustment',
+        component: InventoryAdjustment
       }
     ]
   }

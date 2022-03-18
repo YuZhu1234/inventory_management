@@ -149,7 +149,7 @@ import {
   ArrowDown
 } from '@element-plus/icons-vue'
 import PurchaseWarehousingDetail from './PurchaseWarehousingDetail.vue'
-import { AxiosApi } from '../../../../utils/api'
+import { AxiosApi } from '../../../utils/api'
 import { AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
 
@@ -229,7 +229,7 @@ export default defineComponent({
           PurchaseWarehousinglist.value = res.data.result
           total.value = res.data.totalNum
         })
-        .catch((err) => {
+        .catch((err:any) => {
           console.log(err)
         }) 
     }

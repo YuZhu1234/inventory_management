@@ -1,9 +1,9 @@
 <template>
   <div class="top" >
-  <el-form :model="SaturationOfStackRoomDetail" :label-width=LabeWidth label-position="right" v-loading="loading">
+  <el-form :model="PurchaseReturnIssueDetail" :label-width=LabeWidth label-position="right" v-loading="loading">
    <el-form :inline="true" class="demo-form-inline" style="margin-left:20px">
     <el-form-item  class="billProcStatus" label="处理状态:" :label-width=LabeWidth>
-      <el-select v-model="SaturationOfStackRoomDetail.billProcStatus" placeholder="是否通过" style="width:120px">
+      <el-select v-model="PurchaseReturnIssueDetail.billProcStatus" placeholder="是否通过" style="width:120px">
          <el-option label="编制" :value=1 ></el-option>
          <el-option label="审核完成" value=23 ></el-option>
          <el-option label="编制完成" :value=13 ></el-option>
@@ -17,19 +17,19 @@
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否通过:" :label-width=LabeWidth>
-       <el-select v-model="SaturationOfStackRoomDetail.isApproved" placeholder="是否通过" class="option">
+       <el-select v-model="PurchaseReturnIssueDetail.isApproved" placeholder="是否通过" class="option">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否关闭:" :label-width=LabeWidth>
-      <el-select v-model="SaturationOfStackRoomDetail.isClosed" placeholder="是否关闭" class="option">
+      <el-select v-model="PurchaseReturnIssueDetail.isClosed" placeholder="是否关闭" class="option">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否作废:" :label-width=LabeWidth>
-      <el-select v-model="SaturationOfStackRoomDetail.isVoided" placeholder="是否作废" class="option">
+      <el-select v-model="PurchaseReturnIssueDetail.isVoided" placeholder="是否作废" class="option">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
@@ -41,37 +41,37 @@
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item  class="purchaseearehouse1" label="创建时间:" :label-width=LabeWidth>
-      <el-input disabled v-model="SaturationOfStackRoomDetail.createTime" placeholder="请输入创建时间"></el-input>
+      <el-input disabled v-model="PurchaseReturnIssueDetail.createTime" placeholder="请输入创建时间"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="创建人:" :label-width=LabeWidth>
-      <el-input disabled v-model="SaturationOfStackRoomDetail.createBy" placeholder="创建人" ></el-input>
+      <el-input disabled v-model="PurchaseReturnIssueDetail.createBy" placeholder="创建人" ></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="创建部门:" :label-width=LabeWidth>
-      <el-input disabled v-model="SaturationOfStackRoomDetail.sysOrgCode" placeholder="创建部门" ></el-input>
+      <el-input disabled v-model="PurchaseReturnIssueDetail.sysOrgCode" placeholder="创建部门" ></el-input>
     </el-form-item>
    </el-form>
 
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="生效时间:" :label-width=LabeWidth>
-      <el-input disabled v-model="SaturationOfStackRoomDetail.effectiveTime" placeholder="请输入生效时间"></el-input>
+      <el-input disabled v-model="PurchaseReturnIssueDetail.effectiveTime" placeholder="请输入生效时间"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="审核人:" :label-width=LabeWidth>
-      <el-input disabled v-model="SaturationOfStackRoomDetail.approverId" placeholder="创建部门" ></el-input>
+      <el-input disabled v-model="PurchaseReturnIssueDetail.approverId" placeholder="创建部门" ></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="流程:" :label-width=LabeWidth>
-     <el-input v-model="SaturationOfStackRoomDetail.flowId" placeholder="流程" ></el-input>
+     <el-input v-model="PurchaseReturnIssueDetail.flowId" placeholder="流程" ></el-input>
     </el-form-item>
    </el-form>
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="修改时间:" :label-width=LabeWidth>
-      <el-input disabled v-model="SaturationOfStackRoomDetail.updateTime" placeholder="请输入创建时间"></el-input>
+      <el-input disabled v-model="PurchaseReturnIssueDetail.updateTime" placeholder="请输入创建时间"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="修改人:" :label-width=LabeWidth>
-      <el-input disabled v-model="SaturationOfStackRoomDetail.updateBy" placeholder="请输入修改人"></el-input>
+      <el-input disabled v-model="PurchaseReturnIssueDetail.updateBy" placeholder="请输入修改人"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否红字:" :label-width=LabeWidth>
-      <el-select disabled v-model="SaturationOfStackRoomDetail.isRubric" placeholder="是否红字" class="option2">
+      <el-select disabled v-model="PurchaseReturnIssueDetail.isRubric" placeholder="是否红字" class="option2">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
@@ -83,42 +83,42 @@
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="单据编号:" :label-width=LabeWidth required>
-      <el-input v-model="SaturationOfStackRoomDetail.billNo" placeholder="单据编号"></el-input>
+      <el-input v-model="PurchaseReturnIssueDetail.billNo" placeholder="单据编号"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="单据日期:" :label-width=LabeWidth required>
-      <!-- <el-input v-model="SaturationOfStackRoomDetail.billDate" placeholder="单据日期" ></el-input> -->
-      <el-date-picker v-model="SaturationOfStackRoomDetail.billDate" type="date" value-format="YYYY-MM-DD" placeholder="单据日期" style="width:186px!important"/>
+      <!-- <el-input v-model="PurchaseReturnIssueDetail.billDate" placeholder="单据日期" ></el-input> -->
+      <el-date-picker v-model="PurchaseReturnIssueDetail.billDate" type="date" value-format="YYYY-MM-DD" placeholder="单据日期" style="width:186px!important"/>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="制单人:" :label-width=LabeWidth>
-     <el-input v-model="SaturationOfStackRoomDetail.createBy" placeholder="制单人" ></el-input>
+     <el-input v-model="PurchaseReturnIssueDetail.createBy" placeholder="制单人" ></el-input>
     </el-form-item>
    </el-form>
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="业务员:" :label-width=LabeWidth>
-      <el-input v-model="SaturationOfStackRoomDetail.clerkId" placeholder="请输入创建时间"></el-input>
+      <el-input v-model="PurchaseReturnIssueDetail.clerkId" placeholder="请输入创建时间"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="供应商:" :label-width=LabeWidth>
-      <el-select v-model="SaturationOfStackRoomDetail.supplierId" placeholder="供应商" class="option2">
+      <el-select v-model="PurchaseReturnIssueDetail.supplierId" placeholder="供应商" class="option2">
          <div v-for="item in supplierList" :key="item.supplierId">
               <el-option :label="item.name" :value="item.supplierId"></el-option>
           </div>
       </el-select>
     </el-form-item>
-    <el-form-item class="purchaseearehouse1" label="入库经办:" :label-width=LabeWidth>
-     <el-input v-model="SaturationOfStackRoomDetail.handlerId" placeholder="入库经办"></el-input>
+    <el-form-item class="purchaseearehouse1" label="出库经办:" :label-width=LabeWidth>
+     <el-input v-model="PurchaseReturnIssueDetail.handlerId" placeholder="出库经办"></el-input>
     </el-form-item>
    </el-form>
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="源单类型:" :label-width=LabeWidth required>
-      <el-input  v-model="SaturationOfStackRoomDetail.stockIoName" placeholder="源单类型" disabled></el-input>
+      <el-input  v-model="PurchaseReturnIssueDetail.stockIoName" placeholder="源单类型" disabled></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="源单号:" :label-width=LabeWidth>
-      <el-input  v-model="SaturationOfStackRoomDetail.sourceNo" placeholder="源单号"></el-input>
+      <el-input  v-model="PurchaseReturnIssueDetail.sourceNo" placeholder="源单号"></el-input>
     </el-form-item>
-    <el-form-item class="purchaseearehouse1" label="结算数量和金额是否等于入库:" label-width='230px'>
-      <el-select v-model="SaturationOfStackRoomDetail.isSameSettle" placeholder="否" style="width:60px">
+    <el-form-item class="purchaseearehouse1" label="结算数量和金额是否等于出库:" label-width='230px'>
+      <el-select v-model="PurchaseReturnIssueDetail.isSameSettle" placeholder="否" style="width:60px">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
@@ -127,7 +127,7 @@
 
    <el-form :model="formInline">
      <el-form-item label="备注:" :label-width=LabeWidth class="full_input">
-      <el-input v-model="SaturationOfStackRoomDetail.remark" placeholder="请输入创建时间"></el-input>
+      <el-input v-model="PurchaseReturnIssueDetail.remark" placeholder="请输入创建时间"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="附件:" :label-width=LabeWidth>
       <el-button> 点击上传 </el-button>
@@ -155,7 +155,7 @@
           <el-button type="primary" @click="handleConfirm('delete')"><el-icon><minus /></el-icon>&nbsp;删除 </el-button>
           </div>
         <el-table 
-             :data="SaturationOfStackRoomSubTableDetail" 
+             :data="PurchaseReturnIssueSubTableDetail" 
              highlight-current-row="true" 
              border 
              header-row-style="color:black" 
@@ -191,12 +191,12 @@
            </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="qty" label="入库数量" width="130" align="center" >
+        <el-table-column prop="qty" label="出库数量" width="130" align="center" >
           <template v-slot="scope">
            <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2" :disabled="scope.row.ioBillDetailId"> </el-input-number>
           </template>
         </el-table-column>
-         <el-table-column prop="changeCost" label="入库成本" width="130" align="center">
+         <el-table-column prop="changeCost" label="出库成本" width="130" align="center">
           <template v-slot="scope">
            <el-input-number v-model="scope.row.changeCost" :controls="false" class="el-input-number2" :disabled="scope.row.ioBillDetailId"> </el-input-number>
           </template>
@@ -340,7 +340,7 @@ import { AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
 
 export default defineComponent({
-  name:'SaturationOfStackRoomDetail',
+  name:'PurchaseReturnIssueDetail',
   components:{
     Plus,
     Minus
@@ -358,7 +358,7 @@ export default defineComponent({
       type:Function,
       required:true
     },
-    loadSaturationOfStackRoomlist:{
+    loadPurchaseReturnIssuelist:{
       type:Function,
       required:true  
     },
@@ -370,7 +370,7 @@ export default defineComponent({
   setup (props, context) {
     const LabeWidth = ref('100px')
     const activeName = ref('明细')
-    const SaturationOfStackRoomDetail = ref({
+    const PurchaseReturnIssueDetail = ref({
       approverId: '',
       attachment: '',
       billDate: '',
@@ -396,15 +396,15 @@ export default defineComponent({
       sourceId: null,
       sourceNo: null,
       sourceType: '',
-      stockIoName: '盘亏出库',
-      stockIoType: '202',
+      stockIoName: '采购入库-红字',
+      stockIoType: '1011',
       supplierId: null,
       supplierName: '',
       sysOrgCode: '',
       updateBy: '',
       updateTime: undefined
     })
-    const SaturationOfStackRoomSubTableDetail = ref([{}])
+    const PurchaseReturnIssueSubTableDetail = ref([{}])
     const materialList = ref([{}])
     const supplierList = ref([{}])
     const unitList = ref([{}])
@@ -430,7 +430,7 @@ export default defineComponent({
       if (props.edit_type === 'edit') {
         if (type === 'header') {
           loading.value = true
-          const data = SaturationOfStackRoomDetail.value
+          const data = PurchaseReturnIssueDetail.value
           data.updateTime = undefined
           data.createTime = undefined
           AxiosApi.put('billHeader/update', JSON.stringify(data))
@@ -438,7 +438,7 @@ export default defineComponent({
               console.log(res)
               success('保存成功！')
               props.handleClose()
-              props.loadSaturationOfStackRoomlist(1)
+              props.loadPurchaseReturnIssuelist(1)
               loading.value = false
             })
             .catch((err) => {
@@ -452,11 +452,11 @@ export default defineComponent({
       } else if (props.edit_type === 'add') {
         if (type === 'header') {
           loading.value = true
-          AxiosApi.post('billHeader/add', JSON.stringify(SaturationOfStackRoomDetail.value))
+          AxiosApi.post('billHeader/add', JSON.stringify(PurchaseReturnIssueDetail.value))
             .then((res) => {
               console.log(res)
               success('保存成功')
-              props.loadSaturationOfStackRoomlist(1)
+              props.loadPurchaseReturnIssuelist(1)
               loading.value = false
             })
             .catch((err) => {
@@ -471,7 +471,7 @@ export default defineComponent({
     }
     
     // else if (type === 'sub' && AddSubTable.value === false) {
-    //   SaturationOfStackRoomSubTableDetail.value.map((p) => {
+    //   PurchaseReturnIssueSubTableDetail.value.map((p) => {
     //     const data:any = p
     //     data.modifiedDate = undefined
     //     AxiosApi.put('billDetail/update', JSON.stringify(data))
@@ -479,7 +479,7 @@ export default defineComponent({
     //         console.log(res)
     //         success('保存成功！')
     //         props.handleClose()
-    //         props.loadSaturationOfStackRoomlist(1)
+    //         props.loadPurchaseReturnIssuelist(1)
     //         loading.value = false
     //       })
     //       .catch((err) => {
@@ -495,7 +495,7 @@ export default defineComponent({
     }
 
     const addSubTable = () => {
-      SaturationOfStackRoomSubTableDetail.value.map((p:any) => {
+      PurchaseReturnIssueSubTableDetail.value.map((p:any) => {
         if (!p.ioBillDetailId) {
           const data:any = p
           data.modifiedDate = undefined
@@ -503,7 +503,7 @@ export default defineComponent({
             .then((res:AxiosResponse) => {
               console.log(res)  
               success('添加成功！')  
-              loadSaturationOfStackRoomHeaderDetail()    
+              loadPurchaseReturnIssueHeaderDetail()    
               dialogVisible2.value = false
               loading.value = false
             })
@@ -516,7 +516,7 @@ export default defineComponent({
     }
 
     const handleAddSubtable = () => {
-      SaturationOfStackRoomSubTableDetail.value.push({
+      PurchaseReturnIssueSubTableDetail.value.push({
         batchNo: '',
         detailNo: null,
         ioBillDetailId: null,
@@ -541,12 +541,12 @@ export default defineComponent({
       AddSubTable.value = true
     }
 
-    const loadSaturationOfStackRoomSubtableDetail = (IoBillHeaderId:number) => {
+    const loadPurchaseReturnIssueSubtableDetail = (IoBillHeaderId:number) => {
       loading.value = true
       AxiosApi.get(`billDetail/list?ioBillHeaderId=${IoBillHeaderId}`)
         .then((res:AxiosResponse) => {
           if (props.edit_type === 'edit') {
-            SaturationOfStackRoomSubTableDetail.value = res.data.result
+            PurchaseReturnIssueSubTableDetail.value = res.data.result
           }
           materialList.value = res.data.materialList
           supplierList.value = res.data.supplierList
@@ -556,12 +556,12 @@ export default defineComponent({
         })
     }
 
-    const loadSaturationOfStackRoomHeaderDetail = () => {
+    const loadPurchaseReturnIssueHeaderDetail = () => {
       loading.value = true
-      AxiosApi.get(`billHeader/find?billNo=${props.billNo}&stockIoName=盘亏出库`)
+      AxiosApi.get(`billHeader/find?billNo=${props.billNo}&stockIoName=采购入库-红字`)
         .then((res:AxiosResponse) => {
-          SaturationOfStackRoomDetail.value = res.data.result
-          loadSaturationOfStackRoomSubtableDetail(res?.data?.result?.ioBillHeaderId)
+          PurchaseReturnIssueDetail.value = res.data.result
+          loadPurchaseReturnIssueSubtableDetail(res?.data?.result?.ioBillHeaderId)
           loading.value = false
         })
     }
@@ -576,7 +576,7 @@ export default defineComponent({
             error('删除失败')
           })
       })
-      loadSaturationOfStackRoomHeaderDetail()
+      loadPurchaseReturnIssueHeaderDetail()
       dialogVisible.value = false
     }
 
@@ -588,18 +588,18 @@ export default defineComponent({
 
     onMounted(() => {
       if (props.edit_type === 'edit' && props.billNo !== '') {
-        loadSaturationOfStackRoomHeaderDetail()
+        loadPurchaseReturnIssueHeaderDetail()
       } else if (props.edit_type === 'add') {
-        loadSaturationOfStackRoomSubtableDetail(1)
+        loadPurchaseReturnIssueSubtableDetail(1)
       }
     })
 
     return {
       LabeWidth,
       activeName,
-      SaturationOfStackRoomDetail,
+      PurchaseReturnIssueDetail,
       handleSave,
-      SaturationOfStackRoomSubTableDetail,
+      PurchaseReturnIssueSubTableDetail,
       handleAddSubtable,
       materialList,
       supplierList,

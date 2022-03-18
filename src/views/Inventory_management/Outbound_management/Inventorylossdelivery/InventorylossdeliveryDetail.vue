@@ -105,8 +105,8 @@
           </div>
       </el-select>
     </el-form-item>
-    <el-form-item class="purchaseearehouse1" label="入库经办:" :label-width=LabeWidth>
-     <el-input v-model="InventorylossdeliveryDetail.handlerId" placeholder="入库经办"></el-input>
+    <el-form-item class="purchaseearehouse1" label="出库经办:" :label-width=LabeWidth>
+     <el-input v-model="InventorylossdeliveryDetail.handlerId" placeholder="出库经办"></el-input>
     </el-form-item>
    </el-form>
 
@@ -117,7 +117,7 @@
     <el-form-item class="purchaseearehouse1" label="源单号:" :label-width=LabeWidth>
       <el-input  v-model="InventorylossdeliveryDetail.sourceNo" placeholder="源单号"></el-input>
     </el-form-item>
-    <el-form-item class="purchaseearehouse1" label="结算数量和金额是否等于入库:" label-width='230px'>
+    <el-form-item class="purchaseearehouse1" label="结算数量和金额是否等于出库:" label-width='230px'>
       <el-select v-model="InventorylossdeliveryDetail.isSameSettle" placeholder="否" style="width:60px">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
@@ -152,7 +152,7 @@
         <el-tab-pane label="明细" name="明细">
           <div style="display:flex;margin-bottom:20px">
           <el-button type="primary" @click="handleAddSubtable"><el-icon><plus /></el-icon>&nbsp;新增 </el-button>
-          <el-button type="primary" @click="handleConfirm"><el-icon><minus /></el-icon>&nbsp;删除 </el-button>
+          <el-button type="primary" @click="handleConfirm('delete')"><el-icon><minus /></el-icon>&nbsp;删除 </el-button>
           </div>
         <el-table 
              :data="InventorylossdeliverySubTableDetail" 
@@ -165,17 +165,17 @@
         <el-table-column fixed type="selection" sortable width="55" />
         <el-table-column prop="detailNo" label="分录号" width="80" align="center">
           <template v-slot="scope">
-           <el-input-number v-model="scope.row.detailNo" :controls="false"> </el-input-number>
+           <el-input-number v-model="scope.row.detailNo" :controls="false" :disabled="scope.row.ioBillDetailId"> </el-input-number>
           </template>
         </el-table-column>
          <el-table-column prop="sourceDetailNo" label="源单分录号" width="120" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.sourceDetailNo" :controls="false"> </el-input>
+           <el-input v-model="scope.row.sourceDetailNo" :controls="false" :disabled="scope.row.ioBillDetailId"> </el-input>
           </template>
         </el-table-column>
          <el-table-column prop="materialId" label="物料" width="200" align="center">
           <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.materialId" style="width:170px">
+           <el-select placeholder="否" v-model="scope.row.materialId" style="width:170px" :disabled="scope.row.ioBillDetailId">
              <div v-for="item in materialList" :key="item.materialId">
               <el-option :label="item.name" :value="item.materialId"></el-option>
              </div>
@@ -184,24 +184,24 @@
         </el-table-column>
         <el-table-column prop="unitId" label="计量单位" width="130" align="center">
           <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.unitId" style="width:100px">
+           <el-select placeholder="否" v-model="scope.row.unitId" style="width:100px" :disabled="scope.row.ioBillDetailId">
              <div v-for="item in unitList" :key="item.measureUnitId">
                 <el-option :label="item.name" :value="item.measureUnitId"></el-option>
              </div>
            </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="qty" label="入库数量" width="130" align="center">
+        <el-table-column prop="qty" label="出库数量" width="130" align="center" >
           <template v-slot="scope">
-           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2"> </el-input-number>
+           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2" :disabled="scope.row.ioBillDetailId"> </el-input-number>
           </template>
         </el-table-column>
-         <!-- <el-table-column prop="qty" label="入库成本" width="130" align="center">
+        <el-table-column prop="changeCost" label="出库成本" width="130" align="center">
           <template v-slot="scope">
-           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2"> </el-input-number>
+           <el-input-number v-model="scope.row.changeCost" :controls="false" class="el-input-number2" :disabled="scope.row.ioBillDetailId"> </el-input-number>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="成本含税" width="100" align="center">
+         <!--<el-table-column prop="number" label="成本含税" width="100" align="center">
           <template v-slot="scope">
            <el-select placeholder="否" v-model="scope.row.number" style="width:70px">
              <el-option label="是" value=1 ></el-option>
@@ -211,7 +211,7 @@
         </el-table-column> -->
         <el-table-column prop="warehouseId" label="仓库" width="200" align="center">
           <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.warehouseId" style="width:170px">
+           <el-select placeholder="否" v-model="scope.row.warehouseId" style="width:170px" :disabled="scope.row.ioBillDetailId">
              <div v-for="item in warehouseList" :key="item.warehouseId">
                 <el-option :label="item.name" :value="item.warehouseId"></el-option>
              </div>>
@@ -220,7 +220,7 @@
         </el-table-column>
         <el-table-column prop="batchNo" label="批次号" width="230" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.batchNo" :controls="false"> </el-input>
+           <el-input v-model="scope.row.batchNo" :controls="false" :disabled="scope.row.ioBillDetailId"> </el-input>
           </template>
         </el-table-column>
         <!-- <el-table-column prop="qty" label="结算数量" width="130" align="center">
@@ -270,17 +270,17 @@
         </el-table-column> -->
         <el-table-column prop="remark" label="备注" width="230" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.remark"> </el-input>
+           <el-input v-model="scope.row.remark" :disabled="scope.row.ioBillDetailId"> </el-input>
           </template>
         </el-table-column>
         <el-table-column prop="remark2" label="备注2" width="230" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.remark2" > </el-input>
+           <el-input v-model="scope.row.remark2" :disabled="scope.row.ioBillDetailId" > </el-input>
           </template>
         </el-table-column>
         <el-table-column prop="remark3" label="备注2" width="230" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.remark3" > </el-input>
+           <el-input v-model="scope.row.remark3" :disabled="scope.row.ioBillDetailId" > </el-input>
           </template>
         </el-table-column>
         
@@ -299,11 +299,25 @@
         width="20%"
         destroy-on-close
       >
-    <span class="confirm">确定删除此物料数据？</span>
+    <span class="confirm">确定删除此单据分录记录？<br/>(提示：记录删除不影响库存变化。)</span>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="handleDeleteSubtable">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
+  <el-dialog
+        v-model="dialogVisible2"
+        title="提示"
+        width="20%"
+        destroy-on-close
+      >
+    <span class="confirm">确定增加此单据分录记录？<br/>(提示：增加记录将影响库存且不可修改。)</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible2 = false">取消</el-button>
+        <el-button type="primary" @click="addSubTable">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -399,6 +413,7 @@ export default defineComponent({
     const AddSubTable = ref(false)
     const multipleSelection = ref([{}])
     const dialogVisible = ref(false)
+    const dialogVisible2 = ref(false)
 
     const success = (message:string) => {
       ElMessage({
@@ -412,9 +427,9 @@ export default defineComponent({
     }
 
     const handleSave = (type:string) => {
-      loading.value = true
       if (props.edit_type === 'edit') {
         if (type === 'header') {
+          loading.value = true
           const data = InventorylossdeliveryDetail.value
           data.updateTime = undefined
           data.createTime = undefined
@@ -431,40 +446,12 @@ export default defineComponent({
               console.log(err)
               loading.value = false
             })
-        } else if (type === 'sub' && AddSubTable.value === false) {
-          InventorylossdeliverySubTableDetail.value.map((p) => {
-            const data:any = p
-            data.modifiedDate = undefined
-            AxiosApi.put('billDetail/update', JSON.stringify(data))
-              .then((res:AxiosResponse) => {
-                console.log(res)
-                success('保存成功！')
-                props.handleClose()
-                props.loadInventorylossdeliverylist(1)
-                loading.value = false
-              })
-              .catch((err) => {
-                error('保存失败！')
-                console.log(err)
-                loading.value = false
-              })
-          })
         } else if (type === 'sub' && AddSubTable.value === true) {
-          AxiosApi.post('billDetail/add', JSON.stringify(InventorylossdeliverySubTableDetail.value[InventorylossdeliverySubTableDetail.value.length - 1]))
-            .then((res) => {
-              console.log(res)
-              success('保存成功')
-              props.loadInventorylossdeliverylist(1)
-              loading.value = false
-            })
-            .catch((err) => {
-              console.log(err)
-              error('保存失败')
-              loading.value = false
-            })
+          dialogVisible2.value = true
         }
       } else if (props.edit_type === 'add') {
         if (type === 'header') {
+          loading.value = true
           AxiosApi.post('billHeader/add', JSON.stringify(InventorylossdeliveryDetail.value))
             .then((res) => {
               console.log(res)
@@ -478,24 +465,54 @@ export default defineComponent({
               loading.value = false
             })
         } else if (type === 'sub') {
-          AxiosApi.post('billDetail/add', JSON.stringify(InventorylossdeliverySubTableDetail.value))
-            .then((res) => {
-              console.log(res)
-              success('保存成功')
-              props.loadInventorylossdeliverylist(1)
+          dialogVisible2.value = true
+        }      
+      }
+    }
+    
+    // else if (type === 'sub' && AddSubTable.value === false) {
+    //   InventorylossdeliverySubTableDetail.value.map((p) => {
+    //     const data:any = p
+    //     data.modifiedDate = undefined
+    //     AxiosApi.put('billDetail/update', JSON.stringify(data))
+    //       .then((res:AxiosResponse) => {
+    //         console.log(res)
+    //         success('保存成功！')
+    //         props.handleClose()
+    //         props.loadInventorylossdeliverylist(1)
+    //         loading.value = false
+    //       })
+    //       .catch((err) => {
+    //         error('保存失败！')
+    //         console.log(err)
+    //         loading.value = false
+    //       })
+    //   })
+    // } 
+
+    const handleSelectionChange = (val: any[]) => {
+      multipleSelection.value = val
+    }
+
+    const addSubTable = () => {
+      InventorylossdeliverySubTableDetail.value.map((p:any) => {
+        if (!p.ioBillDetailId) {
+          const data:any = p
+          data.modifiedDate = undefined
+          AxiosApi.post('billDetail/add', JSON.stringify(data))
+            .then((res:AxiosResponse) => {
+              console.log(res)  
+              success('添加成功！')  
+              loadInventorylossdeliveryHeaderDetail()    
+              dialogVisible2.value = false
               loading.value = false
             })
             .catch((err) => {
               console.log(err)
-              error('保存失败')
               loading.value = false
             })
-        }      
-      }
-    }
-
-    const handleSelectionChange = (val: any[]) => {
-      multipleSelection.value = val
+        }
+      })
     }
 
     const handleAddSubtable = () => {
@@ -563,8 +580,10 @@ export default defineComponent({
       dialogVisible.value = false
     }
 
-    const handleConfirm = () => {
-      dialogVisible.value = true
+    const handleConfirm = (type:string) => {
+      if (type === 'delete') {
+        dialogVisible.value = true
+      }
     }
 
     onMounted(() => {
@@ -590,7 +609,10 @@ export default defineComponent({
       handleSelectionChange,
       handleDeleteSubtable,
       dialogVisible,
-      handleConfirm
+      handleConfirm,
+      AddSubTable,
+      dialogVisible2,
+      addSubTable
     }
   }
 })
