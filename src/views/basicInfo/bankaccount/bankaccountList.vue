@@ -9,7 +9,7 @@
             <el-form-item label="账号" required>
                <el-input v-model="formLabelAligns.accountNo"></el-input>
             </el-form-item>
-            <el-form-item label="账户名称">
+            <el-form-item label="账户名称" required>
                 <el-input v-model="formLabelAligns.name"></el-input>
             </el-form-item>
             <el-form-item label="币种" required>
@@ -56,7 +56,7 @@
         </el-form>
         <div class="footer">
             <el-button @click="handleCloseDrawer">取消</el-button>
-            <el-button type="primary" @click="handleSave">确定</el-button>
+            <el-button type="primary" @click="handleConfirm">确定</el-button>
         </div>
          <el-dialog
             v-model="dialogVisible"
@@ -138,6 +138,14 @@ export default defineComponent({
       ElMessage.error(message)
     }
 
+    const handleConfirm = () => {
+      if (formLabelAlign.formLabelAligns.accountNo === '' || formLabelAlign.formLabelAligns.name === '' || formLabelAlign.formLabelAligns.currency === '') {
+        error('名称、编码、币种不能为空！')
+        return
+      }
+      dialogVisible.value = true
+    }
+
     const loadMarehouse = () => {
       AxiosApi.get(`bankAccount/find?id=${props.BankAccountId}`)
         .then((res) => {
@@ -165,7 +173,7 @@ export default defineComponent({
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
-            props.LoadBankAccountData()
+            props.LoadBankAccountData(1)
             success('修改成功！')
           })
           .catch((err) => {
@@ -179,7 +187,7 @@ export default defineComponent({
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
-            props.LoadBankAccountData()
+            props.LoadBankAccountData(1)
             success('添加成功！') 
           })
           .catch((err) => {
@@ -201,7 +209,8 @@ export default defineComponent({
       ...toRefs(formLabelAlign),
       handleSave,
       dialogVisible,
-      CurrencyData
+      CurrencyData,
+      handleConfirm
     }
   }
 })
@@ -222,5 +231,9 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+}
+
+.el-input.is-disabled .el-input__inner{
+  color: black !important;;
 }
 </style>

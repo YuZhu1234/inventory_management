@@ -55,7 +55,7 @@
         </el-form>
         <div class="footer">
             <el-button @click="handleCloseDrawer">取消</el-button>
-            <el-button type="primary" @click="handleSave">确定</el-button>
+            <el-button type="primary" @click="handleConfirm">确定</el-button>
         </div>
          <el-dialog
             v-model="dialogVisible"
@@ -107,7 +107,7 @@ export default defineComponent({
       formLabelAligns:{
         createBy: '',
         createTime: null,
-        isEnabled: null,
+        isEnabled: 0,
         materialId: '',
         name: '',
         remark:'',
@@ -137,6 +137,14 @@ export default defineComponent({
       ElMessage.error(message)
     }
 
+    const handleConfirm = () => {
+      if (formLabelAlign.formLabelAligns.code === '' || formLabelAlign.formLabelAligns.name === '' || formLabelAlign.formLabelAligns.unitId === 0 || formLabelAlign.formLabelAligns.categoryId === 0) {
+        error('请确认所有必选项均选择或填写！')
+        return
+      }
+      dialogVisible.value = true
+    }
+
     const loadMaterialist = () => {
       AxiosApi.get(`material/find?id=${props.MateriaId}`)
         .then((res) => {
@@ -154,7 +162,7 @@ export default defineComponent({
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
-            props.loadMateriaData()
+            props.loadMateriaData(1)
             success('修改成功！')
           })
           .catch((err) => {
@@ -183,7 +191,7 @@ export default defineComponent({
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
-            props.loadMateriaData()
+            props.loadMateriaData(1)
             success('添加成功！') 
           })
           .catch((err) => {
@@ -226,7 +234,8 @@ export default defineComponent({
       handleSave,
       dialogVisible,
       MeasurementUnitData,
-      materialClassificationData
+      materialClassificationData,
+      handleConfirm
     }
   }
 })
@@ -247,6 +256,10 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+}
+
+.el-input.is-disabled .el-input__inner{
+  color: black !important;;
 }
 
 </style>

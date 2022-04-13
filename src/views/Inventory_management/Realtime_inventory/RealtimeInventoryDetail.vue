@@ -10,13 +10,28 @@
                 <el-input v-model="formLabelAligns.batchNo"></el-input>
             </el-form-item>
             <el-form-item label="仓库" required>
-                <el-input v-model="formLabelAligns.warehouseName"></el-input>
+               <el-select v-model="formLabelAligns.warehouseId" class="select" placeholder="请选择" :disabled="disabled">
+                    <el-option label="请选择" :value="0"></el-option>
+                    <div v-for="item in warehouseList" :key="item.warehouseId">
+                        <el-option :label="item.name" :value="item.warehouseId"></el-option>
+                    </div>
+                </el-select>
             </el-form-item>
             <el-form-item label="物料" required >
-                <el-input v-model="formLabelAligns.materialName"></el-input>
+               <el-select v-model="formLabelAligns.materialId" class="select" placeholder="请选择" :disabled="disabled">
+                    <el-option label="请选择" :value="0"></el-option>
+                    <div v-for="item in materialList" :key="item.materialId">
+                        <el-option :label="item.name" :value="item.materialId"></el-option>
+                    </div>
+                </el-select>
             </el-form-item>
             <el-form-item label="计量单位" required>
-               <el-input v-model="formLabelAligns.materialName"></el-input>
+               <el-select v-model="formLabelAligns.unitId" class="select" placeholder="请选择" :disabled="disabled">
+                    <el-option label="请选择" :value="0"></el-option>
+                    <div v-for="item in unitList" :key="item.materialCategoryId">
+                        <el-option :label="item.name" :value="item.materialCategoryId"></el-option>
+                    </div>
+                </el-select>
             </el-form-item>
             <el-form-item label="数量" required>
                 <el-input v-model="formLabelAligns.qty"></el-input>
@@ -31,7 +46,12 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="供应商" >
-              <el-input v-model="formLabelAligns.supplierName"></el-input>
+               <el-select v-model="formLabelAligns.supplierId" class="select" placeholder="请选择" :disabled="disabled">
+                    <el-option label="请选择" :value="0"></el-option>
+                    <div v-for="item in supplierList" :key="item.supplierId">
+                        <el-option :label="item.name" :value="item.supplierId"></el-option>
+                    </div>
+                </el-select>
                 <!-- <el-select v-model="formLabelAligns.isEnabled" class="select">
                    <el-option label="是" :value='1' ></el-option>
                    <el-option label="否" :value='0' ></el-option>
@@ -58,7 +78,7 @@
         </el-form>
         <div class="footer">
             <el-button @click="handleClose">取消</el-button>
-            <el-button type="primary" @click="handleSave">确定</el-button>
+            <el-button type="primary" @click="handleSave" disabled>确定</el-button>
         </div>
          <el-dialog
             v-model="dialogVisible"
@@ -70,8 +90,7 @@
             <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="handleSave"
-                >确定</el-button
+                <el-button type="primary" @click="handleSave">确定</el-button
                 >
             </span>
             </template>
@@ -93,11 +112,11 @@ export default defineComponent({
       required:true
     },
     warehouseId:{
-      type:String,
+      type:Number,
       required:true
     },
     materialId:{
-      type:String,
+      type:Number,
       required:true
     },
     edit_type:{
@@ -143,6 +162,10 @@ export default defineComponent({
     const dialogVisible = ref(false)
     const ClassificationList = ref([{}])
     const disabled = ref(false)
+    const materialList = ref([{}])
+    const warehouseList = ref([{}])
+    const supplierList = ref([{}])
+    const unitList = ref([{}])
 
     const success = (message:string) => {
       ElMessage({
@@ -156,8 +179,14 @@ export default defineComponent({
     }
 
     const handleSave = () => {
+      const data:any = formLabelAlign.formLabelAligns
+      data.updateTime = undefined
+      data.createTime = undefined
+      data.unitId = undefined
+      data.unitName = undefined
+      data.modifiedDate = undefined
       if (props.edit_type === 'edit') {
-        AxiosApi.put('materialCategory/update', JSON.stringify(formLabelAlign.formLabelAligns))
+        AxiosApi.put('inventory/update', JSON.stringify(data))
           .then((res) => {
             props.handleClose()
             dialogVisible.value = false
@@ -170,8 +199,8 @@ export default defineComponent({
             props.handleClose()
             error('修改失败！')
           })
-      } else if (props.edit_type === 'add' || props.edit_type === 'subordinate') {
-        AxiosApi.post('materialCategory/add', JSON.stringify(formLabelAlign.formLabelAligns))
+      } else if (props.edit_type === 'add') {
+        AxiosApi.post('inventory/add', JSON.stringify(data))
           .then((res) => {
             props.handleClose()
             dialogVisible.value = false
@@ -192,38 +221,31 @@ export default defineComponent({
         .then((res) => {
           console.log(res)
           formLabelAlign.formLabelAligns = res.data.result[0]
+          materialList.value = res.data.materialList
+          warehouseList.value = res.data.warehouseList
+          supplierList.value = res.data.supplierList
         })
         .catch((err) => {
           console.log(err)
-          error('获取物料分类信息失败！')
-        })
-    }
-
-    const LoadMaterialClassificationlist = () => {
-      AxiosApi.get('materialCategory/list')
-        .then((res:AxiosResponse) => {
-          ClassificationList.value = res.data.result
-        }).catch((err) => {
-          console.log(err)
-          error('获取物料分类信息失败!')
+          error('获取仓库库存信息失败！')
         })
     }
 
     onMounted(() => {
       if (props.edit_type === 'edit') {
         loadMaterialist()
-      } else if (props.edit_type === 'subordinate') {
-        // formLabelAlign.formLabelAligns.pid = props.inventory
-        disabled.value = true
       }
-      LoadMaterialClassificationlist()
     })
     return {
       ...toRefs(formLabelAlign),
       handleSave,
       dialogVisible,
       ClassificationList,
-      disabled
+      disabled,
+      materialList,
+      warehouseList,
+      supplierList,
+      unitList
     }
   }
 })

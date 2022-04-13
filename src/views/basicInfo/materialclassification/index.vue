@@ -2,8 +2,8 @@
     <Card class="customer_card">
        <div class="header">
             <el-button type="text" class="header_button" @click="handleClick('none', 'add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
-            <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
-            <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
+            <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
+            <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button> -->
        </div>
        <el-table 
          :data="materialClassificationData"
@@ -11,6 +11,7 @@
          header-row-style="color:black" 
          style="border: 1px solid rgb(245,244,245); max-width:1690px"
          row-key="materialCategoryId"
+         v-loading="loading"
         >
         <el-table-column fixed type="selection" sortable width="55" />
         <el-table-column fixed prop="name" sortable label="名称" width="300"/>
@@ -45,10 +46,10 @@
           </template>
         </el-table-column>
        </el-table>
-      <template class="pagination" >
+      <!-- <template class="pagination" >
         <el-pagination background="blue" layout="prev, pager, next" :total="1000">
         </el-pagination>
-      </template>
+      </template> -->
     <el-drawer
           v-model="drawer"
           title="编辑"
@@ -69,10 +70,10 @@
       <el-dialog
         v-model="dialogVisible2"
         title="提示"
-        width="20%"
+        width="400px"
         destroy-on-close
       >
-    <span class="confirm">确定删除此物料分类？</span>
+    <span class="confirm">确定删除此物料分类<span style="color:red">(包括其以下层次所有物料)</span>？</span>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible2 = false">取消</el-button>
@@ -102,8 +103,8 @@ export default defineComponent({
   name:'MaterialClassification',
   components:{
     Plus,
-    Download,
-    Upload,
+    // Download,
+    // Upload,
     ArrowDown,
     MateriaClassificationlist
   },
@@ -113,6 +114,7 @@ export default defineComponent({
     const drawer = ref(false)
     const dialogVisible2 = ref(false)
     const edit_type = ref('')
+    const loading = ref(false)
 
     const success = (message:string) => {
       ElMessage({
@@ -163,6 +165,7 @@ export default defineComponent({
     }
 
     const handleClassification = (Classification:any) => {
+      loading.value = true
       let datalist:any[] = []
       const a = Classification?.filter((item:any) => {
         return item.pid === 0
@@ -183,15 +186,19 @@ export default defineComponent({
       }
       findChildren(datalist)
       materialClassificationData.value = datalist
+      loading.value = false
     }
 
     const loadMarehousedata = () => {
+      loading.value = true
       AxiosApi.get('materialCategory/list')
         .then((res:AxiosResponse) => {
+          loading.value = false
           handleClassification(res.data.result)
         }).catch((err) => {
           console.log(err)
           error('获取物料分类信息失败!')
+          loading.value = false
         })
     }
 
@@ -207,7 +214,8 @@ export default defineComponent({
       edit_type,
       handleCloseDrawer,
       MaterialCategoryId,
-      loadMarehousedata
+      loadMarehousedata,
+      loading
     }
   }
 })
@@ -268,6 +276,9 @@ export default defineComponent({
 }
 .overflowAuto::-webkit-scrollbar-thumb {
     background: rgb(224, 214, 235);
+}
+.el-input.is-disabled .el-input__inner{
+  color: black !important;;
 }
 
 </style>

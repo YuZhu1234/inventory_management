@@ -2,10 +2,10 @@
     <Card class="customer_card">
         <el-form :inline="true" class="demo-form-inline">
             <el-form-item label="编码" class="encode">
-              <el-input placeholder="请输入编码"></el-input>
+              <el-input placeholder="请输入编码" v-model="searchCode"></el-input>
             </el-form-item>
             <el-form-item label="名称" class="encode">
-              <el-input placeholder="请输入编码"></el-input>
+              <el-input placeholder="请输入编码" v-model="searchName"></el-input>
             </el-form-item>
             <el-form-item  class="encode" label="物料分类">
                <el-select v-model="classificationSelect" class="select" placeholder="请选择">
@@ -16,16 +16,23 @@
                 </el-select>
             </el-form-item>
             <el-form-item class="buttongroup">
-              <el-button type="primary" class="button"><el-icon><search /></el-icon>&nbsp;查询</el-button>
-              <el-button type="primary" class="button"><el-icon><refresh /></el-icon>&nbsp;重置</el-button>
+              <el-button type="primary" class="button" @click="onQuery"><el-icon><search /></el-icon>&nbsp;查询</el-button>
+              <el-button type="primary" class="button" @click="refresh"><el-icon><refresh /></el-icon>&nbsp;重置</el-button>
             </el-form-item>
        </el-form>
        <div class="header">
             <el-button type="text" class="header_button" @click="handleAdd"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
-            <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
-            <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
+            <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
+            <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button> -->
        </div>
-       <el-table :data="MateriaData" highlight-current-row="true" border header-row-style="color:black" style="border: 1px solid rgb(245,244,245)">
+       <el-table 
+         :data="MateriaData" 
+         highlight-current-row="true" 
+         border 
+         header-row-style="color:black" 
+         style="border: 1px solid rgb(245,244,245)"
+         v-loading="loading"
+        >
         <el-table-column fixed type="index" label="#" width="55" />
         <el-table-column fixed prop="code" label="编码" width="200" />
         <el-table-column fixed prop="name" label="名称" width="200"/>
@@ -63,7 +70,14 @@
         </el-table-column>
        </el-table>
       <template class="pagination" >
-        <el-pagination background="blue" layout="prev, pager, next" :total="1000">
+        <el-pagination
+          :page-size="10" 
+          background="blue" 
+          layout="prev, pager, next" 
+          :total="total"
+          :currentPage="current_page"
+          @current-change="handleCurrentChange"
+        >
         </el-pagination>
       </template>
       <el-drawer
@@ -120,8 +134,8 @@ export default defineComponent({
   name:'Materia',
   components:{
     Plus,
-    Download,
-    Upload,
+    // Download,
+    // Upload,
     ArrowDown,
     Materiallist,
     Refresh,
@@ -134,7 +148,17 @@ export default defineComponent({
     const edit_type = ref('')
     const dialogVisible2 = ref(false)
     const materialClassificationData = ref([{}])
-    const classificationSelect = ref(0)
+    const classificationSelect = ref(null)
+    const searchCode = ref('')
+    const searchName = ref('')
+    const current_page = ref(1)
+    const total = ref(0)
+    const loading = ref(false)
+
+    const handleCurrentChange = (val: number) :void => {
+      current_page.value = val
+      loadMateriaData(val)
+    }
 
     const handleClick = (materiaId:string, type:string) :void => {
       if (type === 'edit') {
@@ -167,12 +191,29 @@ export default defineComponent({
       ElMessage.error(message)
     }
 
+    const refresh = () => {
+      loadMateriaData(1)
+      searchName.value = ''
+      searchCode.value = ''
+      classificationSelect.value = null
+    }
+
+    const onQuery = () => {
+      console.log(searchCode.value, searchName.value, classificationSelect.value)
+      AxiosApi.get(`material/list?${searchCode.value && `code=${searchCode.value}`}${searchName.value && `&name=${searchName.value}`}${classificationSelect.value !== null ? `&categoryId=${classificationSelect.value}` : ''}`)
+        .then((res:AxiosResponse) => {
+          MateriaData.value = res.data.result
+        }).catch((err) => {
+          console.log(err)
+        })
+    }
+
     const handleDelete = () => {
       AxiosApi.delete(`material/delete?id=${MateriaId.value}`)
         .then((res) => {
           success('删除成功！')
           dialogVisible2.value = false
-          loadMateriaData()
+          loadMateriaData(1)
         })
         .catch((err) => {
           error('删除失败！')
@@ -190,19 +231,22 @@ export default defineComponent({
         })
     }
 
-    const loadMateriaData = () => {
-      AxiosApi.get('material/list')
+    const loadMateriaData = (page:number) => {
+      loading.value = true
+      AxiosApi.get(`material/list?pageNum=${page}&pageSize=10`)
         .then((res:AxiosResponse) => {
           MateriaData.value = res.data.result
+          loading.value = false
           console.log(res)
         }).catch((err:any) => {
           console.log(err)
+          loading.value = false
           error('获取物料信息失败!')
         })
     }
 
     onMounted(() => {
-      loadMateriaData()
+      loadMateriaData(1)
       LoadMeasurementUnitlist()
     })
     return {
@@ -217,7 +261,14 @@ export default defineComponent({
       handleDelete,
       loadMateriaData,
       materialClassificationData,
-      classificationSelect
+      classificationSelect,
+      onQuery,
+      refresh,
+      searchCode,
+      searchName,
+      handleCurrentChange,
+      total,
+      loading
     }
   }
 })
@@ -279,6 +330,10 @@ export default defineComponent({
 }
 .overflowAuto::-webkit-scrollbar-thumb {
     background: rgb(224, 214, 235);
+}
+
+.el-input.is-disabled .el-input__inner{
+  color: black !important;
 }
 
 </style>

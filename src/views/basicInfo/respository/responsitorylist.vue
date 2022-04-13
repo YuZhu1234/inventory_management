@@ -6,9 +6,9 @@
             :model="formLabelAligns"
             style="max-width: 460px"
         >
-            <el-form-item label="父级">
+            <el-form-item label="父级" required>
                <el-select v-model="formLabelAligns.pid" class="select" placeholder="请选择">
-                    <el-option label="请选择" :value="0"></el-option>
+                    <el-option label="无" :value="0"></el-option>
                     <div v-for="item in Warehousedata" :key="item.warehouseId">
                         <el-option :label="item.name" :value="item.warehouseId"></el-option>
                     </div>
@@ -17,14 +17,14 @@
             <el-form-item label="编码" required>
                 <el-input v-model="formLabelAligns.code"></el-input>
             </el-form-item>
-            <el-form-item label="名称">
+            <el-form-item label="名称" required>
                 <el-input v-model="formLabelAligns.name"></el-input>
             </el-form-item>
             <el-form-item label="电话">
                <el-input v-model="formLabelAligns.phone"></el-input>
             </el-form-item>
             <el-form-item label="是否启用" required>
-                <el-select v-model="formLabelAligns.isEnabled" class="select">
+                <el-select v-model="formLabelAligns.isEnabled" class="select" placeholder="请选择">
                    <el-option label="启用" :value='1' ></el-option>
                    <el-option label="禁用" :value='0' ></el-option>
                 </el-select>
@@ -47,7 +47,7 @@
         </el-form>
         <div class="footer">
             <el-button @click="handleCloseDrawer">取消</el-button>
-            <el-button type="primary" @click="handleSave">确定</el-button>
+            <el-button type="primary" @click="handleConfirm">确定</el-button>
         </div>
          <el-dialog
             v-model="dialogVisible"
@@ -99,15 +99,16 @@ export default defineComponent({
       formLabelAligns:{
         createBy: '',
         createTime: null,
-        isBased: null,
-        isEnabled: null,
-        warehouseId: '',
+        isBased: 0,
+        isEnabled: 0,
+        warehouseId: 0,
         name: '',
         remark:'',
-        pid: '',
+        pid: 0,
         updateBy: '',
         updateTime: null,
-        version: null
+        version: null,
+        code:''
       }
     })
     const dialogVisible = ref(false)
@@ -122,6 +123,14 @@ export default defineComponent({
 
     const error = (message:string) => {
       ElMessage.error(message)
+    }
+
+    const handleConfirm = () => {
+      if (formLabelAlign.formLabelAligns.code === '' || formLabelAlign.formLabelAligns.name === '') {
+        error('编码和名称不能为空！')
+        return
+      }
+      dialogVisible.value = true
     }
 
     const loadMarehouse = () => {
@@ -187,7 +196,8 @@ export default defineComponent({
       ...toRefs(formLabelAlign),
       handleSave,
       dialogVisible,
-      Warehousedata
+      Warehousedata,
+      handleConfirm
     }
   }
 })
@@ -208,5 +218,8 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+}
+.el-input.is-disabled .el-input__inner{
+  color: black !important;;
 }
 </style>

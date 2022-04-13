@@ -98,10 +98,10 @@ export default defineComponent({
         createTime: null,
         factor: null,
         isBased: null,
-        isEnabled: null,
+        isEnabled: 0,
         measureUnitId: '',
         name: '',
-        pid: null,
+        pid: 0,
         symbol: '',
         updateBy: '',
         updateTime: null,
@@ -160,7 +160,7 @@ export default defineComponent({
           pid: formLabelAlign.formLabelAligns.pid,
           symbol: formLabelAlign.formLabelAligns.symbol,
           updateBy: 'test',
-          version: 0
+          version: null
         }      
         AxiosApi.post('measureUnit/add', JSON.stringify(data))
           .then((res) => {
@@ -179,6 +179,10 @@ export default defineComponent({
     }
 
     const handleConfirm = () => {
+      if (formLabelAlign.formLabelAligns.symbol === '' || formLabelAlign.formLabelAligns.name === '' || formLabelAlign.formLabelAligns.factor === '') {
+        error('请确认所有必选项均选择或填写！')
+        return
+      }
       dialogVisible.value = true
     }
 

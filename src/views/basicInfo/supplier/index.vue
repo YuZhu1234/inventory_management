@@ -16,7 +16,13 @@
       <el-button type="primary" @click="onAdd" class="query" >添加</el-button>
     </el-form-item>
   </el-form>
-  <el-table :data="SupplierData" class="tabel" header-row-style="color:black" style="border: 1px solid rgb(245,244,245)" >
+  <el-table 
+    :data="SupplierData" 
+    class="tabel" 
+    header-row-style="color:black" 
+    style="border: 1px solid rgb(245,244,245)"
+    v-loading="loading" 
+    >
     <el-table-column prop="code" label="编码" :width="columnwidth" fixed />
     <el-table-column prop="name" label="名称" :width="columnwidth" />
     <el-table-column prop="shortName" label="简称" :width="columnwidth" />
@@ -66,7 +72,7 @@
   </template>
   <el-dialog
     v-model="dialogVisible"
-    title="供应商-详情"
+    title="供应商-编辑"
     width="1000px"
     destroy-on-close
   >
@@ -78,7 +84,7 @@
     width="20%"
     destroy-on-close
   >
-    <span class="confirm">确定删除此客户？</span>
+    <span class="confirm">确定删除此供应商？</span>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible2 = false">取消</el-button>
@@ -115,6 +121,7 @@ export default defineComponent({
     const columnwidth = ref('150px')
     const current_page = ref(1)
     const total = ref(0)
+    const loading = ref(false)
 
     const onAdd = ():void => {
       type.value = 'add'
@@ -138,14 +145,6 @@ export default defineComponent({
     }
 
     const onQuery = ():void => {
-      // if (findType.value === 'ID') {
-      //   AxiosApi.get(`supplier/find?id=${findValue.value}`)
-      //     .then((res) => {
-      //       SupplierData.value = new Array(res.data.result )
-      //     }).catch((err) => {
-      //       console.log(err)
-      //     })
-      // } else 
       if (findType.value === '编码') {
         AxiosApi.get(`supplier/list?code=${findValue.value}&pageNum=1&pageSize=1000`).then((res) => {
           SupplierData.value = res.data.result
@@ -176,17 +175,21 @@ export default defineComponent({
     }
 
     const loaderSupplier = (curret_page: number) :void => {
+      loading.value = true
       AxiosApi.get(`supplier/list?pageNum=${curret_page}&pageSize=10`)
         .then((res:AxiosResponse) => {
           SupplierData.value = res.data.result
           total.value = res.data.totalNum
+          loading.value = false
         }).catch((err) => {
           console.log(err)
+          loading.value = false
         })
     }
 
-    const handleConfirm = (supplierId:number) :void => {
-      deleteID.value = supplierId
+    const handleConfirm = (supplierid:number) :void => {
+      deleteID.value = supplierid
+      supplierId.value = ''
       dialogVisible2.value = true
     }
 
@@ -229,7 +232,8 @@ export default defineComponent({
       columnwidth,
       current_page,
       handleCurrentChange,
-      total
+      total,
+      loading
     }
   }
 })

@@ -112,7 +112,9 @@
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="源单类型:" :label-width=LabeWidth required>
-      <el-input  v-model="OtherWarehousingDetail.stockIoName" placeholder="源单类型" disabled></el-input>
+     <el-select v-model="OtherWarehousingDetail.sourceType" placeholder="源单类型" class="option2">   
+          <el-option :label="采购入库单" :value="1"></el-option>
+      </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="源单号:" :label-width=LabeWidth>
       <el-input  v-model="OtherWarehousingDetail.sourceNo" placeholder="源单号"></el-input>
@@ -129,21 +131,21 @@
      <el-form-item label="备注:" :label-width=LabeWidth class="full_input">
       <el-input v-model="OtherWarehousingDetail.remark" placeholder="请输入创建时间"></el-input>
     </el-form-item>
-    <el-form-item class="purchaseearehouse1" label="附件:" :label-width=LabeWidth>
+    <!-- <el-form-item class="purchaseearehouse1" label="附件:" :label-width=LabeWidth>
       <el-button> 点击上传 </el-button>
-    </el-form-item>
+    </el-form-item> -->
    </el-form>
 
-   <div style="display:flex;justify-content:right">
+   <!-- <div style="display:flex;justify-content:right">
        <el-button @click="handleClose">取消 </el-button>
        <el-button type="primary" @click="handleSave('header')">保存 </el-button>
-    </div>
+    </div> -->
 
    </el-form>
 
 <!-- 从表部分 -->
 
-   <div style="margin:30px">
+   <div style="margin:30px" >
       <el-tabs 
         v-model="activeName" 
         class="demo-tabs" 
@@ -151,7 +153,7 @@
         v-loading="loading">
         <el-tab-pane label="明细" name="明细">
           <div style="display:flex;margin-bottom:20px">
-          <el-button type="primary" @click="handleAddSubtable"><el-icon><plus /></el-icon>&nbsp;新增 </el-button>
+          <el-button type="primary" @click="handleAddSubtable" ><el-icon><plus /></el-icon>&nbsp;新增 </el-button>
           <el-button type="primary" @click="handleConfirm('delete')"><el-icon><minus /></el-icon>&nbsp;删除 </el-button>
           </div>
         <el-table 
@@ -161,6 +163,7 @@
              header-row-style="color:black" 
              style="border: 1px solid rgb(245,244,245)"
              @selection-change="handleSelectionChange"
+             v-if="edit_type === 'edit'"
         >
         <el-table-column fixed type="selection" sortable width="55" />
         <el-table-column prop="detailNo" label="分录号" width="80" align="center">
@@ -196,19 +199,11 @@
            <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2" :disabled="scope.row.ioBillDetailId"> </el-input-number>
           </template>
         </el-table-column>
-        <el-table-column prop="changeCost" label="入库成本" width="130" align="center">
+         <el-table-column prop="changeCost" label="入库成本" width="130" align="center">
           <template v-slot="scope">
            <el-input-number v-model="scope.row.changeCost" :controls="false" class="el-input-number2" :disabled="scope.row.ioBillDetailId"> </el-input-number>
           </template>
         </el-table-column>
-         <!--<el-table-column prop="number" label="成本含税" width="100" align="center">
-          <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.number" style="width:70px">
-             <el-option label="是" value=1 ></el-option>
-             <el-option label="否" value=2 ></el-option>
-           </el-select>
-          </template>
-        </el-table-column> -->
         <el-table-column prop="warehouseId" label="仓库" width="200" align="center">
           <template v-slot="scope">
            <el-select placeholder="否" v-model="scope.row.warehouseId" style="width:170px" :disabled="scope.row.ioBillDetailId">
@@ -218,56 +213,11 @@
            </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="batchNo" label="批次号" width="230" align="center">
+        <el-table-column prop="batchNo" label="批次号" width="230" align="center" required>
           <template v-slot="scope">
-           <el-input v-model="scope.row.batchNo" :controls="false" :disabled="scope.row.ioBillDetailId"> </el-input>
+           <el-input  required v-model="scope.row.batchNo" :controls="false" :disabled="scope.row.ioBillDetailId"> </el-input>
           </template>
         </el-table-column>
-        <!-- <el-table-column prop="qty" label="结算数量" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="含税单价" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="税率" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
-          </template>
-        </el-table-column>
-         <el-table-column prop="number" label="税额" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="折让金额" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="折税金额" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="结算金额" width="150" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number3"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="已开票数量" width="150" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number3"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="已开票金额" width="150" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number3"> </el-input-number>
-          </template>
-        </el-table-column> -->
         <el-table-column prop="remark" label="备注" width="230" align="center">
           <template v-slot="scope">
            <el-input v-model="scope.row.remark" :disabled="scope.row.ioBillDetailId"> </el-input>
@@ -290,7 +240,7 @@
    </div>
     <div style="display:flex;justify-content:right">
        <el-button @click="handleClose">取消 </el-button>
-       <el-button type="primary" @click="handleSave('sub')">保存 </el-button>
+       <el-button type="primary" @click="handleSave()">保存 </el-button>
        <el-button type="primary">提交 </el-button>
     </div>
      <el-dialog
@@ -299,7 +249,7 @@
         width="20%"
         destroy-on-close
       >
-    <span class="confirm">确定删除此单据分录记录？<br/>(提示：记录删除不影响库存变化。)</span>
+    <span class="confirm">确定删除此记录？<br/>(提示：记录删除不影响库存变化。)</span>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
@@ -313,7 +263,7 @@
         width="20%"
         destroy-on-close
       >
-    <span class="confirm">确定增加此单据分录记录？<br/>(提示：增加记录将影响库存且不可修改。)</span>
+    <span class="confirm">确定增加此记录？<br/>(提示：增加记录将影响库存且不可修改。)</span>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible2 = false">取消</el-button>
@@ -428,7 +378,21 @@ export default defineComponent({
 
     const handleSave = (type:string) => {
       if (props.edit_type === 'edit') {
-        if (type === 'header') {
+        if (AddSubTable.value === true) {
+          loading.value = true
+          const data = OtherWarehousingDetail.value
+          data.updateTime = undefined
+          data.createTime = undefined
+          AxiosApi.put('billHeader/update', JSON.stringify(data))
+            .then((res:AxiosResponse) => {
+              dialogVisible2.value = true
+            })
+            .catch((err) => {
+              error('保存失败！')
+              console.log(err)
+              loading.value = false
+            })
+        } else {
           loading.value = true
           const data = OtherWarehousingDetail.value
           data.updateTime = undefined
@@ -446,49 +410,23 @@ export default defineComponent({
               console.log(err)
               loading.value = false
             })
-        } else if (type === 'sub' && AddSubTable.value === true) {
-          dialogVisible2.value = true
         }
-      } else if (props.edit_type === 'add') {
-        if (type === 'header') {
-          loading.value = true
-          AxiosApi.post('billHeader/add', JSON.stringify(OtherWarehousingDetail.value))
-            .then((res) => {
-              console.log(res)
-              success('保存成功')
-              props.loadOtherWarehousinglist(1)
-              loading.value = false
-            })
-            .catch((err) => {
-              console.log(err)
-              error('保存失败')
-              loading.value = false
-            })
-        } else if (type === 'sub') {
-          dialogVisible2.value = true
-        }      
+      } else if (props.edit_type === 'add') {    
+        loading.value = true
+        AxiosApi.post('billHeader/add', JSON.stringify(OtherWarehousingDetail.value))
+          .then((res) => {
+            console.log(res)
+            success('保存成功')
+            props.loadOtherWarehousinglist(1)
+            loading.value = false
+          })
+          .catch((err) => {
+            console.log(err)
+            error('保存失败')
+            loading.value = false
+          })
       }
     }
-    
-    // else if (type === 'sub' && AddSubTable.value === false) {
-    //   OtherWarehousingSubTableDetail.value.map((p) => {
-    //     const data:any = p
-    //     data.modifiedDate = undefined
-    //     AxiosApi.put('billDetail/update', JSON.stringify(data))
-    //       .then((res:AxiosResponse) => {
-    //         console.log(res)
-    //         success('保存成功！')
-    //         props.handleClose()
-    //         props.loadOtherWarehousinglist(1)
-    //         loading.value = false
-    //       })
-    //       .catch((err) => {
-    //         error('保存失败！')
-    //         console.log(err)
-    //         loading.value = false
-    //       })
-    //   })
-    // } 
 
     const handleSelectionChange = (val: any[]) => {
       multipleSelection.value = val
@@ -499,6 +437,7 @@ export default defineComponent({
         if (!p.ioBillDetailId) {
           const data:any = p
           data.modifiedDate = undefined
+          data.supplierId = OtherWarehousingDetail.value.supplierId
           AxiosApi.post('billDetail/add', JSON.stringify(data))
             .then((res:AxiosResponse) => {
               console.log(res)  
@@ -506,6 +445,7 @@ export default defineComponent({
               loadOtherWarehousingHeaderDetail()    
               dialogVisible2.value = false
               loading.value = false
+              props.loadOtherWarehousinglist(1)
             })
             .catch((err) => {
               console.log(err)
@@ -568,13 +508,15 @@ export default defineComponent({
 
     const handleDeleteSubtable = () => {
       multipleSelection.value.map((m:any) => {
-        AxiosApi.delete(`billDetail/delete?id=${m.ioBillDetailId}`)
-          .then(() => {
-            success('删除成功！')
-          })
-          .catch(() => {
-            error('删除失败')
-          })
+        if (m.ioBillDetailId) {
+          AxiosApi.delete(`billDetail/delete?id=${m.ioBillDetailId}`)
+            .then(() => {
+              success('删除成功！')
+            })
+            .catch(() => {
+              error('删除失败')
+            })
+        }
       })
       loadOtherWarehousingHeaderDetail()
       dialogVisible.value = false

@@ -17,14 +17,14 @@
             <el-form-item label="名称" required>
                 <el-input v-model="formLabelAligns.name"></el-input>
             </el-form-item>
-            <el-form-item label="编码" re >
+            <el-form-item label="编码" required >
                 <el-input v-model="formLabelAligns.code"></el-input>
             </el-form-item>
             <el-form-item label="全名">
                <el-input v-model="formLabelAligns.fullname"></el-input>
             </el-form-item>
             <el-form-item label="是否启用" required>
-                <el-select v-model="formLabelAligns.isEnabled" class="select">
+                <el-select v-model="formLabelAligns.isEnabled" class="select" placeholder="请选择">
                    <el-option label="启用" :value='1' ></el-option>
                    <el-option label="禁用" :value='0' ></el-option>
                 </el-select>
@@ -47,12 +47,12 @@
         </el-form>
         <div class="footer">
             <el-button @click="handleCloseDrawer">取消</el-button>
-            <el-button type="primary" @click="handleSave">确定</el-button>
+            <el-button type="primary" @click="handleConfirm">确定</el-button>
         </div>
          <el-dialog
             v-model="dialogVisible"
             title="提示"
-            width="20%"
+            width="300px"
             destroy-on-close
         >
             <span class="confirm">确定保存修改？</span>
@@ -99,14 +99,13 @@ export default defineComponent({
       formLabelAligns:{
         createBy: '',
         createTime: null,
-        isEnabled: null,
-        materialCategoryId: null,
+        isEnabled: 0,
+        materialCategoryId: 0,
         name: '',
         updateBy: '',
         updateTime: null,
         version: null,
         fullname:'',
-        unitId:'',
         pid:0,
         code:''
       }
@@ -126,9 +125,23 @@ export default defineComponent({
       ElMessage.error(message)
     }
 
+    const handleConfirm = () => {
+      if (formLabelAlign.formLabelAligns.code === '' || formLabelAlign.formLabelAligns.name === '') {
+        error('名称和编码不能为空')
+        return
+      }
+      dialogVisible.value = true
+    }
+
     const handleSave = () => {
+      const data:any = formLabelAlign.formLabelAligns
+      data.updateTime = undefined
+      data.createTime = undefined
       if (props.edit_type === 'edit') {
-        AxiosApi.put('materialCategory/update', JSON.stringify(formLabelAlign.formLabelAligns))
+        const data:any = formLabelAlign.formLabelAligns
+        data.updateTime = undefined
+        data.createTime = undefined
+        AxiosApi.put('materialCategory/update', JSON.stringify(data))
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
@@ -142,7 +155,7 @@ export default defineComponent({
             error('修改失败！')
           })
       } else if (props.edit_type === 'add' || props.edit_type === 'subordinate') {
-        AxiosApi.post('materialCategory/add', JSON.stringify(formLabelAlign.formLabelAligns))
+        AxiosApi.post('materialCategory/add', JSON.stringify(data))
           .then((res) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
@@ -193,7 +206,8 @@ export default defineComponent({
       handleSave,
       dialogVisible,
       ClassificationList,
-      disabled
+      disabled,
+      handleConfirm
     }
   }
 })
@@ -214,6 +228,10 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+}
+
+.el-input.is-disabled .el-input__inner{
+  color: black !important;;
 }
 
 </style>

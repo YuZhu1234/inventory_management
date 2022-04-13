@@ -2,14 +2,15 @@
     <Card class="customer_card">
       <div class="header">
         <el-button type="text" class="header_button" @click="handleAdd"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
-        <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
-        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
+        <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
+        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button> -->
       </div>
        <el-table
       :data="Warehousedata"
       style="border: 1px solid rgb(245,244,245)"
       highlight-current-row="true"
       row-key="warehouseId"
+      v-loading="loading"
     >
        <el-table-column fixed type="selection" sortable width="55" />
         <el-table-column fixed prop="name" sortable label="名称" width="300"/>
@@ -44,10 +45,10 @@
           </template>
         </el-table-column>
     </el-table>
-      <template class="pagination" >
+      <!-- <template class="pagination" >
         <el-pagination background="blue" layout="prev, pager, next" :total="1000">
         </el-pagination>
-      </template>
+      </template> -->
       <el-drawer
           v-model="drawer"
           title="编辑"
@@ -99,61 +100,18 @@ export default defineComponent({
   name:'Respository',
   components:{
     Plus,
-    Download,
-    Upload,
+    // Download,
+    // Upload,
     ArrowDown,
     Responsitorylist
   },
   setup () {
-    const tableData = [
-      {
-        id: 1,
-        date: '1',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Home'
-      },
-      {
-        id: 2,
-        date: '2',
-        name: 'Tom',
-        state: 'California',
-        city: 'Los Angeles',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: 'CA 90036',
-        tag: 'Office',
-        children:[
-          {
-            id: 21,
-            date: '2-1',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home'
-          },
-          {
-            id: 22,
-            date: '2-2',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office'
-          }
-        ]
-      }   
-    ]
     const Warehousedata = ref([{}])
     const drawer = ref(false)
     const WarehouseId = ref('')
     const edit_type = ref('')
     const dialogVisible2 = ref(false)
+    const loading = ref(false)
 
     const handleClick = (warehouseId:string, type:string) :void => {
       if (type === 'edit') {
@@ -187,6 +145,7 @@ export default defineComponent({
     }
 
     const handleWarehouse = (Warehouse:any) => {
+      loading.value = true
       let datalist:any[] = []
       const a = Warehouse?.filter((item:any) => {
         return item.pid === 0
@@ -207,6 +166,7 @@ export default defineComponent({
       }
       findChildren(datalist)
       Warehousedata.value = datalist
+      loading.value = false
     }
 
     const handleDelete = () => {
@@ -224,12 +184,15 @@ export default defineComponent({
     }
 
     const loadMarehousedata = () => {
+      loading.value = true
       AxiosApi.get('warehouse/list')
         .then((res:AxiosResponse) => {
+          loading.value = false
           handleWarehouse(res.data.result)
         }).catch((err) => {
           console.log(err)
           error('获取仓库信息失败!')
+          loading.value = false
         })
     }
 
@@ -246,7 +209,8 @@ export default defineComponent({
       handleCloseDrawer,
       dialogVisible2,
       handleDelete,
-      loadMarehousedata
+      loadMarehousedata,
+      loading
     }
   }
 })
@@ -269,7 +233,7 @@ export default defineComponent({
 }
 
 .header_button {
-  margin-right: 50px;
+  margin-left: 50px;
   font-weight: bold;
 }
 
@@ -297,6 +261,10 @@ export default defineComponent({
 }
 .overflowAuto::-webkit-scrollbar-thumb {
     background: rgb(224, 214, 235);
+}
+
+.el-input.is-disabled .el-input__inner{
+  color: black !important;;
 }
 
 </style>

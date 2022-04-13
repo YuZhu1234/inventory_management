@@ -1,9 +1,9 @@
 <template>
   <div class="top" >
-  <el-form :model="PurchaseWarehousingDetail" :label-width=LabeWidth label-position="right" v-loading="loading">
+  <el-form :model="CostAdjustmentDetail" :label-width=LabeWidth label-position="right" v-loading="loading">
    <el-form :inline="true" class="demo-form-inline" style="margin-left:20px">
     <el-form-item  class="billProcStatus" label="处理状态:" :label-width=LabeWidth>
-      <el-select v-model="PurchaseWarehousingDetail.billProcStatus" placeholder="是否通过" style="width:120px">
+      <el-select v-model="CostAdjustmentDetail.billProcStatus" placeholder="是否通过" style="width:120px">
          <el-option label="编制" :value=1 ></el-option>
          <el-option label="审核完成" value=23 ></el-option>
          <el-option label="编制完成" :value=13 ></el-option>
@@ -17,19 +17,19 @@
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否通过:" :label-width=LabeWidth>
-       <el-select v-model="PurchaseWarehousingDetail.isApproved" placeholder="是否通过" class="option">
+       <el-select v-model="CostAdjustmentDetail.isApproved" placeholder="是否通过" class="option">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否关闭:" :label-width=LabeWidth>
-      <el-select v-model="PurchaseWarehousingDetail.isClosed" placeholder="是否关闭" class="option">
+      <el-select v-model="CostAdjustmentDetail.isClosed" placeholder="是否关闭" class="option">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否作废:" :label-width=LabeWidth>
-      <el-select v-model="PurchaseWarehousingDetail.isVoided" placeholder="是否作废" class="option">
+      <el-select v-model="CostAdjustmentDetail.isVoided" placeholder="是否作废" class="option">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
@@ -41,37 +41,37 @@
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item  class="purchaseearehouse1" label="创建时间:" :label-width=LabeWidth>
-      <el-input disabled v-model="PurchaseWarehousingDetail.createTime" placeholder="请输入创建时间"></el-input>
+      <el-input disabled v-model="CostAdjustmentDetail.createTime" placeholder="请输入创建时间"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="创建人:" :label-width=LabeWidth>
-      <el-input disabled v-model="PurchaseWarehousingDetail.createBy" placeholder="创建人" ></el-input>
+      <el-input disabled v-model="CostAdjustmentDetail.createBy" placeholder="创建人" ></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="创建部门:" :label-width=LabeWidth>
-      <el-input disabled v-model="PurchaseWarehousingDetail.sysOrgCode" placeholder="创建部门" ></el-input>
+      <el-input disabled v-model="CostAdjustmentDetail.sysOrgCode" placeholder="创建部门" ></el-input>
     </el-form-item>
    </el-form>
 
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="生效时间:" :label-width=LabeWidth>
-      <el-input disabled v-model="PurchaseWarehousingDetail.effectiveTime" placeholder="请输入生效时间"></el-input>
+      <el-input disabled v-model="CostAdjustmentDetail.effectiveTime" placeholder="请输入生效时间"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="审核人:" :label-width=LabeWidth>
-      <el-input disabled v-model="PurchaseWarehousingDetail.approverId" placeholder="创建部门" ></el-input>
+      <el-input disabled v-model="CostAdjustmentDetail.approverId" placeholder="创建部门" ></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="流程:" :label-width=LabeWidth>
-     <el-input v-model="PurchaseWarehousingDetail.flowId" placeholder="流程" ></el-input>
+     <el-input v-model="CostAdjustmentDetail.flowId" placeholder="流程" ></el-input>
     </el-form-item>
    </el-form>
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="修改时间:" :label-width=LabeWidth>
-      <el-input disabled v-model="PurchaseWarehousingDetail.updateTime" placeholder="请输入创建时间"></el-input>
+      <el-input disabled v-model="CostAdjustmentDetail.updateTime" placeholder="请输入创建时间"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="修改人:" :label-width=LabeWidth>
-      <el-input disabled v-model="PurchaseWarehousingDetail.updateBy" placeholder="请输入修改人"></el-input>
+      <el-input disabled v-model="CostAdjustmentDetail.updateBy" placeholder="请输入修改人"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="是否红字:" :label-width=LabeWidth>
-      <el-select disabled v-model="PurchaseWarehousingDetail.isRubric" placeholder="是否红字" class="option2">
+      <el-select disabled v-model="CostAdjustmentDetail.isRubric" placeholder="是否红字" class="option2">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
@@ -83,42 +83,42 @@
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="单据编号:" :label-width=LabeWidth required>
-      <el-input v-model="PurchaseWarehousingDetail.billNo" placeholder="单据编号"></el-input>
+      <el-input v-model="CostAdjustmentDetail.billNo" placeholder="单据编号"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="单据日期:" :label-width=LabeWidth required>
-      <!-- <el-input v-model="PurchaseWarehousingDetail.billDate" placeholder="单据日期" ></el-input> -->
-      <el-date-picker v-model="PurchaseWarehousingDetail.billDate" type="date" value-format="YYYY-MM-DD" placeholder="单据日期" style="width:186px!important"/>
+      <!-- <el-input v-model="CostAdjustmentDetail.billDate" placeholder="单据日期" ></el-input> -->
+      <el-date-picker v-model="CostAdjustmentDetail.billDate" type="date" value-format="YYYY-MM-DD" placeholder="单据日期" style="width:186px!important"/>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="制单人:" :label-width=LabeWidth>
-     <el-input v-model="PurchaseWarehousingDetail.createBy" placeholder="制单人" ></el-input>
+     <el-input v-model="CostAdjustmentDetail.createBy" placeholder="制单人" ></el-input>
     </el-form-item>
    </el-form>
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="业务员:" :label-width=LabeWidth>
-      <el-input v-model="PurchaseWarehousingDetail.clerkId" placeholder="请输入创建时间"></el-input>
+      <el-input v-model="CostAdjustmentDetail.clerkId" placeholder="请输入创建时间"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="供应商:" :label-width=LabeWidth>
-      <el-select v-model="PurchaseWarehousingDetail.supplierId" placeholder="供应商" class="option2">
+      <el-select v-model="CostAdjustmentDetail.supplierId" placeholder="供应商" class="option2">
          <div v-for="item in supplierList" :key="item.supplierId">
               <el-option :label="item.name" :value="item.supplierId"></el-option>
           </div>
       </el-select>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="入库经办:" :label-width=LabeWidth>
-     <el-input v-model="PurchaseWarehousingDetail.handlerId" placeholder="入库经办"></el-input>
+     <el-input v-model="CostAdjustmentDetail.handlerId" placeholder="入库经办"></el-input>
     </el-form-item>
    </el-form>
 
    <el-form :inline="true" :model="formInline" class="demo-form-inline">
      <el-form-item class="purchaseearehouse1" label="源单类型:" :label-width=LabeWidth required>
-      <el-input  v-model="PurchaseWarehousingDetail.stockIoName" placeholder="源单类型" disabled></el-input>
+      <el-input  v-model="CostAdjustmentDetail.stockIoName" placeholder="源单类型" disabled></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="源单号:" :label-width=LabeWidth>
-      <el-input  v-model="PurchaseWarehousingDetail.sourceNo" placeholder="源单号"></el-input>
+      <el-input  v-model="CostAdjustmentDetail.sourceNo" placeholder="源单号"></el-input>
     </el-form-item>
     <el-form-item class="purchaseearehouse1" label="结算数量和金额是否等于入库:" label-width='230px'>
-      <el-select v-model="PurchaseWarehousingDetail.isSameSettle" placeholder="否" style="width:60px">
+      <el-select v-model="CostAdjustmentDetail.isSameSettle" placeholder="否" style="width:60px">
          <el-option label="是" :value=1 ></el-option>
          <el-option label="否" :value=0 ></el-option>
       </el-select>
@@ -127,17 +127,17 @@
 
    <el-form :model="formInline">
      <el-form-item label="备注:" :label-width=LabeWidth class="full_input">
-      <el-input v-model="PurchaseWarehousingDetail.remark" placeholder="请输入创建时间"></el-input>
+      <el-input v-model="CostAdjustmentDetail.remark" placeholder="请输入创建时间"></el-input>
     </el-form-item>
-    <el-form-item class="purchaseearehouse1" label="附件:" :label-width=LabeWidth>
+    <!-- <el-form-item class="purchaseearehouse1" label="附件:" :label-width=LabeWidth>
       <el-button> 点击上传 </el-button>
-    </el-form-item>
+    </el-form-item> -->
    </el-form>
 
-   <div style="display:flex;justify-content:right">
+   <!-- <div style="display:flex;justify-content:right">
        <el-button @click="handleClose">取消 </el-button>
        <el-button type="primary" @click="handleSave('header')">保存 </el-button>
-    </div>
+    </div> -->
 
    </el-form>
 
@@ -155,12 +155,13 @@
           <el-button type="primary" @click="handleConfirm('delete')"><el-icon><minus /></el-icon>&nbsp;删除 </el-button>
           </div>
         <el-table 
-             :data="PurchaseWarehousingSubTableDetail" 
+             :data="CostAdjustmentSubTableDetail" 
              highlight-current-row="true" 
              border 
              header-row-style="color:black" 
              style="border: 1px solid rgb(245,244,245)"
              @selection-change="handleSelectionChange"
+             v-if="edit_type === 'edit'"
         >
         <el-table-column fixed type="selection" sortable width="55" />
         <el-table-column prop="detailNo" label="分录号" width="80" align="center">
@@ -175,99 +176,60 @@
         </el-table-column>
          <el-table-column prop="materialId" label="物料" width="200" align="center">
           <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.materialId" style="width:170px" :disabled="scope.row.ioBillDetailId">
+           <el-select placeholder="否" v-model="scope.row.materialId" style="width:170px" :disabled="scope.row.ioBillDetailId" @change="handleSubtableSelectChange(scope.row.materialId,scope.row.warehouseId)">
              <div v-for="item in materialList" :key="item.materialId">
               <el-option :label="item.name" :value="item.materialId"></el-option>
              </div>
            </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="unitId" label="计量单位" width="130" align="center">
-          <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.unitId" style="width:100px" :disabled="scope.row.ioBillDetailId">
-             <div v-for="item in unitList" :key="item.measureUnitId">
-                <el-option :label="item.name" :value="item.measureUnitId"></el-option>
-             </div>
-           </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column prop="qty" label="入库数量" width="130" align="center" >
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2" :disabled="scope.row.ioBillDetailId"> </el-input-number>
-          </template>
-        </el-table-column>
-         <!-- <el-table-column prop="qty" label="入库成本" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="成本含税" width="100" align="center">
-          <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.number" style="width:70px">
-             <el-option label="是" value=1 ></el-option>
-             <el-option label="否" value=2 ></el-option>
-           </el-select>
-          </template>
-        </el-table-column> -->
         <el-table-column prop="warehouseId" label="仓库" width="200" align="center">
           <template v-slot="scope">
-           <el-select placeholder="否" v-model="scope.row.warehouseId" style="width:170px" :disabled="scope.row.ioBillDetailId">
+           <el-select placeholder="否" v-model="scope.row.warehouseId" style="width:170px" :disabled="scope.row.ioBillDetailId" @change="handleSubtableSelectChange(scope.row.materialId,scope.row.warehouseId)">
              <div v-for="item in warehouseList" :key="item.warehouseId">
                 <el-option :label="item.name" :value="item.warehouseId"></el-option>
              </div>>
            </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="batchNo" label="批次号" width="230" align="center">
+        <el-table-column prop="batchNo" label="批次号" width="270" align="center">
           <template v-slot="scope">
-           <el-input v-model="scope.row.batchNo" :controls="false" :disabled="scope.row.ioBillDetailId"> </el-input>
+           <el-select placeholder="否" v-model="scope.row.batchNo" style="width:240px" :disabled="scope.row.ioBillDetailId" @change="handleSubtableDetailChange(scope.row.batchNo)">
+             <div v-for="item in batchNoList" :key="item.batchNo">
+                <el-option :label="item.name" :value="item.batchNo"></el-option>
+             </div>>
+           </el-select>
           </template>
         </el-table-column>
-        <!-- <el-table-column prop="qty" label="结算数量" width="130" align="center">
+        <el-table-column prop="supplierName" label="供应商" width="200" align="center">
           <template v-slot="scope">
-           <el-input-number v-model="scope.row.qty" :controls="false" class="el-input-number2"> </el-input-number>
+             <el-input v-if="scope.row.ioBillDetailId" v-model="scope.row.supplierName" :controls="false" disabled class="el-input-number2"> </el-input>
+             <el-input v-else v-model="batchNodetails.supplierName " :controls="false" class="el-input-number2" disabled> </el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="含税单价" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
+        <el-table-column prop="unitId" label="库存单位" width="130" align="center">
+           <template v-slot="scope">
+             <el-input v-if="scope.row.ioBillDetailId" v-model="scope.row.unitName" :controls="false" disabled class="el-input-number2"> </el-input>
+             <el-input v-else v-model="batchNodetails.unitName " :controls="false" class="el-input-number2" disabled> </el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="税率" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
+        <el-table-column prop="qty" label="库存数量" width="130" align="center" >
+           <template v-slot="scope">
+             <el-input v-if="scope.row.ioBillDetailId" v-model="scope.row.qty" :controls="false" disabled class="el-input-number2"> </el-input>
+             <el-input v-else v-model="batchNodetails.qty " :controls="false" class="el-input-number2" disabled> </el-input>
           </template>
         </el-table-column>
-         <el-table-column prop="number" label="税额" width="130" align="center">
+        <el-table-column prop="cost" label="库存成本" width="130" align="center" >
           <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
+             <el-input v-if="scope.row.ioBillDetailId" v-model="scope.row.originCost" :controls="false" disabled class="el-input-number2"> </el-input>
+             <el-input v-else v-model="batchNodetails.cost " :controls="false" class="el-input-number2" disabled> </el-input>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="折让金额" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
+        <el-table-column prop="changeCost" label="调整金额（+/-）" width="130" align="center">
+           <template v-slot="scope">
+           <el-input-number v-model="scope.row.changeCost" :controls="false" :disabled="scope.row.ioBillDetailId" class="el-input-number2"> </el-input-number>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="折税金额" width="130" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number2"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="结算金额" width="150" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number3"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="已开票数量" width="150" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number3"> </el-input-number>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" label="已开票金额" width="150" align="center">
-          <template v-slot="scope">
-           <el-input-number v-model="scope.row.number" :controls="false" class="el-input-number3"> </el-input-number>
-          </template>
-        </el-table-column> -->
         <el-table-column prop="remark" label="备注" width="230" align="center">
           <template v-slot="scope">
            <el-input v-model="scope.row.remark" :disabled="scope.row.ioBillDetailId"> </el-input>
@@ -290,7 +252,7 @@
    </div>
     <div style="display:flex;justify-content:right">
        <el-button @click="handleClose">取消 </el-button>
-       <el-button type="primary" @click="handleSave('sub')">保存 </el-button>
+       <el-button type="primary" @click="handleSave()">保存 </el-button>
        <el-button type="primary">提交 </el-button>
     </div>
      <el-dialog
@@ -325,7 +287,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
 import {
   Refresh,
   Search,
@@ -340,7 +302,7 @@ import { AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
 
 export default defineComponent({
-  name:'PurchaseWarehousingDetail',
+  name:'CostAdjustmentDetail',
   components:{
     Plus,
     Minus
@@ -358,7 +320,7 @@ export default defineComponent({
       type:Function,
       required:true
     },
-    loadPurchaseWarehousinglist:{
+    loadCostAdjustmentlist:{
       type:Function,
       required:true  
     },
@@ -370,7 +332,7 @@ export default defineComponent({
   setup (props, context) {
     const LabeWidth = ref('100px')
     const activeName = ref('明细')
-    const PurchaseWarehousingDetail = ref({
+    const CostAdjustmentDetail = ref({
       approverId: '',
       attachment: '',
       billDate: '',
@@ -396,15 +358,15 @@ export default defineComponent({
       sourceId: null,
       sourceNo: null,
       sourceType: '',
-      stockIoName: '采购入库',
-      stockIoType: '101',
+      stockIoName: '成本调整',
+      stockIoType: '801',
       supplierId: null,
       supplierName: '',
       sysOrgCode: '',
       updateBy: '',
       updateTime: undefined
     })
-    const PurchaseWarehousingSubTableDetail = ref([{}])
+    const CostAdjustmentSubTableDetail = ref([{}])
     const materialList = ref([{}])
     const supplierList = ref([{}])
     const unitList = ref([{}])
@@ -414,109 +376,9 @@ export default defineComponent({
     const multipleSelection = ref([{}])
     const dialogVisible = ref(false)
     const dialogVisible2 = ref(false)
-
-    const success = (message:string) => {
-      ElMessage({
-        message: message,
-        type: 'success'
-      })
-    }
-
-    const error = (message:string) => {
-      ElMessage.error(message)
-    }
-
-    const handleSave = (type:string) => {
-      if (props.edit_type === 'edit') {
-        if (type === 'header') {
-          loading.value = true
-          const data = PurchaseWarehousingDetail.value
-          data.updateTime = undefined
-          data.createTime = undefined
-          AxiosApi.put('billHeader/update', JSON.stringify(data))
-            .then((res:AxiosResponse) => {
-              console.log(res)
-              success('保存成功！')
-              props.handleClose()
-              props.loadPurchaseWarehousinglist(1)
-              loading.value = false
-            })
-            .catch((err:any) => {
-              error('保存失败！')
-              console.log(err)
-              loading.value = false
-            })
-        } else if (type === 'sub' && AddSubTable.value === true) {
-          dialogVisible2.value = true
-        }
-      } else if (props.edit_type === 'add') {
-        if (type === 'header') {
-          loading.value = true
-          AxiosApi.post('billHeader/add', JSON.stringify(PurchaseWarehousingDetail.value))
-            .then((res:any) => {
-              console.log(res)
-              success('保存成功')
-              props.loadPurchaseWarehousinglist(1)
-              loading.value = false
-            })
-            .catch((err:any) => {
-              console.log(err)
-              error('保存失败')
-              loading.value = false
-            })
-        } else if (type === 'sub') {
-          dialogVisible2.value = true
-        }      
-      }
-    }
-    
-    // else if (type === 'sub' && AddSubTable.value === false) {
-    //   PurchaseWarehousingSubTableDetail.value.map((p) => {
-    //     const data:any = p
-    //     data.modifiedDate = undefined
-    //     AxiosApi.put('billDetail/update', JSON.stringify(data))
-    //       .then((res:AxiosResponse) => {
-    //         console.log(res)
-    //         success('保存成功！')
-    //         props.handleClose()
-    //         props.loadPurchaseWarehousinglist(1)
-    //         loading.value = false
-    //       })
-    //       .catch((err) => {
-    //         error('保存失败！')
-    //         console.log(err)
-    //         loading.value = false
-    //       })
-    //   })
-    // } 
-
-    const handleSelectionChange = (val: any[]) => {
-      multipleSelection.value = val
-    }
-
-    const addSubTable = () => {
-      PurchaseWarehousingSubTableDetail.value.map((p:any) => {
-        if (!p.ioBillDetailId) {
-          const data:any = p
-          data.modifiedDate = undefined
-          AxiosApi.post('billDetail/add', JSON.stringify(data))
-            .then((res:AxiosResponse) => {
-              console.log(res)  
-              success('添加成功！')  
-              loadPurchaseWarehousingHeaderDetail()    
-              dialogVisible2.value = false
-              loading.value = false
-            })
-            .catch((err:any) => {
-              console.log(err)
-              loading.value = false
-            })
-        }
-      })
-    }
-
-    const handleAddSubtable = () => {
-      PurchaseWarehousingSubTableDetail.value.push({
+    const batchNoList = ref([{}])
+    const batchNoDetail = reactive({
+      batchNodetails:{
         batchNo: '',
         detailNo: null,
         ioBillDetailId: null,
@@ -536,17 +398,144 @@ export default defineComponent({
         unitId: null,
         unitName: '',
         warehouseId: null,
-        warehouseName: ''
+        warehouseName: '',
+        cost:null
+      }
+    })
+
+    const success = (message:string) => {
+      ElMessage({
+        message: message,
+        type: 'success'
+      })
+    }
+
+    const error = (message:string) => {
+      ElMessage.error(message)
+    }
+
+    const handleSave = (type:string) => {
+      if (props.edit_type === 'edit') {
+        if (AddSubTable.value === true) {
+          loading.value = true
+          const data = CostAdjustmentDetail.value
+          data.updateTime = undefined
+          data.createTime = undefined
+          AxiosApi.put('billHeader/update', JSON.stringify(data))
+            .then((res:AxiosResponse) => {
+              dialogVisible2.value = true
+            })
+            .catch((err:any) => {
+              error('保存失败！')
+              console.log(err)
+              loading.value = false
+            })
+        } else {
+          loading.value = true
+          const data = CostAdjustmentDetail.value
+          data.updateTime = undefined
+          data.createTime = undefined
+          AxiosApi.put('billHeader/update', JSON.stringify(data))
+            .then((res:AxiosResponse) => {
+              console.log(res)
+              success('保存成功！')
+              props.handleClose()
+              props.loadCostAdjustmentlist(1)
+              loading.value = false
+            })
+            .catch((err:any) => {
+              error('保存失败！')
+              console.log(err)
+              loading.value = false
+            })
+        }
+      } else if (props.edit_type === 'add') {
+        loading.value = true
+        AxiosApi.post('billHeader/add', JSON.stringify(CostAdjustmentDetail.value))
+          .then((res:any) => {
+            console.log(res)
+            success('保存成功')
+            props.loadCostAdjustmentlist(1)
+            loading.value = false
+          })
+          .catch((err:any) => {
+            console.log(err)
+            error('保存失败')
+            loading.value = false
+          })
+      }
+    }
+
+    const handleSelectionChange = (val: any[]) => {
+      multipleSelection.value = val
+    }
+
+    const addSubTable = () => {
+      CostAdjustmentSubTableDetail.value.map((p:any) => {
+        if (!p.ioBillDetailId) {
+          const data:any = p
+          data.modifiedDate = undefined
+          data.batchNo = batchNoDetail.batchNodetails.batchNo
+          data.supplierId = batchNoDetail.batchNodetails.supplierId
+          data.unitId = batchNoDetail.batchNodetails.unitId
+          AxiosApi.post('billDetail/add', JSON.stringify(data))
+            .then((res:AxiosResponse) => {
+              console.log(res)  
+              success('添加成功！')  
+              loadCostAdjustmentHeaderDetail()  
+              props.loadCostAdjustmentlist(1)  
+              dialogVisible2.value = false
+              loading.value = false
+            })
+            .catch((err:any) => {
+              console.log(err)
+              error('添加失败')
+              loading.value = false
+              dialogVisible2.value = false
+            })
+        }
+      })
+    }
+
+    const handleAddSubtable = () => {
+      CostAdjustmentSubTableDetail.value.push({
+        batchNo: '',
+        changeCost: null,
+        detailNo: null,
+        inOut: null,
+        ioBillDetailId: null,
+        ioBillHeaderId: props.ioBillHeaderId,
+        materialId: null,
+        materialName: '',
+        modifiedDate: '',
+        profit: null,
+        purBillNo: null,
+        qty: 1.5,
+        remark: '',
+        remark2: '',
+        remark3: '',
+        sourceDetailId: null,
+        sourceDetailNo: '',
+        sourceType: null,
+        supplierId: null,
+        supplierName: '',
+        transferId: null,
+        trueQty: null,
+        unitId: null,
+        unitName: '',
+        warehouseId: null,
+        warehouseName: '',
+        originCost:null
       })
       AddSubTable.value = true
     }
 
-    const loadPurchaseWarehousingSubtableDetail = (IoBillHeaderId:number) => {
+    const loadCostAdjustmentSubtableDetail = (IoBillHeaderId:number) => {
       loading.value = true
       AxiosApi.get(`billDetail/list?ioBillHeaderId=${IoBillHeaderId}`)
         .then((res:AxiosResponse) => {
           if (props.edit_type === 'edit') {
-            PurchaseWarehousingSubTableDetail.value = res.data.result
+            CostAdjustmentSubTableDetail.value = res.data.result
           }
           materialList.value = res.data.materialList
           supplierList.value = res.data.supplierList
@@ -556,12 +545,12 @@ export default defineComponent({
         })
     }
 
-    const loadPurchaseWarehousingHeaderDetail = () => {
+    const loadCostAdjustmentHeaderDetail = () => {
       loading.value = true
-      AxiosApi.get(`billHeader/find?billNo=${props.billNo}&stockIoName=采购入库`)
+      AxiosApi.get(`billHeader/find?billNo=${props.billNo}&stockIoName=成本调整`)
         .then((res:AxiosResponse) => {
-          PurchaseWarehousingDetail.value = res.data.result
-          loadPurchaseWarehousingSubtableDetail(res?.data?.result?.ioBillHeaderId)
+          CostAdjustmentDetail.value = res.data.result
+          loadCostAdjustmentSubtableDetail(res?.data?.result?.ioBillHeaderId)
           loading.value = false
         })
     }
@@ -576,7 +565,7 @@ export default defineComponent({
             error('删除失败')
           })
       })
-      loadPurchaseWarehousingHeaderDetail()
+      loadCostAdjustmentHeaderDetail()
       dialogVisible.value = false
     }
 
@@ -586,20 +575,48 @@ export default defineComponent({
       }
     }
 
+    const handleSubtableSelectChange = (id1:number, id2:number) => {
+      console.log(id1, id2)
+      if (id1 && id2) {
+        loading.value = true
+        batchNoList.value = []
+        AxiosApi.get(`inventory/list?materialId=${id1}&warehouseId=${id2}`)
+          .then((res:AxiosResponse) => {
+            console.log(res.data.result)
+            batchNoList.value = res.data.result
+            loading.value = false
+          })
+          .catch((err) => {
+            console.log(err)
+            error('此仓库下无该物料！')
+            loading.value = false
+          })
+      }
+    }
+
+    const handleSubtableDetailChange = (batchNO:string) => {
+      console.log(batchNO)
+      const a = batchNoList.value?.map((item:any) => {
+        if (item.batchNo === batchNO) {
+          batchNoDetail.batchNodetails = item
+        }
+      })
+    }
+
     onMounted(() => {
       if (props.edit_type === 'edit' && props.billNo !== '') {
-        loadPurchaseWarehousingHeaderDetail()
+        loadCostAdjustmentHeaderDetail()
       } else if (props.edit_type === 'add') {
-        loadPurchaseWarehousingSubtableDetail(1)
+        loadCostAdjustmentSubtableDetail(1)
       }
     })
 
     return {
       LabeWidth,
       activeName,
-      PurchaseWarehousingDetail,
+      CostAdjustmentDetail,
       handleSave,
-      PurchaseWarehousingSubTableDetail,
+      CostAdjustmentSubTableDetail,
       handleAddSubtable,
       materialList,
       supplierList,
@@ -612,7 +629,11 @@ export default defineComponent({
       handleConfirm,
       AddSubTable,
       dialogVisible2,
-      addSubTable
+      addSubTable,
+      handleSubtableSelectChange,
+      batchNoList,
+      handleSubtableDetailChange,
+      ...toRefs(batchNoDetail)
     }
   }
 })
@@ -683,5 +704,9 @@ export default defineComponent({
 
 .el-collapse-item__wrap{
   border:none!important;
+}
+
+.el-input.is-disabled .el-input__inner{
+  color:black;
 }
 </style>

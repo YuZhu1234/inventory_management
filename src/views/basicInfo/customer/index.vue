@@ -49,7 +49,7 @@
   </template>
   <el-dialog
     v-model="dialogVisible"
-    title="客户-详情"
+    title="客户"
     width="1000px"
     destroy-on-close
   >
@@ -102,10 +102,12 @@ export default defineComponent({
 
     const onAdd = ():void => {
       type.value = 'add'
+      customerId.value = ''
       dialogVisible.value = true
     }
 
     const handleCurrentChange = (val: number) :void => {
+      current_page.value = val
       loadCustomers(val)
     }
 
@@ -121,16 +123,6 @@ export default defineComponent({
     }
 
     const onQuery = ():void => {
-      // if (findType.value === 'ID') {
-      //   AxiosApi.get(`customer/find?customerId=${findValue.value}`)
-      //     .then((res) => {
-      //       CustomerData.value = []
-      //       CustomerData.value = res.data.result
-      //       // CustomerData.value.push(res.data.result)
-      //     }).catch((err) => {
-      //       console.log(err)
-      //     })
-      // } else 
       if (findType.value === '编码') {
         AxiosApi.get(`customer/list?code=${findValue.value}`).then((res) => {
           CustomerData.value = res.data.result
@@ -225,12 +217,12 @@ export default defineComponent({
 
 <style scoped>
 .customer_card {
- position: absolute;
- box-sizing: border-box;
- width: 100%;
- left: 0;
- right: 0;
- padding: 8px 24px;
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  left: 0;
+  right: 0;
+  padding: 8px 24px;
 }
 
 .demo-form-inline{
@@ -260,6 +252,10 @@ export default defineComponent({
 .tabel {
   margin-top:20px;
   max-width: 1565px;
+}
+
+.el-input.is-disabled .el-input__inner{
+  color: black !important;;
 }
 
 </style>

@@ -21,10 +21,11 @@
     </el-form>
     <div class="header">
         <el-button type="text" class="header_button" @click="handleClick('',0,'add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
-        <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
-        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
+        <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
+        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button> -->
         <span class="text">已选择<span style="color:rgb(53,137,255);margin-left:10px;margin-right:10px;font-weight:bold;">{{selectNum}}</span>项 </span>
-        <el-button type="text" class="header_button">清空</el-button>
+        <!-- <el-button type="text" class="header_button" @click="refreshSelection">清空</el-button> -->
+        <el-button v-if="selectNum > 0" type="text" @click="dialogVisible2 = true" class="header_button">删除</el-button>
     </div>
     <el-table 
       :data="OtherWarehousinglist" 
@@ -33,6 +34,7 @@
       header-row-style="color:black" 
       style="border: 1px solid rgb(245,244,245)"
       @selection-change="handleSelectionChange"
+      v-loading="loading"
       >
         <el-table-column align='center' fixed type="selection" sortable width="55" />
         <el-table-column align='center' fixed type="index" label="#" width="55" />
@@ -119,7 +121,7 @@
   </template>
     <el-dialog
     v-model="dialogVisible"
-    title="采购入库-编辑"
+    title="其他入库-编辑"
     width="1100px"
     :fullscreen='fullscreen'
     destroy-on-close
@@ -134,6 +136,20 @@
     :edit_type="edit_type"
     />
     </div>
+  </el-dialog>
+  <el-dialog
+        v-model="dialogVisible2"
+        title="提示"
+        width="300px"
+        destroy-on-close
+      >
+    <span class="confirm">确定删除所选记录？</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible2 = false">取消</el-button>
+        <el-button type="primary" @click="handleDelete">确定</el-button>
+      </span>
+    </template>
   </el-dialog>
   </Card>
 </template>
@@ -159,8 +175,8 @@ export default defineComponent({
     Refresh,
     Search,
     Plus,
-    Download,
-    Upload,
+    // Download,
+    // Upload,
     ArrowDown,
     OtherWarehousingDetail
   },
@@ -176,6 +192,9 @@ export default defineComponent({
     const ioBillHeaderId = ref(0)
     const dateValue = ref([])
     const searchId = ref('')
+    const multipleSelection = ref([{}])
+    const dialogVisible2 = ref(false)
+    const loading = ref(false)
 
     const success = (message:string) => {
       ElMessage({
@@ -190,9 +209,11 @@ export default defineComponent({
 
     const handleSelectionChange = (val: any[]) => {
       selectNum.value = val?.length || 0
+      multipleSelection.value = val
     }
 
     const handleCurrentChange = (val: number) :void => {
+      current_page.value = val
       loadOtherWarehousinglist(val)
     }
 
@@ -213,9 +234,9 @@ export default defineComponent({
         ioBillHeaderId.value = IoBillHeaderId
         billNo.value = id
       } else if (type === 'add') {
-        dialogVisible.value = true
         edit_type.value = 'add'
         billNo.value = ''
+        dialogVisible.value = true
       }
     }
 
@@ -223,14 +244,33 @@ export default defineComponent({
       dialogVisible.value = false
     }
 
+    const handleDelete = () => {
+      multipleSelection.value.map((m:any) => {
+        if (m.ioBillHeaderId) {
+          AxiosApi.delete(`billHeader/delete?id=${m.ioBillHeaderId}`)
+            .then(() => {
+              success('删除成功！')
+              loadOtherWarehousinglist(1)
+              dialogVisible2.value = false
+            })
+            .catch(() => {
+              error('删除失败')
+            })
+        }
+      })
+    }
+
     const loadOtherWarehousinglist = (current_page:number, updateEndTime?:string, updateStartTime?:string, searchId?:string) :void => {
-      AxiosApi.get(`billHeader/list?pageNum=${current_page}&stockIoName=其他入库${updateEndTime ? `&updateEndTime=${updateEndTime}&updateStartTime=${updateStartTime}` : '&spageSize=10'}${searchId ? `&billNo=${searchId}` : ''}`)
+      loading.value = true
+      AxiosApi.get(`billHeader/list?pageNum=${current_page}&stockIoName=其他入库${updateEndTime ? `&updateEndTime=${updateEndTime}&updateStartTime=${updateStartTime}` : '&pageSize=10'}${searchId ? `&billNo=${searchId}` : ''}`)
         .then((res:AxiosResponse) => {
           OtherWarehousinglist.value = res.data.result
           total.value = res.data.totalNum
+          loading.value = false
         })
         .catch((err) => {
           console.log(err)
+          loading.value = false
         }) 
     }
 
@@ -256,7 +296,10 @@ export default defineComponent({
       dateValue,
       handleSearch,
       handleReset,
-      searchId
+      searchId,
+      handleDelete,
+      dialogVisible2,
+      loading
     }
   }
 })

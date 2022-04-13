@@ -2,14 +2,15 @@
     <Card class="customer_card">
       <div class="header">
         <el-button type="text" class="header_button" @click="handleClick('','add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
-        <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
-        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
+        <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
+        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button> -->
       </div>
        <el-table
       :data="CurrencyData"
       class="table"
       highlight-current-row="true"
       border
+      v-loading="loading"
     >
        <el-table-column fixed type="index" label="#" />
         <el-table-column fixed prop="code"  label="代码" />
@@ -56,9 +57,16 @@
         </el-table-column>
     </el-table>
       <template class="pagination" >
-        <el-pagination background="blue" layout="prev, pager, next" :total="1000">
-        </el-pagination>
-      </template>
+      <el-pagination
+        :page-size="10" 
+        background="blue" 
+        layout="prev, pager, next" 
+        :total="total"
+        :currentPage="current_page"
+        @current-change="handleCurrentChange"
+      >
+      </el-pagination>
+    </template>
       <el-drawer
           v-model="drawer"
           title="编辑"
@@ -82,7 +90,7 @@
         width="20%"
         destroy-on-close
       >
-    <span class="confirm">确定删除此仓库数据？</span>
+    <span class="confirm">确定删除此币种数据？</span>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible2 = false">取消</el-button>
@@ -110,8 +118,8 @@ export default defineComponent({
   name:'Currency',
   components:{
     Plus,
-    Download,
-    Upload,
+    // Download,
+    // Upload,
     ArrowDown,
     CurrencyList
   },
@@ -165,6 +173,14 @@ export default defineComponent({
     const CurrencyId = ref('')
     const edit_type = ref('')
     const dialogVisible2 = ref(false)
+    const current_page = ref(1)
+    const total = ref(0)
+    const loading = ref(false)
+
+    const handleCurrentChange = (val: number) :void => {
+      current_page.value = val
+      LoadCurrrencyData(val)
+    }
 
     const handleClick = (currencyId:string, type:string) :void => {
       if (type === 'edit') {
@@ -200,7 +216,7 @@ export default defineComponent({
         .then((res) => {
           success('删除成功！')
           dialogVisible2.value = false
-          LoadCurrrencyData()
+          LoadCurrrencyData(1)
         })
         .catch((err) => {
           error('删除失败！')
@@ -209,18 +225,21 @@ export default defineComponent({
         })
     }
 
-    const LoadCurrrencyData = () => {
-      AxiosApi.get('currency/list')
+    const LoadCurrrencyData = (page:number) => {
+      loading.value = true
+      AxiosApi.get(`currency/list?pageNum=${page}&pageSize=10`)
         .then((res:AxiosResponse) => {
           CurrencyData.value = res.data.result
+          loading.value = false
         }).catch((err) => {
           console.log(err)
           error('获取币种信息失败!')
+          loading.value = false
         })
     }
 
     onMounted(() => {
-      LoadCurrrencyData()
+      LoadCurrrencyData(1)
     })
     return {
       drawer,
@@ -231,7 +250,10 @@ export default defineComponent({
       handleCloseDrawer,
       dialogVisible2,
       handleDelete,
-      LoadCurrrencyData
+      LoadCurrrencyData,
+      handleCurrentChange,
+      total,
+      loading
     }
   }
 })
@@ -254,7 +276,7 @@ export default defineComponent({
 }
 
 .header_button {
-  margin-right: 50px;
+  margin-left: 50px;
   font-weight: bold;
 }
 
@@ -289,6 +311,10 @@ export default defineComponent({
     /* width: 850px;
     left: 50%;
     margin-left: -425px; */
+}
+
+.el-input.is-disabled .el-input__inner{
+  color: black !important;
 }
 
 </style>

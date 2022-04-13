@@ -22,7 +22,10 @@ import OtherDelivery from '../views/Inventory_management/Outbound_management/Oth
 import InventoryTransfer from '../views/Inventory_management/Inventory_transfer/index.vue'
 import InventoryCheck from '../views/Inventory_management/Inventory_check/index.vue'
 import RealtimeInventory from '../views/Inventory_management/Realtime_inventory/index.vue'
-import InventoryAdjustment from '../views/Inventory_management/Inventory_adjustment/index.vue'
+import InventoryAdjustment from '../views/Inventory_management/Cost_adjustment/index.vue'
+import PlaceOrder from '../views/manufacter/placeorder/index.vue'
+import OrderFeedback from '../views/manufacter/orderfeedback/index.vue'
+import Home from '../views/home/index.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -34,10 +37,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'layout',
     component: Layout,
+    redirect:'home',
     children:[
       {
+        path:'home',
+        component: Home
+      },
+      {
         path: 'respository',
-        component: Respository
+        component: Respository,
+        name:'respository'
       },
       {
         path: 'customer',
@@ -84,7 +93,7 @@ const routes: Array<RouteRecordRaw> = [
         component: PurchaseReturnIssue
       },
       {
-        path:'purchasewarehousing',
+        path:'采购入库',
         component: PurchaseWarehousing
       },
       {
@@ -122,6 +131,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path:'inventoryadjustment',
         component: InventoryAdjustment
+      },
+      {
+        path:'placeorder',
+        component: PlaceOrder
+      },
+      {
+        path:'orderfeedback',
+        component: OrderFeedback
       }
     ]
   }

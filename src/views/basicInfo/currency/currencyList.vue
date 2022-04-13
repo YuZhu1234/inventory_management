@@ -12,14 +12,14 @@
             <el-form-item label="名称" required>
                 <el-input v-model="formLabelAligns.name"></el-input>
             </el-form-item>
-            <el-form-item label="是否本币" required>
-                <el-select v-model="formLabelAligns.isFunctional" class="select">
+            <el-form-item label="是否本币" >
+                <el-select v-model="formLabelAligns.isFunctional" class="select" placeholder="请选择">
                    <el-option label="是" :value='1' ></el-option>
                    <el-option label="否" :value='0' ></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="是否启用" required>
-                <el-select v-model="formLabelAligns.isEnabled" class="select">
+            <el-form-item label="是否启用" >
+                <el-select v-model="formLabelAligns.isEnabled" class="select" placeholder="请选择">
                    <el-option label="启用" :value='1' ></el-option>
                    <el-option label="禁用" :value='0' ></el-option>
                 </el-select>
@@ -39,7 +39,7 @@
         </el-form>
         <div class="footer">
             <el-button @click="handleCloseDrawer">取消</el-button>
-            <el-button type="primary" @click="handleSave">确定</el-button>
+            <el-button type="primary" @click="handleConfirm">确定</el-button>
         </div>
          <el-dialog
             v-model="dialogVisible"
@@ -115,6 +115,14 @@ export default defineComponent({
       ElMessage.error(message)
     }
 
+    const handleConfirm = () => {
+      if (formLabelAlign.formLabelAligns.code === '' || formLabelAlign.formLabelAligns.name === '') {
+        error('名称和编码不能为空')
+        return
+      }
+      dialogVisible.value = true
+    }
+
     const loadCurrency = () => {
       AxiosApi.get(`currency/find?id=${props.CurrencyId}`)
         .then((res:AxiosResponse) => {
@@ -132,7 +140,7 @@ export default defineComponent({
           .then((res:AxiosResponse) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
-            props.LoadCurrrencyData()
+            props.LoadCurrrencyData(1)
             success('修改成功！')
           })
           .catch((err) => {
@@ -147,8 +155,8 @@ export default defineComponent({
           createBy: 'test',
           currencyId: 0,
           exchangeRate: formLabelAlign.formLabelAligns.exchangeRate,
-          isEnabled: formLabelAlign.formLabelAligns.isEnabled,
-          isFunctional: formLabelAlign.formLabelAligns.isFunctional,
+          isEnabled: formLabelAlign.formLabelAligns.isEnabled || 0,
+          isFunctional: formLabelAlign.formLabelAligns.isFunctional || 0,
           name: formLabelAlign.formLabelAligns.name,
           updateBy: 'test',
           version: 0
@@ -157,7 +165,7 @@ export default defineComponent({
           .then((res:AxiosResponse) => {
             props.handleCloseDrawer()
             dialogVisible.value = false
-            props.LoadCurrrencyData()
+            props.LoadCurrrencyData(1)
             success('添加成功！') 
           })
           .catch((err) => {
@@ -177,7 +185,8 @@ export default defineComponent({
     return {
       ...toRefs(formLabelAlign),
       handleSave,
-      dialogVisible
+      dialogVisible,
+      handleConfirm
     }
   }
 })
@@ -198,5 +207,9 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+}
+
+.el-input.is-disabled .el-input__inner{
+  color: black !important;;
 }
 </style>

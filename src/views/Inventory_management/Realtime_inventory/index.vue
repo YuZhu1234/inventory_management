@@ -1,31 +1,34 @@
 <template>
   <Card>
    <el-form :inline="true" class="demo-form">
-      <el-form-item label="单据编号：" class="encode">
-        <el-input placeholder="请输入单据编号" v-model="searchId"></el-input>
+      <el-form-item label="仓库：" class="encode">
+        <el-select v-model="searchWarehouse" class="select" placeholder="请选择" :disabled="disabled">
+            <el-option label="请选择" :value="0"></el-option>
+            <div v-for="item in warehouseList" :key="item.warehouseId">
+                <el-option :label="item.name" :value="item.warehouseId"></el-option>
+            </div>
+        </el-select>
       </el-form-item>
-      <el-form-item label="单据日期：" class="datepick">
-        <el-date-picker
-          v-model="dateValue"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="请选择开始"
-          end-placeholder="请选择结束"
-          value-format="YYYY-MM-DD"
-        />
+      <el-form-item label="物料：" class="datepick">
+         <el-select v-model="searchMaterial" class="select" placeholder="请选择" :disabled="disabled">
+            <el-option label="请选择" :value="0"></el-option>
+            <div v-for="item in materialList" :key="item.materialId">
+                <el-option :label="item.name" :value="item.materialId"></el-option>
+            </div>
+        </el-select>
       </el-form-item>
       <el-form-item class="buttongroup">
         <el-button type="primary" class="button" @click="handleSearch"><el-icon><search /></el-icon>&nbsp;查询</el-button>
         <el-button type="primary" class="button" @click="handleReset"><el-icon><refresh /></el-icon>&nbsp;重置</el-button>
       </el-form-item>
     </el-form>
-    <div class="header">
-        <el-button type="text" class="header_button" @click="handleClick('',0,'add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
+    <!-- <div class="header">
+        <el-button type="text" class="header_button" @click="handleClick('',0,0,'add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
         <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
         <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
         <span class="text">已选择<span style="color:rgb(53,137,255);margin-left:10px;margin-right:10px;font-weight:bold;">{{selectNum}}</span>项 </span>
         <el-button type="text" class="header_button">清空</el-button>
-    </div>
+    </div> -->
     <el-table 
       :data="RealtimeInventorylist" 
       highlight-current-row="true" 
@@ -33,6 +36,7 @@
       header-row-style="color:black" 
       style="border: 1px solid rgb(245,244,245)"
       @selection-change="handleSelectionChange"
+      v-loading="loading"
       >
         <el-table-column align='center' fixed type="selection" sortable width="55" />
         <el-table-column align='center' fixed type="index" label="#" width="55" />
@@ -76,14 +80,14 @@
         <el-table-column align='center' prop="updateBy" label="修改人" width="200" />
         <el-table-column align='center' fixed="right" label="操作" width="120">
           <template v-slot="scope">
-            <el-button type="text" size="small" @click="handleClick(scope.row.billNo, scope.row.ioBillHeaderId, 'edit')">编辑</el-button
+            <el-button type="text" size="small" @click="handleClick(scope.row.batchNo, scope.row.warehouseId, scope.row.materialId, 'edit')">详情</el-button
             >
             <el-divider direction="vertical"></el-divider>
             <el-dropdown>
               <el-button type="text" size="small">更多<el-icon><arrow-down /></el-icon></el-button>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item disabled @click="handleClick(scope.row.billNo, scope.row.ioBillHeaderId, 'delete')">删除</el-dropdown-item>
+                  <el-dropdown-item disabled @click="handleClick(scope.row.batchNo, scope.row.warehouseId, scope.row.materialId, 'delete')">删除</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -103,7 +107,7 @@
   </template>
    <el-drawer
           v-model="dialogVisible"
-          title="编辑"
+          title="详情"
           :direction="direction"
           destroy-on-close
           size="511px"
@@ -143,9 +147,9 @@ export default defineComponent({
   components:{
     Refresh,
     Search,
-    Plus,
-    Download,
-    Upload,
+    // Plus,
+    // Download,
+    // Upload,
     ArrowDown,
     RealtimeInventoryDetail
   },
@@ -156,11 +160,18 @@ export default defineComponent({
     const total = ref(0)
     const current_page = ref(1)
     const edit_type = ref('')
-    const billNo = ref('')
+    const batchNo = ref('')
+    const warehouseId = ref(0)
+    const materialId = ref(0)
     const selectNum = ref(0)
     const ioBillHeaderId = ref(0)
     const dateValue = ref([])
     const searchId = ref('')
+    const materialList = ref([{}])
+    const warehouseList = ref([{}])
+    const searchMaterial = ref(0)
+    const searchWarehouse = ref(0)
+    const loading = ref(false)
 
     const success = (message:string) => {
       ElMessage({
@@ -178,29 +189,44 @@ export default defineComponent({
     }
 
     const handleCurrentChange = (val: number) :void => {
+      current_page.value = val
       loadRealtimeInventorylist(val)
     }
 
     const handleReset = () => {
-      dateValue.value = []
-      searchId.value = ''
+      searchMaterial.value = 0
+      searchWarehouse.value = 0
       loadRealtimeInventorylist(1)
     }
 
     const handleSearch = () => {
-      loadRealtimeInventorylist(1, dateValue.value[1], dateValue.value[0], searchId.value)
+      loading.value = true
+      current_page.value = 1
+      AxiosApi.get(`inventory/list?pageNum=${current_page.value}&pageSize=10${searchMaterial.value !== 0 ? `&materialId=${searchMaterial.value}` : ''}${searchWarehouse.value !== 0 ? `&warehouseId=${searchWarehouse.value}` : ''}`)
+        .then((res:AxiosResponse) => {
+          RealtimeInventorylist.value = res.data.result
+          total.value = res.data.totalNum
+          materialList.value = res.data.materialList
+          warehouseList.value = res.data.warehouseList
+          loading.value = false
+        })
+        .catch((err:any) => {
+          console.log(err)
+          loading.value = false
+        }) 
     }
 
-    const handleClick = (id:string, IoBillHeaderId:number, type:string) => {
+    const handleClick = (batchNO:string, warehouseid:number, materialid:number, type:string) => {
       if (type === 'edit') {
         dialogVisible.value = true
         edit_type.value = 'edit'
-        ioBillHeaderId.value = IoBillHeaderId
-        billNo.value = id
+        warehouseId.value = warehouseid
+        materialId.value = materialid
+        batchNo.value = batchNO
       } else if (type === 'add') {
         dialogVisible.value = true
         edit_type.value = 'add'
-        billNo.value = ''
+        batchNo.value = ''
       }
     }
 
@@ -208,15 +234,19 @@ export default defineComponent({
       dialogVisible.value = false
     }
 
-    const loadRealtimeInventorylist = (current_page:number, updateEndTime?:string, updateStartTime?:string, searchId?:string) :void => {
+    const loadRealtimeInventorylist = (current_page:number) :void => {
+      loading.value = true
       AxiosApi.get(`inventory/list?pageNum=${current_page}&pageSize=10`)
         .then((res:AxiosResponse) => {
-          console.log(res)
           RealtimeInventorylist.value = res.data.result
           total.value = res.data.totalNum
+          materialList.value = res.data.materialList
+          warehouseList.value = res.data.warehouseList
+          loading.value = false
         })
         .catch((err:any) => {
           console.log(err)
+          loading.value = false
         }) 
     }
 
@@ -233,7 +263,7 @@ export default defineComponent({
       handleCurrentChange,
       handleClick,
       edit_type,
-      billNo,
+      batchNo,
       loadRealtimeInventorylist,
       handleClose,
       handleSelectionChange,
@@ -242,7 +272,14 @@ export default defineComponent({
       dateValue,
       handleSearch,
       handleReset,
-      searchId
+      searchId,
+      warehouseId,
+      materialId,
+      warehouseList,
+      materialList,
+      searchWarehouse,
+      searchMaterial,
+      loading
     }
   }
 })
@@ -297,5 +334,19 @@ export default defineComponent({
   margin-top: 40px;
   display: flex;
   justify-content: right;
+}
+
+.overflowAuto {
+    overflow: scroll;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 100px);
+}
+.overflowAuto::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+.overflowAuto::-webkit-scrollbar-thumb {
+    background: rgb(224, 214, 235);
 }
 </style>

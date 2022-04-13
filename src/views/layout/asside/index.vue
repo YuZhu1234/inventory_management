@@ -1,16 +1,15 @@
 <template>
 <el-row>
-    <el-col >
+    <el-col>
     <el-menu
         default-active="4"
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose"
+        :collapse="isCollapse"
       >
-       <div class="logo" >
-          <img src="https://img0.baidu.com/it/u=2343576150,486144126&fm=26&fmt=auto" width="50px" height="50px">
-      </div>
-        <el-menu-item index="1" width="200px">
+       <div class="logo" >  </div>
+        <el-menu-item width="200px" index="home" @click="(e)=>historyPush(e)">
           <span width="200px"><el-icon><home-filled /></el-icon>首页</span>
         </el-menu-item>
         <el-sub-menu index="2">
@@ -19,7 +18,7 @@
           </template>
           <el-sub-menu index="2-1">
             <template #title>入库管理</template>
-            <el-menu-item index="purchasewarehousing" @click="(e)=>historyPush(e)">采购入库</el-menu-item>
+            <el-menu-item index="采购入库" @click="(e)=>historyPush(e)">采购入库</el-menu-item>
             <el-menu-item index="salesreturnreceipt" @click="(e)=>historyPush(e)">销售退货入库</el-menu-item>
             <el-menu-item index="inventorygainwarehousing" @click="(e)=>historyPush(e)">盘盈入库</el-menu-item>
             <el-menu-item index="saturationofstackroom" @click="(e)=>historyPush(e)">涨库入库</el-menu-item>
@@ -32,15 +31,12 @@
             <el-menu-item index="inventorylossdelivery" @click="(e)=>historyPush(e)">盘亏出库</el-menu-item>
             <el-menu-item index="otherdelivery" @click="(e)=>historyPush(e)">其他出库</el-menu-item>
           </el-sub-menu>
-          <el-menu-item index="inventorytransfer" @click="(e)=>historyPush(e)">库存调拨</el-menu-item>
+          <el-menu-item index="inventorytransfer" @click="(e)=>historyPush(e)">仓库调拨</el-menu-item>
           <el-menu-item index="inventoryadjustment" @click="(e)=>historyPush(e)">成本调整</el-menu-item>
           <el-menu-item index="inventorycheck" @click="(e)=>historyPush(e)">库存盘点</el-menu-item>
           <el-menu-item index="realtimeinventory" @click="(e)=>historyPush(e)">实时库存</el-menu-item>
         </el-sub-menu>
-        <el-menu-item index="3">
-          <span><el-icon><money /></el-icon>往来管理</span>
-        </el-menu-item>
-        <el-sub-menu index="4">
+        <el-sub-menu index="3">
           <template #title>
             <span><el-icon><grid /></el-icon>基础数据</span>
           </template>
@@ -53,39 +49,35 @@
           <el-menu-item index="currency" @click="(e)=>historyPush(e)">币种</el-menu-item>
           <el-menu-item index="bankaccount" @click="(e)=>historyPush(e)">银行账户</el-menu-item>
         </el-sub-menu>
-        <el-menu-item index="5">
-          <span><el-icon><timer /></el-icon>系统监控</span>
-        </el-menu-item>
-        <el-sub-menu index="6">
+        <el-sub-menu index="5">
           <template #title>
             <span><el-icon><setting /></el-icon>系统管理</span>
           </template>
-          <el-menu-item index="6-1">用户管理</el-menu-item>
-          <el-menu-item index="6-2">角色管理</el-menu-item>
-          <el-menu-item index="6-3">菜单管理</el-menu-item>
           <el-menu-item index="data_dictionary" @click="(e)=>historyPush(e)">数据字典</el-menu-item>
-          <el-menu-item index="4-5">部门管理</el-menu-item>
         </el-sub-menu>
-        <el-menu-item index="7">
-          <span><el-icon><user-filled /></el-icon>个人中心</span>
-        </el-menu-item>
+         <el-sub-menu index="6">
+          <template #title>
+            <span><el-icon><management /></el-icon>生产制造</span>
+          </template>
+          <el-menu-item index="placeorder" @click="(e)=>historyPush(e)">生成订单</el-menu-item>
+          <el-menu-item index="orderfeedback" @click="(e)=>historyPush(e)">订单反馈</el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-col>
   </el-row>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import router from '../../../router/index'
 import {
   Setting,
   HomeFilled,
   List,
   Grid,
-  Money,
-  Timer,
-  UserFilled
+  Management
 } from '@element-plus/icons-vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name:'asside',
@@ -94,11 +86,11 @@ export default defineComponent({
     HomeFilled,
     List,
     Grid,
-    Money,
-    Timer,
-    UserFilled
+    Management
   },
   setup () {
+    const store = useStore()
+    const isCollapse = ref(false)
     const handleOpen = () => {
       // console.log(open)
     }
@@ -106,12 +98,14 @@ export default defineComponent({
       // console.log(close)
     }
     const historyPush = (e:any) => {
+      store.commit('ADD_CURRENT', e.index)
       router.push(`/${e.index}`)
     }
     return {
       handleOpen,
       handleClose,
-      historyPush
+      historyPush,
+      isCollapse
     }
   }
 })
@@ -120,7 +114,13 @@ export default defineComponent({
 <style>
 
 .logo{
-  height: 50px;
+  height: 100px;
+  width: 100px;
+  background: url(./avator2.png);
+  border-radius: 50%;
+  margin: 30px 45px;
+  background-size: cover;
+  /* border: 5px solid #1890ff; */
 }
 
 .tittle {

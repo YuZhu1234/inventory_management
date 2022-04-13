@@ -2,13 +2,14 @@
     <Card class="customer_card">
       <div class="header">
         <el-button type="text" class="header_button" @click="handleAdd"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
-        <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
-        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
+        <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
+        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button> -->
       </div>
        <el-table
       :data="BankAccountData"
       style="border: 1px solid rgb(245,244,245)"
       highlight-current-row="true"
+      v-loading="loading"
     >
        <el-table-column fixed type="index" label="#" width="55" />
         <el-table-column fixed prop="accountNo"  label="账号" width="300"/>
@@ -48,7 +49,14 @@
         </el-table-column>
     </el-table>
       <template class="pagination" >
-        <el-pagination background="blue" layout="prev, pager, next" :total="1000">
+        <el-pagination
+          :page-size="10" 
+          background="blue" 
+          layout="prev, pager, next" 
+          :total="total"
+          :currentPage="current_page"
+          @current-change="handleCurrentChange"
+        >
         </el-pagination>
       </template>
       <el-drawer
@@ -102,8 +110,8 @@ export default defineComponent({
   name:'BankAccount',
   components:{
     Plus,
-    Download,
-    Upload,
+    // Download,
+    // Upload,
     ArrowDown,
     BankAccountList
   },
@@ -157,6 +165,14 @@ export default defineComponent({
     const BankAccountId = ref('')
     const edit_type = ref('')
     const dialogVisible2 = ref(false)
+    const current_page = ref(1)
+    const total = ref(0)
+    const loading = ref(false)
+
+    const handleCurrentChange = (val: number) :void => {
+      current_page.value = val
+      LoadBankAccountData(val)
+    }
 
     const handleClick = (bankAccountId:string, type:string) :void => {
       if (type === 'edit') {
@@ -194,7 +210,7 @@ export default defineComponent({
         .then((res) => {
           success('删除成功！')
           dialogVisible2.value = false
-          LoadBankAccountData()
+          LoadBankAccountData(1)
         })
         .catch((err) => {
           error('删除失败！')
@@ -203,18 +219,21 @@ export default defineComponent({
         })
     }
 
-    const LoadBankAccountData = () => {
-      AxiosApi.get('bankAccount/list')
+    const LoadBankAccountData = (page:number) => {
+      loading.value = true
+      AxiosApi.get(`bankAccount/list?pageNum=${page}&pageSize=10`)
         .then((res:AxiosResponse) => {
           BankAccountData.value = res.data.result
+          loading.value = false
         }).catch((err) => {
           console.log(err)
           error('获取银行账户信息失败!')
+          loading.value = false
         })
     }
 
     onMounted(() => {
-      LoadBankAccountData()
+      LoadBankAccountData(1)
     })
     return {
       drawer,
@@ -226,7 +245,10 @@ export default defineComponent({
       handleCloseDrawer,
       dialogVisible2,
       handleDelete,
-      LoadBankAccountData
+      LoadBankAccountData,
+      handleCurrentChange,
+      total,
+      loading
     }
   }
 })
@@ -249,7 +271,7 @@ export default defineComponent({
 }
 
 .header_button {
-  margin-right: 50px;
+  margin-left: 50px;
   font-weight: bold;
 }
 
@@ -277,6 +299,9 @@ export default defineComponent({
 }
 .overflowAuto::-webkit-scrollbar-thumb {
     background: rgb(224, 214, 235);
+}
+.el-input.is-disabled .el-input__inner{
+  color: black !important;;
 }
 
 </style>

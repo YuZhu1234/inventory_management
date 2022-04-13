@@ -2,8 +2,8 @@
     <Card class="customer_card">
       <div class="header">
         <el-button type="text" class="header_button" @click="handleAdd"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
-        <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
-        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button>
+        <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
+        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button> -->
       </div>
        <el-table
       :data="MeasurementUnitData"
@@ -11,6 +11,7 @@
       class="table"
       highlight-current-row="true"
       row-key="measureUnitId"
+      v-loading="loading"
     >
        <el-table-column type="selection" sortable  />
         <el-table-column prop="name" sortable label="名称"/>
@@ -44,10 +45,10 @@
           </template>
         </el-table-column>
     </el-table>
-      <template class="pagination" >
+      <!-- <template class="pagination" >
         <el-pagination background="blue" layout="prev, pager, next" :total="1000">
         </el-pagination>
-      </template>
+      </template> -->
       <el-drawer
           v-model="drawer"
           title="编辑"
@@ -101,8 +102,8 @@ export default defineComponent({
   name:'unitofmeasurement',
   components:{
     Plus,
-    Download,
-    Upload,
+    // Download,
+    // Upload,
     ArrowDown,
     unitofmeasurementlist
   },
@@ -112,6 +113,7 @@ export default defineComponent({
     const measureUnitId = ref('')
     const save_type = ref('')
     const dialogVisible2 = ref(false)
+    const loading = ref(false)
 
     const handleClick = (id:string, type:string) :void => {
       if (type === 'edit') {
@@ -136,6 +138,7 @@ export default defineComponent({
     }
 
     const handleMeasurementUnit = (Measurement:any) => {
+      loading.value = true
       let datalist:any[] = []
       const a = Measurement?.filter((item:any) => {
         return item.pid === 0
@@ -156,14 +159,18 @@ export default defineComponent({
       }
       findChildren(datalist)
       MeasurementUnitData.value = datalist
+      loading.value = false
     }
 
     const LoadMeasurementUnit = () => {
+      loading.value = true
       AxiosApi.get('measureUnit/list')
         .then((res:AxiosResponse) => {
+          loading.value = false
           handleMeasurementUnit(res.data.result)
         }).catch((err) => {
           console.log(err)
+          loading.value = false
         })
     }
 
@@ -204,7 +211,8 @@ export default defineComponent({
       handleAdd,
       save_type,
       handleDelete,
-      dialogVisible2
+      dialogVisible2,
+      loading
     }
   }
 })
@@ -241,7 +249,7 @@ export default defineComponent({
 }
 
 .header_button {
-  margin-right: 50px;
+  margin-left: 50px;
   font-weight: bold;
 }
 
