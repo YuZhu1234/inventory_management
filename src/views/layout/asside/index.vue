@@ -18,7 +18,7 @@
           </template>
           <el-sub-menu index="2-1">
             <template #title>入库管理</template>
-            <el-menu-item index="采购入库" @click="(e)=>historyPush(e)">采购入库</el-menu-item>
+            <el-menu-item index="purchasewarehousing" @click="(e)=>historyPush(e)">采购入库</el-menu-item>
             <el-menu-item index="salesreturnreceipt" @click="(e)=>historyPush(e)">销售退货入库</el-menu-item>
             <el-menu-item index="inventorygainwarehousing" @click="(e)=>historyPush(e)">盘盈入库</el-menu-item>
             <el-menu-item index="saturationofstackroom" @click="(e)=>historyPush(e)">涨库入库</el-menu-item>

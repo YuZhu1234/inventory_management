@@ -150,7 +150,7 @@
         @tab-click="handleClick" 
         v-loading="loading">
         <el-tab-pane label="明细" name="明细">
-          <div style="display:flex;margin-bottom:20px">
+          <div style="display:flex;margin-bottom:20px" v-if="edit_type === 'edit'">
           <el-button type="primary" @click="handleAddSubtable"><el-icon><plus /></el-icon>&nbsp;新增 </el-button>
           <el-button type="primary" @click="handleConfirm('delete')"><el-icon><minus /></el-icon>&nbsp;删除 </el-button>
           </div>
@@ -199,12 +199,6 @@
                 <el-option :label="item.name" :value="item.batchNo"></el-option>
              </div>>
            </el-select>
-          </template>
-        </el-table-column>
-        <el-table-column prop="supplierName" label="供应商" width="200" align="center">
-          <template v-slot="scope">
-             <el-input v-if="scope.row.ioBillDetailId" v-model="scope.row.supplierName" :controls="false" disabled class="el-input-number2"> </el-input>
-             <el-input v-else v-model="batchNodetails.supplierName " :controls="false" class="el-input-number2" disabled> </el-input>
           </template>
         </el-table-column>
         <el-table-column prop="unitId" label="库存单位" width="130" align="center">
@@ -489,7 +483,7 @@ export default defineComponent({
             })
             .catch((err:any) => {
               console.log(err)
-              error('添加失败')
+              error('添加失败!请保证所有信息填写完整且分录号不重复！')
               loading.value = false
               dialogVisible2.value = false
             })
@@ -498,6 +492,10 @@ export default defineComponent({
     }
 
     const handleAddSubtable = () => {
+      if (AddSubTable.value === true) {
+        success('每次只能新增一条数据，请先保存或删除新增数据后再增加；')
+        return
+      }
       CostAdjustmentSubTableDetail.value.push({
         batchNo: '',
         changeCost: null,
@@ -510,7 +508,7 @@ export default defineComponent({
         modifiedDate: '',
         profit: null,
         purBillNo: null,
-        qty: 1.5,
+        qty: null,
         remark: '',
         remark2: '',
         remark3: '',
@@ -557,15 +555,20 @@ export default defineComponent({
 
     const handleDeleteSubtable = () => {
       multipleSelection.value.map((m:any) => {
-        AxiosApi.delete(`billDetail/delete?id=${m.ioBillDetailId}`)
-          .then(() => {
-            success('删除成功！')
-          })
-          .catch(() => {
-            error('删除失败')
-          })
+        if (m.ioBillDetailId) {
+          AxiosApi.delete(`billDetail/delete?id=${m.ioBillDetailId}`)
+            .then(() => {
+              success('删除成功！')
+              loadCostAdjustmentHeaderDetail()
+            })
+            .catch(() => {
+              error('删除失败')
+            })
+        } else {
+          CostAdjustmentSubTableDetail.value.pop()
+          AddSubTable.value = false
+        }
       })
-      loadCostAdjustmentHeaderDetail()
       dialogVisible.value = false
     }
 
@@ -579,10 +582,8 @@ export default defineComponent({
       console.log(id1, id2)
       if (id1 && id2) {
         loading.value = true
-        batchNoList.value = []
         AxiosApi.get(`inventory/list?materialId=${id1}&warehouseId=${id2}`)
           .then((res:AxiosResponse) => {
-            console.log(res.data.result)
             batchNoList.value = res.data.result
             loading.value = false
           })
@@ -594,10 +595,9 @@ export default defineComponent({
       }
     }
 
-    const handleSubtableDetailChange = (batchNO:string) => {
-      console.log(batchNO)
+    const handleSubtableDetailChange = (BatchNO:string) => {
       const a = batchNoList.value?.map((item:any) => {
-        if (item.batchNo === batchNO) {
+        if (item.batchNo === BatchNO) {
           batchNoDetail.batchNodetails = item
         }
       })

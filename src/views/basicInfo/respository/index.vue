@@ -1,5 +1,16 @@
 <template>
     <Card class="customer_card">
+      <div 
+        style="height: 30px;
+              margin-top: -20px;
+              margin-bottom: 20px;
+              text-align: left;
+              color: #1890FF;
+              font-size: 15px;
+              border-bottom: 1px solid grey;"
+      >
+      基础数据 > 仓库
+      </div>
       <div class="header">
         <el-button type="text" class="header_button" @click="handleAdd"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
         <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
@@ -12,7 +23,7 @@
       row-key="warehouseId"
       v-loading="loading"
     >
-       <el-table-column fixed type="selection" sortable width="55" />
+       <el-table-column fixed type="index" label="#" sortable width="55" />
         <el-table-column fixed prop="name" sortable label="名称" width="300"/>
         <el-table-column fixed prop="code" sortable label="编码" width="300" />
         <el-table-column prop="phone" label="电话" sortable width="300" />
@@ -167,6 +178,7 @@ export default defineComponent({
       findChildren(datalist)
       Warehousedata.value = datalist
       loading.value = false
+      console.log(datalist)
     }
 
     const handleDelete = () => {

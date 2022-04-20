@@ -150,7 +150,7 @@
         @tab-click="handleClick" 
         v-loading="loading">
         <el-tab-pane label="明细" name="明细">
-          <div style="display:flex;margin-bottom:20px">
+          <div style="display:flex;margin-bottom:20px" v-if="edit_type === 'edit'">
           <el-button type="primary" @click="handleAddSubtable"><el-icon><plus /></el-icon>&nbsp;新增 </el-button>
           <el-button type="primary" @click="handleConfirm('delete')"><el-icon><minus /></el-icon>&nbsp;删除 </el-button>
           </div>
@@ -469,27 +469,7 @@ export default defineComponent({
           })
       }
     }
-    
-    // else if (type === 'sub' && AddSubTable.value === false) {
-    //   CostAdjustmentSubTableDetail.value.map((p) => {
-    //     const data:any = p
-    //     data.modifiedDate = undefined
-    //     AxiosApi.put('billDetail/update', JSON.stringify(data))
-    //       .then((res:AxiosResponse) => {
-    //         console.log(res)
-    //         success('保存成功！')
-    //         props.handleClose()
-    //         props.loadCostAdjustmentlist(1)
-    //         loading.value = false
-    //       })
-    //       .catch((err) => {
-    //         error('保存失败！')
-    //         console.log(err)
-    //         loading.value = false
-    //       })
-    //   })
-    // } 
-
+  
     const handleSelectionChange = (val: any[]) => {
       multipleSelection.value = val
     }
@@ -515,12 +495,17 @@ export default defineComponent({
             .catch((err:any) => {
               console.log(err)
               loading.value = false
+              error('添加失败!请保证所有信息填写完整且分录号不重复！')
             })
         }
       })
     }
 
     const handleAddSubtable = () => {
+      if (AddSubTable.value === true) {
+        success('每次只能新增一条数据，请先保存或删除新增数据后再增加；')
+        return
+      }
       CostAdjustmentSubTableDetail.value.push({
         batchNo: '',
         changeCost: null,
@@ -584,15 +569,20 @@ export default defineComponent({
 
     const handleDeleteSubtable = () => {
       multipleSelection.value.map((m:any) => {
-        AxiosApi.delete(`billDetail/delete?id=${m.ioBillDetailId}`)
-          .then(() => {
-            success('删除成功！')
-          })
-          .catch(() => {
-            error('删除失败')
-          })
+        if (m.ioBillDetailId) {
+          AxiosApi.delete(`billDetail/delete?id=${m.ioBillDetailId}`)
+            .then(() => {
+              success('删除成功！')
+              loadCostAdjustmentHeaderDetail()
+            })
+            .catch(() => {
+              error('删除失败')
+            })
+        } else {
+          CostAdjustmentSubTableDetail.value.pop()
+          AddSubTable.value = false
+        }
       })
-      loadCostAdjustmentHeaderDetail()
       dialogVisible.value = false
     }
 

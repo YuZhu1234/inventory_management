@@ -93,7 +93,7 @@ const routes: Array<RouteRecordRaw> = [
         component: PurchaseReturnIssue
       },
       {
-        path:'采购入库',
+        path:'purchasewarehousing',
         component: PurchaseWarehousing
       },
       {

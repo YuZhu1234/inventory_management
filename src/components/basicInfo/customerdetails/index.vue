@@ -16,8 +16,9 @@
     </el-form-item>
     <el-form-item label="等级" :label-width=LabeWidth >
       <el-select v-model="CustomerDetails.customerLevelValue" placeholder="一级" class="option" :disabled="disabled">
-         <el-option label="一级" value=1 ></el-option>
-         <el-option label="二级" value=2 ></el-option>
+         <el-option label="一级" :value="1" ></el-option>
+         <el-option label="二级" :value="2" ></el-option>
+         <el-option label="三级" :value="3" ></el-option>
       </el-select>
     </el-form-item>
    </el-form>

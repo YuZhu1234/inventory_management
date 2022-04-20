@@ -1,5 +1,16 @@
 <template>
     <Card class="customer_card">
+      <div 
+        style="height: 30px;
+              margin-top: -20px;
+              margin-bottom: 20px;
+              text-align: left;
+              color: #1890FF;
+              font-size: 15px;
+              border-bottom: 1px solid grey;"
+      >
+      基础数据 > 币种
+      </div>
       <div class="header">
         <el-button type="text" class="header_button" @click="handleClick('','add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
         <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>

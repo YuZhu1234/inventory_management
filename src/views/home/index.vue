@@ -2,7 +2,7 @@
   <div class="home">
     <div class="cardlist">
       <div>
-        <div class="home_cord">
+        <div class="home_cord" @click="handleClick('purchasewarehousing')">
          <div class="card_icon">
            <el-icon><list /></el-icon>
          </div>
@@ -10,7 +10,7 @@
           物品入库
           </div>
         </div>
-        <div class="home_cord2">
+        <div class="home_cord2" @click="handleClick('placeorder')">
           <div class="card_icon">
            <el-icon><management /></el-icon>
          </div>
@@ -20,15 +20,15 @@
         </div>
       </div>
       <div>
-        <div class="home_cord2">
+        <div class="home_cord2" @click="handleClick('salesdelivery')">
           <div class="card_icon">
-           <el-icon><grid /></el-icon>
+           <el-icon><sold-out /></el-icon>
          </div>
          <div>
           物品出库
           </div>
         </div>
-        <div class="home_cord">
+        <div class="home_cord" @click="handleClick('data_dictionary')">
           <div class="card_icon">
            <el-icon><setting /></el-icon>
          </div>
@@ -38,7 +38,7 @@
         </div>
       </div>
       <div>
-        <div class="home_cord2">
+        <div class="home_cord" @click="handleClick('realtimeinventory')">
           <div class="card_icon">
            <el-icon><grid /></el-icon>
          </div>
@@ -46,12 +46,12 @@
           实时库存
           </div>
         </div>
-        <div class="home_cord">
+        <div class="home_cord2" @click="handleClick('customer')">
           <div class="card_icon">
-           <el-icon><setting /></el-icon>
+           <el-icon><connection /></el-icon>
          </div>
          <div>
-          单据查询
+          数据更新
           </div>
         </div>
       </div>
@@ -63,11 +63,13 @@
 import { defineComponent } from 'vue'
 import {
   Setting,
-  HomeFilled,
+  SoldOut,
   List,
   Grid,
-  Management
+  Management,
+  Connection
 } from '@element-plus/icons-vue'
+import router from '../../router/index'
 
 export default defineComponent({
   name: 'home',
@@ -75,11 +77,16 @@ export default defineComponent({
     Setting,
     List,
     Grid,
-    Management
+    Management,
+    SoldOut,
+    Connection
   },
   setup () {
+    const handleClick = (path:string) => {
+      router.push(`/${path}`)
+    }
     return {
-
+      handleClick
     }
   }
 })
@@ -111,6 +118,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
   color: #00A1D6;
+  cursor: pointer;
 }
 
 .home_cord2 {
@@ -125,6 +133,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
   color: white;
+  cursor: pointer;
 }
 
 .cardlist{

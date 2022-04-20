@@ -1,5 +1,16 @@
 <template>
   <Card>
+    <div 
+        style="height: 30px;
+              margin-top: -10px;
+              margin-bottom: 20px;
+              text-align: left;
+              color: #1890FF;
+              font-size: 15px;
+              border-bottom: 1px solid grey;"
+      >
+      库存管理 > 成本调整
+      </div>
    <el-form :inline="true" class="demo-form">
       <el-form-item label="单据编号：" class="encode">
         <el-input placeholder="请输入单据编号" v-model="searchId"></el-input>
@@ -21,8 +32,7 @@
     </el-form>
     <div class="header">
         <el-button type="text" class="header_button" @click="handleClick('',0,'add')"><el-icon><plus /></el-icon>&nbsp;新增</el-button>
-        <!-- <el-button type="text" class="header_button"><el-icon><download /></el-icon>&nbsp;导出</el-button>
-        <el-button type="text" class="header_button"><el-icon><upload /></el-icon>&nbsp;导入</el-button> -->
+        <el-button type="text" class="header_button"  @click="downloadExcel"><el-icon><download /></el-icon>&nbsp;导出</el-button>
         <span class="text">已选择<span style="color:rgb(53,137,255);margin-left:10px;margin-right:10px;font-weight:bold;">{{selectNum}}</span>项 </span>
         <!-- <el-button type="text" class="header_button">清空</el-button> -->
         <el-button v-if="selectNum > 0" type="text" @click="dialogVisible2 = true" class="header_button">删除</el-button>
@@ -274,6 +284,24 @@ export default defineComponent({
         }) 
     }
 
+    const downloadExcel = () => {
+      loading.value = true
+      AxiosApi.get('billHeader/downLoadIn?&stockIoName=成本调整')
+        .then((res:AxiosResponse) => {
+          console.log(res)
+          const url = window.URL.createObjectURL(new File([JSON.stringify(res)], 'application/json'))
+          const link = document.createElement('a')
+          link.download = '成本调整.xls'
+          link.href = url
+          link.click()
+          loading.value = false
+        })
+        .catch((err) => {
+          console.log(err)
+          loading.value = false
+        }) 
+    }
+
     onMounted(() => {
       loadCostAdjustmentlist(1)
     })
@@ -299,7 +327,8 @@ export default defineComponent({
       searchId,
       handleDelete,
       dialogVisible2,
-      loading
+      loading,
+      downloadExcel
     }
   }
 })

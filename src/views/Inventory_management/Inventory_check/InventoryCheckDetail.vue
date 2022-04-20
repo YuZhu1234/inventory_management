@@ -125,7 +125,7 @@
         @tab-click="handleClick" 
         v-loading="loading">
         <el-tab-pane label="明细" name="明细">
-          <div style="display:flex;margin-bottom:20px">
+          <div style="display:flex;margin-bottom:20px" v-if="edit_type === 'edit'">
           <el-button type="primary" @click="handleAddSubtable"><el-icon><plus /></el-icon>&nbsp;新增 </el-button>
           <el-button type="primary" @click="handleConfirm('delete')" :disabled="multipleSelection.length === 0"><el-icon><minus /></el-icon>&nbsp;删除 </el-button>
           </div>
@@ -438,7 +438,7 @@ export default defineComponent({
             })
             .catch((err:any) => {
               console.log(err)
-              error('添加失败')
+              error('添加失败!请保证所有信息填写完整且分录号不重复！')
               loading.value = false
               dialogVisible2.value = false
             })
@@ -447,6 +447,10 @@ export default defineComponent({
     }
 
     const handleAddSubtable = () => {
+      if (AddSubTable.value === true) {
+        success('每次只能新增一条数据，请先保存或删除新增数据后再增加；')
+        return
+      }
       InventoryCheckSubTableDetail.value.push({
         batchNo: '',
         changeCost: null,
@@ -510,13 +514,16 @@ export default defineComponent({
           AxiosApi.delete(`billDetail/delete?id=${m.ioBillDetailId}`)
             .then(() => {
               success('删除成功！')
+              loadInventoryCheckHeaderDetail()
             })
             .catch(() => {
               error('删除失败')
             })
+        } else {
+          InventoryCheckSubTableDetail.value.pop()
+          AddSubTable.value = false
         }
       })
-      loadInventoryCheckHeaderDetail()
       dialogVisible.value = false
     }
 

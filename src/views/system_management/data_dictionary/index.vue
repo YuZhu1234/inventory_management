@@ -1,5 +1,16 @@
 <template>
     <Card class="customer_card">
+      <div 
+        style="height: 30px;
+              margin-top: -20px;
+              margin-bottom: 20px;
+              text-align: left;
+              color: #1890FF;
+              font-size: 15px;
+              border-bottom: 1px solid grey;"
+      >
+      系统管理 > 数据字典
+      </div>
      <el-form :inline="true" class="demo-form-inline">
     <el-form-item class="encode" label="字典名称：">
      <el-input placeholder="请输入字典名称"></el-input>
@@ -13,13 +24,13 @@
     </el-form-item>
     </el-form>
     <div class="button_group">
-       <el-button type="primary"  class="query" @click="handleCheck('add')">
+       <!-- <el-button type="primary"  class="query" @click="handleCheck('add')">
          <el-icon><plus /></el-icon>&nbsp;添加
-       </el-button>
-       <el-button type="primary"  class="query" >
+       </el-button> -->
+       <!-- <el-button type="primary"  class="query" >
          <el-icon><download /></el-icon>&nbsp;导出
-       </el-button>
-       <el-button type="primary"  class="query">
+       </el-button> -->
+       <!-- <el-button type="primary"  class="query">
          <el-icon><upload /></el-icon>&nbsp;导入
        </el-button>
        <el-button type="primary"  class="query" >
@@ -27,7 +38,7 @@
        </el-button>
        <el-button type="primary"  class="query" >
          <el-icon><brush /></el-icon>&nbsp;回收站
-       </el-button>
+       </el-button> -->
     </div>
     <div class="body">
     <el-table class="tabel" :data="DataDictionary" border v-loading="loading">
@@ -35,12 +46,11 @@
     <el-table-column  label="字典名称" prop="dictName" width="275px" />
     <el-table-column  label="字典编号"  prop="dictCode" width="275px" />
     <el-table-column  label="描述" prop="description" width="490px" />
-    <el-table-column fixed="right" label="操作" width="300px" type="index">
+    <el-table-column fixed="right" label="操作" width="100px" type="index">
       <template v-slot="scope">
-      <el-button type="text" size="small" @click="handleConfirm1(scope.row)"><el-icon><edit /></el-icon>编辑</el-button>
-        <el-button type="text" size="small" @click="handleConfirm2(scope.row)" ><el-icon><setting /></el-icon>字典配置</el-button
-        >
-        <el-button type="text" size="small" @click="handleConfirm(scope.row)"><el-icon><delete /></el-icon>删除</el-button>
+      <!-- <el-button type="text" size="small" @click="handleConfirm1(scope.row)"><el-icon><edit /></el-icon>编辑</el-button> -->
+        <el-button type="text" size="small" @click="handleConfirm2(scope.row)" ><el-icon><setting /></el-icon>字典配置</el-button>
+        <!-- <el-button type="text" size="small" @click="handleConfirm(scope.row)"><el-icon><delete /></el-icon>删除</el-button> -->
       </template>
     </el-table-column>
   </el-table>
@@ -50,7 +60,7 @@
       background="blue" 
       layout="prev, pager, next" 
       :total="total"
-      v-model:currentPage="current_page"
+      :currentPage="current_page"
       @current-change="handleCurrentChange"
     >
     </el-pagination>
@@ -65,7 +75,9 @@
     destroy-on-close
   >
   <el-divider class="divider"></el-divider>
+  <div class="overflowAuto">
     <DataDictionaryList :dictData="aditData"/>
+  </div>
   </el-drawer>
    <el-dialog
     v-model="dialogVisible"
@@ -114,8 +126,8 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { AxiosApi } from '../../../utils/api'
-import { AxiosResponse } from 'axios'
+// import { AxiosApi } from '../../../utils/api'
+import axios, { AxiosResponse } from 'axios'
 import {
   Plus,
   Download,
@@ -132,15 +144,15 @@ import { ElMessage } from 'element-plus'
 export default defineComponent({
   name:'DataDictionary',
   components:{
-    Plus,
-    Download,
-    Upload,
-    Refresh,
-    Brush,
+    // Plus,
+    // Download,
+    // Upload,
+    // Refresh,
+    // Brush,
     DataDictionaryList,
-    Setting,
-    Edit,
-    Delete
+    Setting
+    // Edit,
+    // Delete
   },
   setup () {
     const DataDictionary = ref([])
@@ -156,7 +168,7 @@ export default defineComponent({
 
     const loadDictionary = (val: number) :void => {
       loading.value = true
-      AxiosApi.get(`sysdict/header/list?page=${val}&size=10`)
+      axios.get(`http://152.136.155.113:8989/sysdict/header/list?page=${val}&size=10`)
         .then((res:AxiosResponse) => {
           if (res.data?.result) {
             DataDictionary.value = res.data?.result.records
@@ -179,7 +191,7 @@ export default defineComponent({
       data.createTime = undefined
       data.updateTime = undefined
       if (tittle.value === '编辑') {
-        AxiosApi.put('sysdict/header/update', JSON.stringify(data))
+        axios.put('http://152.136.155.113:8989/sysdict/header/update', JSON.stringify(data))
           .then((res) => {
             console.log(res)
             loadDictionary(current_page.value)
@@ -198,7 +210,7 @@ export default defineComponent({
     }
 
     const onQuery = ():void => {
-      AxiosApi.get(`sysdict/list?type=${QueryCode.value}`)
+      axios.get(`http://152.136.155.113:8989/sysdict/list?type=${QueryCode.value}`)
         .then((res) => {
           console.log(res)
         }).catch((err) => {
@@ -228,10 +240,10 @@ export default defineComponent({
     const handleDetele = () :void => {
       loading.value = true
       const data:any = aditData.value
-      AxiosApi.get(`sysdict/list?type=${data.dictCode}`)
+      axios.get(`http://152.136.155.113:8989/sysdict/list?type=${data.dictCode}`)
         .then((res) => {
           if (res.data?.result[`${data.dictCode}`]?.length === 0 || !res.data?.result[`${data.dictCode}`]) {
-            AxiosApi.delete(`sysdict/header/delete?headerid=${data?.sysDictHeaderId}`)
+            axios.delete(`http://152.136.155.113:8989/sysdict/header/delete?headerid=${data?.sysDictHeaderId}`)
               .then((res) => {
                 dialogVisible.value = false
                 loadDictionary(current_page.value)
@@ -310,7 +322,7 @@ export default defineComponent({
 }
 
 .encode {
-    width: 500px;
+    width: 300px;
     margin-right: 30px;
     font-size: 14px;
     font-family: Arial;
@@ -351,6 +363,20 @@ export default defineComponent({
   position: absolute;
   top: 30px;
   left: 0px;
+}
+
+.overflowAuto {
+    overflow: scroll;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 100px);
+}
+.overflowAuto::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+.overflowAuto::-webkit-scrollbar-thumb {
+    background: rgb(224, 214, 235);
 }
 
 </style>

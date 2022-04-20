@@ -1,5 +1,16 @@
 <template>
     <Card class="customer_card">
+      <div 
+        style="height: 30px;
+              margin-top: -20px;
+              margin-bottom: 20px;
+              text-align: left;
+              color: #1890FF;
+              font-size: 15px;
+              border-bottom: 1px solid grey;"
+      >
+      基础数据 > 物料
+      </div>
         <el-form :inline="true" class="demo-form-inline">
             <el-form-item label="编码" class="encode">
               <el-input placeholder="请输入编码" v-model="searchCode"></el-input>

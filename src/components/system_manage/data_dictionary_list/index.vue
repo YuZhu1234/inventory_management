@@ -2,32 +2,36 @@
  <div class="root">
   <el-form :inline="true" class="demo-form-inline">
     <el-form-item class="encode" label="名称：">
-     <el-input placeholder="请输入名称"></el-input>
+     <el-input placeholder="请输入名称" v-model="nameValue"></el-input>
     </el-form-item>
     <el-form-item class="encode" label="状态：">
-      <el-select placeholder="请选择" class="option">
+      <el-select placeholder="请选择" class="option" v-model="selectValue">
          <el-option label="启用" value=1 ></el-option>
          <el-option label="禁用" value=2 ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary"  class="query">搜索</el-button>
-      <el-button type="primary"  class="query" >重置</el-button>
+      <!-- <el-button type="primary"  class="query">搜索</el-button>
+      <el-button type="primary"  class="query" >重置</el-button> -->
     </el-form-item>
   </el-form>
-  <el-button type="primary"  class="add" @click="handleConfirm('no','add')">添加</el-button>
+  <!-- <el-button type="primary"  class="add" @click="handleConfirm('no','add')">添加</el-button> -->
+  <div style="display:flex;margin-top:10px">
+  <el-button type="primary"  class="add" @click="onQuery">搜索</el-button>
+  <el-button type="primary"  class="add" @click="onrefresh">重置</el-button>
+  </div>
    <el-table class="tabel" border :data="MsgCategory" v-loading="loading">
         <el-table-column  label="名称" prop="itemText" width="160px" />
         <el-table-column  label="数据值" prop="itemValue" width="180px" />
         <el-table-column  label="操作" width="175px" type="index">
             <template v-slot="scope">
-              <el-button type="text" size="small" @click="handleConfirm(scope.row,'edit')">编辑</el-button>
+              <!-- <el-button type="text" size="small" @click="handleConfirm(scope.row,'edit')">编辑</el-button>
               &nbsp;&nbsp;&nbsp;|
-              <el-button type="text" size="small" @click="handleConfirm(scope.row,'delete')">删除</el-button>
+              <el-button type="text" size="small" @click="handleConfirm(scope.row,'delete')">删除</el-button> -->
+              <el-button type="text" size="small" @click="handleConfirm(scope.row,'edit')">详情</el-button>
             </template>
         </el-table-column>
     </el-table>
-  </div>
   <el-dialog
     v-model="dialogVisible"
     title="提示"
@@ -69,19 +73,19 @@
     </el-form>
      <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible2 = false">取消</el-button>
-        <el-button type="primary" @click="handleSave"
-          >确定</el-button
-        >
+        <!-- <el-button @click="dialogVisible2 = false">取消</el-button>
+        <el-button type="primary" @click="handleSave" >确定</el-button> -->
+        <el-button type="primary" @click="dialogVisible2 = false" >确定</el-button>
       </span>
     </template>
   </el-dialog>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
-import { AxiosApi } from '../../../utils/api'
-import { AxiosResponse } from 'axios'
+// import { AxiosApi } from '../../../utils/api'
+import axios, { AxiosResponse } from 'axios'
 import { ElMessage } from 'element-plus'
 
 export default defineComponent({
@@ -115,11 +119,13 @@ export default defineComponent({
     const dialogVisible2 = ref(false)
     const status = ref(true)
     const edit_type = ref('')
+    const selectValue = ref(null)
+    const nameValue = ref('')
 
     const loadDict = () => {
       loading.value = true
       const name = props.dictData.dictCode
-      AxiosApi.get(`sysdict/list?type=${props.dictData.dictCode}`)
+      axios.get(`http://152.136.155.113:8989/sysdict/list?type=${props.dictData.dictCode}`)
         .then((res) => {
           if (res.data?.result[`${name}`]) {
             MsgCategory.value = res.data?.result[`${name}`]
@@ -152,7 +158,7 @@ export default defineComponent({
       const data:any = aditData.aditDatas
       data.status = data.status === true ? 1 : 0
       if (edit_type.value === 'edit') {
-        AxiosApi.put('sysdict/detail/update', JSON.stringify(data))
+        axios.put('http://152.136.155.113:8989/sysdict/detail/update', JSON.stringify(data))
           .then((res) => {
             console.log(res)
             loadDict()
@@ -172,7 +178,7 @@ export default defineComponent({
 
     const handleDetele = () :void => {
       loading.value = true
-      AxiosApi.delete(`sysdict/detail/delete?detailid=${edit_Data.value}`)
+      axios.delete(`http://152.136.155.113:8989/sysdict/detail/delete?detailid=${edit_Data.value}`)
         .then((res) => {
           loading.value = false
           dialogVisible.value = false
@@ -187,6 +193,16 @@ export default defineComponent({
 
     const AddData = () :void => {
       console.log('add')
+    }
+
+    const onQuery = () => {
+      console.log(nameValue.value, selectValue.value)
+    }
+
+    const onrefresh = () => {
+      nameValue.value = ''
+      selectValue.value = null
+      loadDict()
     }
 
     const handleConfirm = (row:any, type:string) :void => {
@@ -219,7 +235,11 @@ export default defineComponent({
       handleSave,
       status,
       ...toRefs(aditData),
-      AddData
+      AddData,
+      selectValue,
+      nameValue,
+      onQuery,
+      onrefresh
     }
   }
 })
@@ -261,6 +281,10 @@ export default defineComponent({
 
 .input1 {
   padding-right: 0px!important;
+}
+
+.option {
+  width: 150px;
 }
 
 </style>
